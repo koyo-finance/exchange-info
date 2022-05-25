@@ -1,3 +1,4 @@
+import { formatAmount, formatDollarAmount } from '@koyofinance/core-sdk';
 import Card from 'components/Card';
 import { RowBetween } from 'components/Row';
 import dayjs from 'dayjs';
@@ -6,7 +7,6 @@ import React, { ReactNode } from 'react';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import styled from 'styled-components';
 import { ChartDataPoint } from 'types/charts';
-import { formatAmount, formatDollarAmount } from 'utils/numbers';
 import getChartColor from '../../utils/getChartColor';
 dayjs.extend(utc);
 

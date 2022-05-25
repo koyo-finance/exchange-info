@@ -1,3 +1,4 @@
+import { formatDollarAmount } from '@koyofinance/core-sdk';
 import { RowBetween } from 'components/Row';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -7,7 +8,6 @@ import { createChart, IChartApi } from 'lightweight-charts';
 import { darken } from 'polished';
 import React, { Dispatch, ReactNode, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { formatDollarAmount } from 'utils/numbers';
 import Card from '../Card';
 
 dayjs.extend(utc);

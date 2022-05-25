@@ -2,10 +2,10 @@ import { AutoRow, RowBetween, RowFixed } from '../Row';
 import React from 'react';
 import styled from 'styled-components';
 import { ExternalLink, TYPE } from '../../theme';
-import { formatDollarAmount } from '../../utils/numbers';
 import { KOYO_APP_LINK, KOYO_BACKGROUND_IMAGE, KOYO_DOCS_LINK } from '../../data/koyo/constants';
 import { useLatestPrices } from '../../data/koyo/useLatestPrices';
 import Polling from './Polling';
+import { formatDollarAmount } from '@koyofinance/core-sdk';
 
 const Wrapper = styled.div`
 	width: 100%;

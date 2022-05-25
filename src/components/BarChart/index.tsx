@@ -5,9 +5,9 @@ import Card from '../Card';
 import styled from 'styled-components';
 import useTheme from 'hooks/useTheme';
 import usePrevious from 'hooks/usePrevious';
-import { formatDollarAmount } from 'utils/numbers';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { formatDollarAmount } from '@koyofinance/core-sdk';
 dayjs.extend(utc);
 
 const Wrapper = styled(Card)`
