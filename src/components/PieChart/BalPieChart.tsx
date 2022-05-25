@@ -1,13 +1,13 @@
-import Card from 'components/Card';
-import { RowBetween } from 'components/Row';
+import { formatDollarAmount } from '@koyofinance/core-sdk';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import useTheme from 'hooks/useTheme';
 import React, { Dispatch, ReactNode, SetStateAction } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import styled from 'styled-components';
+import useTheme from '../../hooks/useTheme';
 import getChartColor from '../../utils/getChartColor';
-import { formatDollarAmount } from '../../utils/numbers';
+import Card from '../Card';
+import { RowBetween } from '../Row';
 
 dayjs.extend(utc);
 
