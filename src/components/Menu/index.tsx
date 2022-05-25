@@ -1,8 +1,7 @@
 import Column from '../Column';
 import { KOYO_APP_LINK, KOYO_DISCORD_LINK, KOYO_DOCS_LINK, KOYO_INFO_CODE_LINK } from '../../data/koyo/constants';
 import { darken } from 'polished';
-import React, { useRef } from 'react';
-import { isMobile } from 'react-device-detect';
+import React, { useEffect, useRef, useState } from 'react';
 import { BookOpen, Code, Info, MessageCircle } from 'react-feather';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -12,6 +11,7 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import { ApplicationModal } from '../../state/application/actions';
 import { useActiveNetworkVersion, useModalOpen, useToggleModal } from '../../state/application/hooks';
 import { ExternalLink } from '../../theme';
+import { useDeviceSelectors } from 'react-device-detect';
 
 const StyledMenuIcon = styled(MenuIcon)`
 	path {
@@ -115,11 +115,18 @@ const StyledNavLink = styled(NavLink).attrs({
 `;
 
 const Menu: React.FC = () => {
+	const [isMobile, setIsMobile] = useState<boolean>(false);
+	const [selectors] = useDeviceSelectors(window.navigator.userAgent);
+
 	const node = useRef<HTMLDivElement>();
 	const open = useModalOpen(ApplicationModal.MENU);
 	const toggle = useToggleModal(ApplicationModal.MENU);
 	useOnClickOutside(node, open ? toggle : undefined);
 	const [activeNewtork] = useActiveNetworkVersion();
+
+	useEffect(() => {
+		setIsMobile(selectors?.isMobile || false);
+	}, [selectors]);
 
 	return (
 		// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
@@ -134,9 +141,6 @@ const Menu: React.FC = () => {
 						<Column>
 							<StyledNavLink id={`pool-nav-link`} to={networkPrefix(activeNewtork)} isActive={(_, { pathname }) => pathname === '/'}>
 								Protocol
-							</StyledNavLink>
-							<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}treasury`}>
-								Treasury
 							</StyledNavLink>
 						</Column>
 					) : null}

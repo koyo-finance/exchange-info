@@ -6,10 +6,7 @@ export default function Updater(): null {
 	// subgraph status
 	const [status, updateStatus] = useSubgraphStatus();
 	const { available, syncedBlock: newSyncedBlock, headBlock } = useFetchedSubgraphStatus();
-
 	const { syncedBlock } = status;
-
-	console.log(status, updateStatus, available, newSyncedBlock, headBlock, syncedBlock);
 
 	useEffect(() => {
 		if (status.available === null && available !== null) {

@@ -173,12 +173,14 @@ const Header: React.FC = () => {
 				) : null}
 			</HeaderRow>
 			<HeaderControls>
+				<div />
 				{/* <SearchSmall />*/}
 				<Menu />
 			</HeaderControls>
 			<SmallContentGrouping>
 				<AutoColumn gap="sm">
 					<RowBetween>
+						<div />
 						<Menu />
 					</RowBetween>
 				</AutoColumn>

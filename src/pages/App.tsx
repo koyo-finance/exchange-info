@@ -48,7 +48,7 @@ const BodyWrapper = styled.div<{ warningActive?: boolean }>`
 
 	@media (max-width: 1080px) {
 		padding-top: 2rem;
-		margin-top: ${({ warningActive }) => (warningActive ? '100px' : '50px')};
+		margin-top: 140px;
 	}
 `;
 
