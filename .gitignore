@@ -5,3 +5,6 @@ build
 .firebase
 .firebaserc
 firebase.json
+yarn-error.log
+
+src/apollo/generated

@@ -1,186 +1,132 @@
-import React, { Suspense, useState, useEffect } from 'react';
+import { DarkGreyCard } from '../components/Card';
+import TopBar from '../components/Header/TopBar';
+import { LocalLoader } from '../components/Loader';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Route, Switch, useLocation } from 'react-router-dom';
+import { useActiveNetworkVersion, useSubgraphStatus } from '../state/application/hooks';
 import styled from 'styled-components';
-import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter';
+import { ExternalLink, TYPE } from '../theme';
 import Header from '../components/Header';
 import URLWarning from '../components/Header/URLWarning';
 import Popups from '../components/Popups';
-import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader';
-import Home from './Home';
-import Treasury from './Treasury';
-import Protocol from './Protocol';
-import PoolsOverview from './Pool/PoolsOverview';
-import TokensOverview from './Token/TokensOverview';
-import TopBar from 'components/Header/TopBar';
-import { RedirectInvalidToken } from './Token/redirects';
-import { LocalLoader } from 'components/Loader';
-import PoolPage from './Pool/PoolPage';
-import { ExternalLink, TYPE } from 'theme';
-import { useActiveNetworkVersion, useSubgraphStatus } from 'state/application/hooks';
-import { DarkGreyCard } from 'components/Card';
-import { SUPPORTED_NETWORK_VERSIONS, EthereumNetworkInfo, SupportedNetwork } from 'constants/networks';
 import { loadTokenListTokens } from '../state/token-lists/token-lists';
-import ProtocolFees from './ProtocolFees';
-
+import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader';
+import Protocol from './Protocol';
+import { BobaNetworkInfo, SUPPORTED_NETWORK_VERSIONS } from 'constants/networks';
 
 const AppWrapper = styled.div`
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    overflow-x: hidden;
-    min-height: 100vh;
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	overflow-x: hidden;
+	min-height: 100vh;
 `;
 
 const HeaderWrapper = styled.div`
-    ${({ theme }) => theme.flexColumnNoWrap}
-    width: 100%;
-    position: fixed;
-    justify-content: space-between;
-    z-index: 2;
+	${({ theme }) => theme.flexColumnNoWrap}
+	width: 100%;
+	position: fixed;
+	justify-content: space-between;
+	z-index: 2;
 `;
 
 const BodyWrapper = styled.div<{ warningActive?: boolean }>`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding-top: 40px;
-    margin-top: ${({ warningActive }) => (warningActive ? '140px' : '100px')};
-    align-items: center;
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 1;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	padding-top: 40px;
+	margin-top: ${({ warningActive }) => (warningActive ? '140px' : '100px')};
+	align-items: center;
+	flex: 1;
+	overflow-y: auto;
+	overflow-x: hidden;
+	z-index: 1;
 
-    > * {
-        max-width: 1200px;
-    }
+	> * {
+		max-width: 1200px;
+	}
 
-    @media (max-width: 1080px) {
-        padding-top: 2rem;
-        margin-top: ${({ warningActive }) => (warningActive ? '100px' : '50px')};
-    }
+	@media (max-width: 1080px) {
+		padding-top: 2rem;
+		margin-top: ${({ warningActive }) => (warningActive ? '100px' : '50px')};
+	}
 `;
 
 const Marginer = styled.div`
-    margin-top: 5rem;
+	margin-top: 5rem;
 `;
 
 const Hide1080 = styled.div`
-    @media (max-width: 1080px) {
-        display: none;
-    }
+	@media (max-width: 1080px) {
+		display: none;
+	}
 `;
-
-const WarningWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-`;
-
-const WarningBanner = styled.div`
-    background-color: ${({ theme }) => theme.bg3};
-    padding: 1rem;
-    color: red;
-    font-size: 14px;
-    width: 100%;
-    text-align: center;
-    font-weight: 500;
-`;
-
-const BLOCK_DIFFERENCE_THRESHOLD = 30;
 
 export default function App() {
-    // pretend load buffer
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        setTimeout(() => setLoading(false), 1300);
-        loadTokenListTokens().catch();
-    }, []);
+	// pretend load buffer
+	const [loading, setLoading] = useState(true);
+	useEffect(() => {
+		setTimeout(() => setLoading(false), 1300);
+		void loadTokenListTokens().catch();
+	}, []);
 
-    // update network based on route
-    // TEMP - find better way to do this
-    const location = useLocation();
-    const [activeNetwork, setActiveNetwork] = useActiveNetworkVersion();
-    useEffect(() => {
-        if (location.pathname === '/') {
-            setActiveNetwork(EthereumNetworkInfo);
-        } else {
-            SUPPORTED_NETWORK_VERSIONS.map((n) => {
-                if (location.pathname.includes(n.route.toLocaleLowerCase())) {
-                    setActiveNetwork(n);
-                }
-            });
-        }
-    }, [location.pathname, setActiveNetwork]);
+	const location = useLocation();
+	const [, setActiveNetwork] = useActiveNetworkVersion();
+	useEffect(() => {
+		if (location.pathname === '/') {
+			setActiveNetwork(BobaNetworkInfo);
+		} else {
+			SUPPORTED_NETWORK_VERSIONS.forEach((n) => {
+				if (location.pathname.includes(n.route.toLocaleLowerCase())) {
+					setActiveNetwork(n);
+				}
+			});
+		}
+	}, [location.pathname, setActiveNetwork]);
 
-    // subgraph health
-    const [subgraphStatus] = useSubgraphStatus();
+	// subgraph health
+	const [subgraphStatus] = useSubgraphStatus();
 
-    const showNotSyncedWarning =
-        subgraphStatus.headBlock && subgraphStatus.syncedBlock
-            ? subgraphStatus.headBlock - subgraphStatus.syncedBlock > BLOCK_DIFFERENCE_THRESHOLD
-            : false;
-
-    return (
-        <Suspense fallback={null}>
-            <Route component={GoogleAnalyticsReporter} />
-            <Route component={DarkModeQueryParamReader} />
-            {loading ? (
-                <LocalLoader fill={true} />
-            ) : (
-                <AppWrapper>
-                    <URLWarning />
-                    <HeaderWrapper>
-                        {activeNetwork.id === SupportedNetwork.POLYGON && (
-                            <WarningWrapper>
-                                <WarningBanner>
-                                    {`Warning: 
-                  Data fetching for this chain requires long loading times - Please be patient.`}
-                                </WarningBanner>
-                            </WarningWrapper>
-                        )}
-                        <Hide1080>
-                            <TopBar />
-                        </Hide1080>
-                        <Header />
-                    </HeaderWrapper>
-                    {subgraphStatus.available === false ? (
-                        <AppWrapper>
-                            <BodyWrapper>
-                                <DarkGreyCard style={{ maxWidth: '340px' }}>
-                                    <TYPE.label>
-                                        The Graph hosted network which provides data for this site is temporarily
-                                        experiencing issues. Check current status{' '}
-                                        <ExternalLink href="https://thegraph.com/legacy-explorer/subgraph/ianlapham/uniswap-v3-subgraph">
-                                            here.
-                                        </ExternalLink>
-                                    </TYPE.label>
-                                </DarkGreyCard>
-                            </BodyWrapper>
-                        </AppWrapper>
-                    ) : (
-                        <BodyWrapper warningActive={activeNetwork.id === SupportedNetwork.POLYGON}>
-                            <Popups />
-                            <Switch>
-                                <Route exact strict path="/:networkID?/pools/:poolId" component={PoolPage} />
-                                <Route exact strict path="/:networkID?/protocolFees" component={ProtocolFees} />
-                                <Route exact strict path="/:networkID?/chain" component={Home} />
-                                <Route exact strict path="/:networkID?/treasury" component={Treasury} />
-                                <Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
-                                <Route
-                                    exact
-                                    strict
-                                    path="/:networkID?/tokens/:address"
-                                    component={RedirectInvalidToken}
-                                />
-                                <Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
-                                <Route exact path="/:networkID?" component={Protocol} />
-                            </Switch>
-                            <Marginer />
-                        </BodyWrapper>
-                    )}
-                </AppWrapper>
-            )}
-        </Suspense>
-    );
+	return (
+		<Suspense fallback={null}>
+			<Route component={DarkModeQueryParamReader} />
+			{loading ? (
+				<LocalLoader fill={true} />
+			) : (
+				<AppWrapper>
+					<URLWarning />
+					<HeaderWrapper>
+						<Hide1080>
+							<TopBar />
+						</Hide1080>
+						<Header />
+					</HeaderWrapper>
+					{subgraphStatus.available === false ? (
+						<AppWrapper>
+							<BodyWrapper>
+								<DarkGreyCard style={{ maxWidth: '340px' }}>
+									{/* eslint-disable-next-line react/jsx-pascal-case */}
+									<TYPE.label>
+										The Graph hosted network which provides data for this site is temporarily experiencing issues. Check current
+										status{' '}
+										<ExternalLink href="https://thegraph.com/legacy-explorer/subgraph/ianlapham/uniswap-v3-subgraph">
+											here.
+										</ExternalLink>
+									</TYPE.label>
+								</DarkGreyCard>
+							</BodyWrapper>
+						</AppWrapper>
+					) : (
+						<BodyWrapper>
+							<Popups />
+							<Switch>
+								<Route exact path="/:networkID?" component={Protocol} />
+							</Switch>
+							<Marginer />
+						</BodyWrapper>
+					)}
+				</AppWrapper>
+			)}
+		</Suspense>
+	);
 }

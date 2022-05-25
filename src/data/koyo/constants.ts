@@ -1,0 +1,10 @@
+export const KOYO_APP_LINK = process.env.REACT_APP_APP_LINK || 'https://koyo.finance';
+export const KOYO_DOCS_LINK = process.env.REACT_APP_DOCS_LINK || 'https://docs.koyo.finance';
+export const KOYO_INFO_CODE_LINK = process.env.REACT_APP_INFO_CODE_LINK || 'https://github.com/koyo-finance/exchange-info';
+export const KOYO_DISCORD_LINK = process.env.REACT_APP_DISCORD_LINK || 'https://docs.koyo.finance/discord';
+export const KOYO_PROJECT_NAME = process.env.REACT_APP_PROJECT_NAME || 'Kōyō Finance';
+export const KOYO_PRIMARY_COLOR = process.env.REACT_APP_PRIMARY_COLOR || '';
+export const KOYO_SECONDARY_COLOR = process.env.REACT_APP_SECONDARY_COLOR || '';
+export const KOYO_APP_LOGO = process.env.REACT_APP_APP_LOGO || '';
+export const KOYO_LOADING_IMAGE = process.env.REACT_APP_LOADING_IMAGE || '';
+export const KOYO_BACKGROUND_IMAGE = process.env.REACT_APP_BACKGROUND_IMAGE || '';

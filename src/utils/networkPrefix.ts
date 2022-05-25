@@ -1,10 +1,10 @@
-import { EthereumNetworkInfo, NetworkInfo } from 'constants/networks';
+import { BobaNetworkInfo, NetworkInfo } from '../constants/networks';
 
 export function networkPrefix(activeNewtork: NetworkInfo) {
-    const isEthereum = activeNewtork === EthereumNetworkInfo;
-    if (isEthereum) {
-        return '/';
-    }
-    const prefix = '/' + activeNewtork.route.toLocaleLowerCase() + '/';
-    return prefix;
+	const isBoba = activeNewtork === BobaNetworkInfo;
+	if (isBoba) {
+		return '/';
+	}
+	const prefix = `/${activeNewtork.route.toLocaleLowerCase()}/`;
+	return prefix;
 }
