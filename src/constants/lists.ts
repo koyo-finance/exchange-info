@@ -1,5 +1,3 @@
-// used to mark unsupported tokens, these are hosted lists of unsupported tokens
-
 export const BOBA_LIST = 'https://tassets.koyo.finance/koyo-default.tokenlist.json';
 
 export const UNSUPPORTED_LIST_URLS: string[] = [];
