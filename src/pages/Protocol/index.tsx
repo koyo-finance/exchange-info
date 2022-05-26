@@ -1,31 +1,28 @@
 import { formatDollarAmount, unixToDate } from '@koyofinance/core-sdk';
+import { useDefiLlamaData } from 'hooks/useDefiLlamaData';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import useSWR from 'swr';
 import { AutoColumn } from '../../components/Column';
 import LineChart from '../../components/LineChart/alt';
 import { ResponsiveRow } from '../../components/Row';
 import { MonoSpace } from '../../components/shared';
 import { TYPE } from '../../theme';
-import { DefiLlamaProtocol } from '../../types/DefiLlama';
 import { PageWrapper, ThemedBackgroundGlobal } from '../styled';
 
 const ChartWrapper = styled.div`
-	width: 49%;
+	width: 98%;
 
 	${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
   `};
 `;
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
-
 export default function Protocol() {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	const { data: tvlData } = useSWR<DefiLlamaProtocol>('https://api.llama.fi/protocol/koyo-finance', fetcher);
+	const { data: tvlData } = useDefiLlamaData('koyo-finance');
 
 	const [liquidityHover, setLiquidityHover] = useState<number | undefined>();
 	const [leftLabel, setLeftLabel] = useState<string | undefined>();
