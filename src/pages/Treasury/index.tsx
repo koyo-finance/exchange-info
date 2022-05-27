@@ -1,22 +1,30 @@
 import { formatDollarAmount, unixToDate } from '@koyofinance/core-sdk';
-import { DarkGreyCard } from 'components/Card';
+import { DarkGreyCard, GreyCard } from 'components/Card';
+import { StyledLogo } from 'components/CurrencyLogo';
 import { LocalLoader } from 'components/Loader';
 import Percent from 'components/Percent';
+import { RowBetween, RowFixed } from 'components/Row';
 import { useDefiLlamaData } from 'hooks/useDefiLlamaData';
 import { useHistoricalProtocolData } from 'hooks/useHistoricalProtocolData';
+import useTheme from 'hooks/useTheme';
 import React, { useEffect, useMemo, useState } from 'react';
+import { ExternalLink } from 'react-feather';
+import { useActiveNetworkVersion } from 'state/application/hooks';
 import styled from 'styled-components';
+import { getEtherscanLink } from 'utils';
+import DebankLogo from '../../assets/svg/debank.svg';
 import { AutoColumn } from '../../components/Column';
 import LineChart from '../../components/LineChart/alt';
 import { MonoSpace } from '../../components/shared';
 import { TYPE } from '../../theme';
+import { ExternalLink as StyledExternalLink } from '../../theme/components';
 import { PageWrapper, ThemedBackgroundGlobal } from '../styled';
 
-const ChartWrapper = styled.div`
-	width: 49%;
-	${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
+const StyledDebankLogo = styled.img`
+	height: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `;
 
 const ContentLayout = styled.div`
@@ -33,6 +41,10 @@ export default function Treasury() {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+
+	const theme = useTheme();
+
+	const [activeNetwork] = useActiveNetworkVersion();
 
 	const { Treasury: treasuryData } = useHistoricalProtocolData('koyo-finance');
 	const { data: protocolData } = useDefiLlamaData('koyo-finance');
@@ -54,6 +66,9 @@ export default function Treasury() {
 		}
 		return [];
 	}, [treasuryData]);
+
+	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398';
+	const debankLink = `https://debank.com/profile/${TREASURY_ADDRESS}`;
 
 	useEffect(() => {
 		if (treasuryTotalHover === undefined && formattedTreasuryData.length !== 0) {
@@ -83,6 +98,23 @@ export default function Treasury() {
 					{formattedTreasuryData.length > 0 && protocolData?.currentChainTvls ? (
 						<DarkGreyCard>
 							<AutoColumn gap="lg">
+								<GreyCard padding="16px">
+									<AutoColumn gap="4px">
+										{/* eslint-disable-next-line react/jsx-pascal-case */}
+										<TYPE.main>KYO reserves</TYPE.main>
+										<RowBetween key={'balReserves'}>
+											<RowFixed>
+												<StyledLogo srcs={['https://tassets.koyo.finance/logos/KYO/512x512.png']} size="32px" />
+												{/* eslint-disable-next-line react/jsx-pascal-case */}
+												<TYPE.label fontSize="14px" ml="8px">
+													{'KYO'}
+												</TYPE.label>
+											</RowFixed>
+											{/* eslint-disable-next-line react/jsx-pascal-case */}
+											<TYPE.label fontSize="14px">?</TYPE.label>
+										</RowBetween>
+									</AutoColumn>
+								</GreyCard>
 								<AutoColumn gap="lg">
 									<AutoColumn gap="4px">
 										{/* eslint-disable-next-line react/jsx-pascal-case */}
@@ -122,7 +154,7 @@ export default function Treasury() {
 						topLeft={
 							<AutoColumn gap="4px">
 								{/* eslint-disable-next-line react/jsx-pascal-case */}
-								<TYPE.mediumHeader fontSize="16px">TVL</TYPE.mediumHeader>
+								<TYPE.mediumHeader fontSize="16px">Token Holding Reserve</TYPE.mediumHeader>
 								{/* eslint-disable-next-line react/jsx-pascal-case */}
 								<TYPE.largeHeader fontSize="32px">
 									<MonoSpace>{formatDollarAmount(treasuryTotalHover, 2, true)} </MonoSpace>
@@ -132,6 +164,18 @@ export default function Treasury() {
 									{leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
 								</TYPE.main>
 							</AutoColumn>
+						}
+						topRight={
+							<RowFixed align="top" justify="center">
+								{debankLink && (
+									<StyledExternalLink href={debankLink} style={{ marginLeft: '12px' }}>
+										<StyledDebankLogo src={DebankLogo} />
+									</StyledExternalLink>
+								)}
+								<StyledExternalLink href={getEtherscanLink(1, TREASURY_ADDRESS, 'address', activeNetwork)}>
+									<ExternalLink stroke={theme.text2} size={'17px'} style={{ marginLeft: '12px' }} />
+								</StyledExternalLink>
+							</RowFixed>
 						}
 					/>
 				</ContentLayout>
