@@ -10,7 +10,7 @@ export function useHistoricalProtocolData(protocol: string) {
 			.map(([chain, tvl]) => [
 				chain,
 				{
-					totalValue: tvl.tvl.map((tvlEntry) => ({ time: new Date(tvlEntry.date), value: tvlEntry.totalLiquidityUSD })),
+					totalValue: tvl.tvl.map((tvlEntry) => ({ time: new Date(tvlEntry.date * 1000), value: tvlEntry.totalLiquidityUSD })),
 					tokens: tvl.tokens.map((tokenEntry, i) => ({
 						time: new Date(tokenEntry.date),
 						amounts: tokenEntry.tokens,

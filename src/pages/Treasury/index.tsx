@@ -4,6 +4,7 @@ import { StyledLogo } from 'components/CurrencyLogo';
 import { LocalLoader } from 'components/Loader';
 import Percent from 'components/Percent';
 import { RowBetween, RowFixed } from 'components/Row';
+import TreasuryTokenPortfolioTable from 'components/tokens/TreasuryTokenPortfolioTable';
 import { useDefiLlamaData } from 'hooks/useDefiLlamaData';
 import { useHistoricalProtocolData } from 'hooks/useHistoricalProtocolData';
 import useTheme from 'hooks/useTheme';
@@ -65,6 +66,17 @@ const Treasury: React.FC = () => {
 			});
 		}
 		return [];
+	}, [treasuryData]);
+
+	const formattedTreasuryHoldingsData = useMemo(() => {
+		const lastData = treasuryData?.tokens?.at(-1);
+		if (treasuryData && lastData) {
+			const lastDataAmounts = Object.entries(lastData.amounts);
+			const lastDataValues = lastData.values;
+
+			return lastDataAmounts.map(([symbol, amount]) => ({ symbol, amount, value: lastDataValues[symbol] }));
+		}
+		return undefined;
 	}, [treasuryData]);
 
 	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398';
@@ -148,6 +160,7 @@ const Treasury: React.FC = () => {
 						height={220}
 						minHeight={332}
 						color="#d7fe44"
+						tickerFormat="DD.MM"
 						value={treasuryTotalHover}
 						label={leftLabel}
 						setValue={setTreasuryTotal}
@@ -180,6 +193,10 @@ const Treasury: React.FC = () => {
 						}
 					/>
 				</ContentLayout>
+
+				{/* eslint-disable-next-line react/jsx-pascal-case */}
+				<TYPE.main> Tokens in treasury wallet </TYPE.main>
+				<TreasuryTokenPortfolioTable tokenDatas={formattedTreasuryHoldingsData} />
 			</AutoColumn>
 		</PageWrapper>
 	);

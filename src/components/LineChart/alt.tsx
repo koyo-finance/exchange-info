@@ -39,6 +39,7 @@ export interface LineChartProps extends React.HTMLAttributes<HTMLDivElement> {
 	topRight?: ReactNode;
 	bottomLeft?: ReactNode;
 	bottomRight?: ReactNode;
+	tickerFormat?: string;
 }
 
 const Chart: React.FC<LineChartProps> = ({
@@ -53,6 +54,7 @@ const Chart: React.FC<LineChartProps> = ({
 	bottomLeft,
 	bottomRight,
 	minHeight = DEFAULT_HEIGHT,
+	tickerFormat = 'DD.MM.YY',
 	...rest
 }) => {
 	const theme = useTheme();
@@ -90,7 +92,7 @@ const Chart: React.FC<LineChartProps> = ({
 						dataKey="time"
 						axisLine={false}
 						tickLine={false}
-						tickFormatter={(time) => dayjs(time).format('DD.MM.YY')}
+						tickFormatter={(time) => dayjs(time).format(tickerFormat)}
 						minTickGap={10}
 					/>
 					<Tooltip
