@@ -119,12 +119,12 @@ const TreasuryTokenPortfolioTable: React.FC<TreasuryTokenPortfolioTableProps> = 
 						<ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.value)}>
 							Total value {arrow(SORT_FIELD.value)}
 						</ClickableText>
-						<Label color={theme.text2} end={1}>
-							# of Tokens
-						</Label>
 						<ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.amount)}>
-							Collected {arrow(SORT_FIELD.amount)}
+							# of Tokens {arrow(SORT_FIELD.amount)}
 						</ClickableText>
+						<Label color={theme.text2} end={1}>
+							Price per token
+						</Label>
 					</ResponsiveGrid>
 					<Break />
 					{sortedTokens.map((data, i) => {

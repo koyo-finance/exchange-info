@@ -87,13 +87,13 @@ const DataRow: React.FC<DataRowProps> = ({ tokenData, index }) => {
 					</HideExtraSmall>
 				</Label>
 				<Label end={1} fontWeight={400}>
-					{formatDollarAmount(tokenData.value / tokenData.amount)}
+					{formatDollarAmount(tokenData.value)}
 				</Label>
 				<Label end={1} fontWeight={400}>
 					{formatAmount(tokenData.amount, 3)}
 				</Label>
 				<Label end={1} fontWeight={400}>
-					{formatDollarAmount(tokenData.value)}
+					{formatDollarAmount(tokenData.value / tokenData.amount)}
 				</Label>
 			</ResponsiveGrid>
 		</LinkWrapper>
