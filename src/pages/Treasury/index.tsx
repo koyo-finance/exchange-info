@@ -37,7 +37,7 @@ const ContentLayout = styled.div`
 	}
 `;
 
-export default function Treasury() {
+const Treasury: React.FC = () => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -142,6 +142,7 @@ export default function Treasury() {
 							</DarkGreyCard>
 						</AutoColumn>
 					)}
+
 					<LineChart
 						data={formattedTreasuryData}
 						height={220}
@@ -182,4 +183,6 @@ export default function Treasury() {
 			</AutoColumn>
 		</PageWrapper>
 	);
-}
+};
+
+export default Treasury;

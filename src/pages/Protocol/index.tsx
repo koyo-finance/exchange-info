@@ -17,7 +17,7 @@ const ChartWrapper = styled.div`
   `};
 `;
 
-export default function Protocol() {
+const Protocol: React.FC = () => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -82,4 +82,6 @@ export default function Protocol() {
 			</AutoColumn>
 		</PageWrapper>
 	);
-}
+};
+
+export default Protocol;
