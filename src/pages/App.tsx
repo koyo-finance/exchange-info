@@ -1,18 +1,19 @@
-import { DarkGreyCard } from '../components/Card';
-import TopBar from '../components/Header/TopBar';
-import { LocalLoader } from '../components/Loader';
+import { BobaNetworkInfo, SUPPORTED_NETWORK_VERSIONS } from 'constants/networks';
 import React, { Suspense, useEffect, useState } from 'react';
 import { Route, Switch, useLocation } from 'react-router-dom';
-import { useActiveNetworkVersion, useSubgraphStatus } from '../state/application/hooks';
 import styled from 'styled-components';
-import { ExternalLink, TYPE } from '../theme';
+import { DarkGreyCard } from '../components/Card';
 import Header from '../components/Header';
+import TopBar from '../components/Header/TopBar';
 import URLWarning from '../components/Header/URLWarning';
+import { LocalLoader } from '../components/Loader';
 import Popups from '../components/Popups';
+import { useActiveNetworkVersion, useSubgraphStatus } from '../state/application/hooks';
 import { loadTokenListTokens } from '../state/token-lists/token-lists';
+import { ExternalLink, TYPE } from '../theme';
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader';
 import Protocol from './Protocol';
-import { BobaNetworkInfo, SUPPORTED_NETWORK_VERSIONS } from 'constants/networks';
+import Treasury from './Treasury';
 
 const AppWrapper = styled.div`
 	display: flex;
@@ -120,6 +121,7 @@ export default function App() {
 						<BodyWrapper>
 							<Popups />
 							<Switch>
+								<Route exact strict path="/:networkID?/treasury" component={Treasury} />
 								<Route exact path="/:networkID?" component={Protocol} />
 							</Switch>
 							<Marginer />

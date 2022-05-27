@@ -169,6 +169,9 @@ const Header: React.FC = () => {
 						<StyledNavLink id={`pool-nav-link`} to={networkPrefix(activeNewtork)} isActive={(_, { pathname }) => pathname === '/'}>
 							Protocol
 						</StyledNavLink>
+						<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}treasury`}>
+							Treasury
+						</StyledNavLink>
 					</HeaderLinks>
 				) : null}
 			</HeaderRow>
