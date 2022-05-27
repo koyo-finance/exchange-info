@@ -1,10 +1,10 @@
 import { formatAmount, formatDollarAmount } from '@koyofinance/core-sdk';
+import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import useTheme from '../../../hooks/useTheme';
 import { ExtraSmallOnly, HideExtraSmall } from '../../../theme';
-import CurrencyLogo from '../../CurrencyLogo';
 import HoverInlineText from '../../HoverInlineText';
 import { RowFixed } from '../../Row';
 import { Label } from '../../Text';
@@ -45,6 +45,13 @@ const LinkWrapper = styled(Link)`
 	}
 `;
 
+const ResponsiveLogo = styled(SymbolCurrencyLogo)`
+	@media screen and (max-width: 670px) {
+		width: 16px;
+		height: 16px;
+	}
+`;
+
 export interface DataRowTokenData {
 	symbol: string;
 	value: number;
@@ -65,7 +72,7 @@ const DataRow: React.FC<DataRowProps> = ({ tokenData, index }) => {
 				<Label>{index + 1}</Label>
 				<Label>
 					<RowFixed>
-						<div />
+						<ResponsiveLogo symbol={tokenData.symbol} />
 					</RowFixed>
 					<ExtraSmallOnly style={{ marginLeft: '6px' }}>
 						<Label ml="8px">{tokenData.symbol}</Label>
