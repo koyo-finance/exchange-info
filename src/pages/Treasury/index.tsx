@@ -1,6 +1,6 @@
-import { formatDollarAmount, unixToDate } from '@koyofinance/core-sdk';
+import { formatAmount, formatDollarAmount, fromBigNumber, unixToDate } from '@koyofinance/core-sdk';
 import { DarkGreyCard, GreyCard } from 'components/Card';
-import { StyledLogo } from 'components/CurrencyLogo';
+import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 import { LocalLoader } from 'components/Loader';
 import Percent from 'components/Percent';
 import { RowBetween, RowFixed } from 'components/Row';
@@ -17,6 +17,7 @@ import DebankLogo from '../../assets/svg/debank.svg';
 import { AutoColumn } from '../../components/Column';
 import LineChart from '../../components/LineChart/alt';
 import { MonoSpace } from '../../components/shared';
+import useTokenBalance from '../../hooks/contracts/useTokenBalance';
 import { TYPE } from '../../theme';
 import { ExternalLink as StyledExternalLink } from '../../theme/components';
 import { PageWrapper, ThemedBackgroundGlobal } from '../styled';
@@ -43,12 +44,17 @@ const Treasury: React.FC = () => {
 		window.scrollTo(0, 0);
 	}, []);
 
+	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398';
+	const KYO_ADDRESS = '0x2F11899C848Ac0251D1F168cB658a44Eef97F2EA';
+
 	const theme = useTheme();
 
 	const [activeNetwork] = useActiveNetworkVersion();
 
 	const { Treasury: treasuryData } = useHistoricalProtocolData('koyo-finance');
 	const { data: protocolData } = useDefiLlamaData('koyo-finance');
+
+	const { data: treasuryKYOBalance = 0 } = useTokenBalance(TREASURY_ADDRESS, KYO_ADDRESS);
 
 	const [treasuryTotalHover, setTreasuryTotal] = useState<number | undefined>();
 	const [leftLabel, setLeftLabel] = useState<string | undefined>();
@@ -79,7 +85,6 @@ const Treasury: React.FC = () => {
 		return undefined;
 	}, [treasuryData]);
 
-	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398';
 	const debankLink = `https://debank.com/profile/${TREASURY_ADDRESS}`;
 
 	useEffect(() => {
@@ -114,16 +119,16 @@ const Treasury: React.FC = () => {
 									<AutoColumn gap="4px">
 										{/* eslint-disable-next-line react/jsx-pascal-case */}
 										<TYPE.main>KYO reserves</TYPE.main>
-										<RowBetween key={'balReserves'}>
+										<RowBetween key={'kyoReseves'}>
 											<RowFixed>
-												<StyledLogo srcs={['https://tassets.koyo.finance/logos/KYO/512x512.png']} size="32px" />
+												<SymbolCurrencyLogo symbol="KYO" size="32px" />
 												{/* eslint-disable-next-line react/jsx-pascal-case */}
 												<TYPE.label fontSize="14px" ml="8px">
 													{'KYO'}
 												</TYPE.label>
 											</RowFixed>
 											{/* eslint-disable-next-line react/jsx-pascal-case */}
-											<TYPE.label fontSize="14px">?</TYPE.label>
+											<TYPE.label fontSize="14px">{formatAmount(fromBigNumber(treasuryKYOBalance))}</TYPE.label>
 										</RowBetween>
 									</AutoColumn>
 								</GreyCard>

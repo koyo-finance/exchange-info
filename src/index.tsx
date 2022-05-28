@@ -1,8 +1,11 @@
 import 'inter-ui';
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
+import { QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
+import { queryClient } from './core/query';
 import './i18n';
 import App from './pages/App';
 import store from './state';
@@ -24,15 +27,18 @@ function Updaters() {
 ReactDOM.render(
 	<StrictMode>
 		<FixedGlobalStyle />
-		<Provider store={store}>
-			<Updaters />
-			<ThemeProvider>
-				<ThemedGlobalStyle />
-				<HashRouter>
-					<App />
-				</HashRouter>
-			</ThemeProvider>
-		</Provider>
+		<QueryClientProvider client={queryClient}>
+			<Provider store={store}>
+				<Updaters />
+				<ThemeProvider>
+					<ThemedGlobalStyle />
+					<HashRouter>
+						<App />
+					</HashRouter>
+				</ThemeProvider>
+			</Provider>
+			<ReactQueryDevtools />
+		</QueryClientProvider>
 	</StrictMode>,
 	document.getElementById('root')
 );
