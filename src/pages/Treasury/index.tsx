@@ -54,7 +54,7 @@ const Treasury: React.FC = () => {
 	const { Treasury: treasuryData } = useHistoricalProtocolData('koyo-finance');
 	const { data: protocolData } = useDefiLlamaData('koyo-finance');
 
-	const { data: treasuryKYOBalance = 0 } = useTokenBalance(TREASURY_ADDRESS, KYO_ADDRESS);
+	const { data: treasuryKYOBalance = 0, isLoading: treasuryKYOBalanceLoading } = useTokenBalance(TREASURY_ADDRESS, KYO_ADDRESS);
 
 	const [treasuryTotalHover, setTreasuryTotal] = useState<number | undefined>();
 	const [leftLabel, setLeftLabel] = useState<string | undefined>();
@@ -128,7 +128,9 @@ const Treasury: React.FC = () => {
 												</TYPE.label>
 											</RowFixed>
 											{/* eslint-disable-next-line react/jsx-pascal-case */}
-											<TYPE.label fontSize="14px">{formatAmount(fromBigNumber(treasuryKYOBalance))}</TYPE.label>
+											<TYPE.label fontSize="14px">
+												{treasuryKYOBalanceLoading ? '?' : formatAmount(fromBigNumber(treasuryKYOBalance))}
+											</TYPE.label>
 										</RowBetween>
 									</AutoColumn>
 								</GreyCard>
