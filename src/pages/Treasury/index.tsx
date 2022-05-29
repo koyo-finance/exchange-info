@@ -45,7 +45,7 @@ const Treasury: React.FC = () => {
 	}, []);
 
 	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398';
-	const KYO_ADDRESS = '0x2F11899C848Ac0251D1F168cB658a44Eef97F2EA';
+	const KYO_ADDRESS = '0x618CC6549ddf12de637d46CDDadaFC0C2951131C';
 
 	const theme = useTheme();
 
