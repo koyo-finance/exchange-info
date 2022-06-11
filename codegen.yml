@@ -1,5 +1,6 @@
 schema:
   - 'https://api.thegraph.com/subgraphs/name/koyo-finance/boba-blocks'
+  - 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-boba'
 documents:
   - 'src/**/*.gql'
 hooks:
