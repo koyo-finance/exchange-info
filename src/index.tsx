@@ -1,3 +1,5 @@
+import { ApolloProvider } from '@apollo/client';
+import { bobaExchangeClient } from 'apollo/client';
 import 'inter-ui';
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
@@ -27,18 +29,20 @@ function Updaters() {
 ReactDOM.render(
 	<StrictMode>
 		<FixedGlobalStyle />
-		<QueryClientProvider client={queryClient}>
-			<Provider store={store}>
-				<Updaters />
-				<ThemeProvider>
-					<ThemedGlobalStyle />
-					<HashRouter>
-						<App />
-					</HashRouter>
-				</ThemeProvider>
-			</Provider>
-			<ReactQueryDevtools />
-		</QueryClientProvider>
+		<ApolloProvider client={bobaExchangeClient}>
+			<QueryClientProvider client={queryClient}>
+				<Provider store={store}>
+					<Updaters />
+					<ThemeProvider>
+						<ThemedGlobalStyle />
+						<HashRouter>
+							<App />
+						</HashRouter>
+					</ThemeProvider>
+				</Provider>
+				<ReactQueryDevtools />
+			</QueryClientProvider>
+		</ApolloProvider>
 	</StrictMode>,
 	document.getElementById('root')
 );

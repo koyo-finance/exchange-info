@@ -1,0 +1,22 @@
+query KoyoKyoGauges(
+	$skip: Int
+	$first: Int
+	$orderBy: Gauge_orderBy
+	$orderDirection: OrderDirection
+	$where: Gauge_filter
+	$block: Block_height
+) {
+	gauges(skip: $skip, first: $first, orderBy: $orderBy, orderDirection: $orderDirection, where: $where, block: $block) {
+		...KoyoKyoGauge
+	}
+}
+
+fragment KoyoKyoGauge on Gauge {
+	id
+	name
+	symbol
+	weights {
+		time
+		weight
+	}
+}

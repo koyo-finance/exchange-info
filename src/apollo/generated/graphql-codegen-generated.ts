@@ -1,4 +1,4 @@
-/* tslint:disable */
+/* tslint:disable */ /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
@@ -1475,6 +1475,45 @@ export type GetLatestBlockQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetLatestBlockQuery = { __typename: 'Query'; blocks: Array<{ __typename: 'Block'; id: string; number: string; timestamp: string }> };
 
+export type KoyoKyoGaugesQueryVariables = Exact<{
+	skip?: InputMaybe<Scalars['Int']>;
+	first?: InputMaybe<Scalars['Int']>;
+	orderBy?: InputMaybe<Gauge_OrderBy>;
+	orderDirection?: InputMaybe<OrderDirection>;
+	where?: InputMaybe<Gauge_Filter>;
+	block?: InputMaybe<Block_Height>;
+}>;
+
+export type KoyoKyoGaugesQuery = {
+	__typename: 'Query';
+	gauges: Array<{
+		__typename: 'Gauge';
+		id: string;
+		name: string;
+		symbol: string;
+		weights?: Array<{ __typename: 'GaugeWeight'; time: string; weight: string }> | null;
+	}>;
+};
+
+export type KoyoKyoGaugeFragment = {
+	__typename: 'Gauge';
+	id: string;
+	name: string;
+	symbol: string;
+	weights?: Array<{ __typename: 'GaugeWeight'; time: string; weight: string }> | null;
+};
+
+export const KoyoKyoGaugeFragmentDoc = gql`
+	fragment KoyoKyoGauge on Gauge {
+		id
+		name
+		symbol
+		weights {
+			time
+			weight
+		}
+	}
+`;
 export const GetLatestBlockDocument = gql`
 	query GetLatestBlock {
 		blocks(first: 1, orderBy: timestamp, orderDirection: desc) {
@@ -1511,3 +1550,51 @@ export function useGetLatestBlockLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetLatestBlockQueryHookResult = ReturnType<typeof useGetLatestBlockQuery>;
 export type GetLatestBlockLazyQueryHookResult = ReturnType<typeof useGetLatestBlockLazyQuery>;
 export type GetLatestBlockQueryResult = Apollo.QueryResult<GetLatestBlockQuery, GetLatestBlockQueryVariables>;
+export const KoyoKyoGaugesDocument = gql`
+	query KoyoKyoGauges(
+		$skip: Int
+		$first: Int
+		$orderBy: Gauge_orderBy
+		$orderDirection: OrderDirection
+		$where: Gauge_filter
+		$block: Block_height
+	) {
+		gauges(skip: $skip, first: $first, orderBy: $orderBy, orderDirection: $orderDirection, where: $where, block: $block) {
+			...KoyoKyoGauge
+		}
+	}
+	${KoyoKyoGaugeFragmentDoc}
+`;
+
+/**
+ * __useKoyoKyoGaugesQuery__
+ *
+ * To run a query within a React component, call `useKoyoKyoGaugesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useKoyoKyoGaugesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useKoyoKyoGaugesQuery({
+ *   variables: {
+ *      skip: // value for 'skip'
+ *      first: // value for 'first'
+ *      orderBy: // value for 'orderBy'
+ *      orderDirection: // value for 'orderDirection'
+ *      where: // value for 'where'
+ *      block: // value for 'block'
+ *   },
+ * });
+ */
+export function useKoyoKyoGaugesQuery(baseOptions?: Apollo.QueryHookOptions<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useQuery<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>(KoyoKyoGaugesDocument, options);
+}
+export function useKoyoKyoGaugesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useLazyQuery<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>(KoyoKyoGaugesDocument, options);
+}
+export type KoyoKyoGaugesQueryHookResult = ReturnType<typeof useKoyoKyoGaugesQuery>;
+export type KoyoKyoGaugesLazyQueryHookResult = ReturnType<typeof useKoyoKyoGaugesLazyQuery>;
+export type KoyoKyoGaugesQueryResult = Apollo.QueryResult<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>;

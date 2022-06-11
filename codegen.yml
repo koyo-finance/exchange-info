@@ -27,7 +27,7 @@ generates:
   src/apollo/generated/graphql-codegen-generated.ts:
     plugins:
       - add:
-          content: '/* tslint:disable */'
+          content: '/* tslint:disable *//* eslint-disable @typescript-eslint/consistent-type-definitions */'
       - typescript
       - typescript-operations
       - typescript-react-apollo

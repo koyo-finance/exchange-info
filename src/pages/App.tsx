@@ -12,6 +12,7 @@ import { useActiveNetworkVersion, useSubgraphStatus } from '../state/application
 import { loadTokenListTokens } from '../state/token-lists/token-lists';
 import { ExternalLink, TYPE } from '../theme';
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader';
+import GaugesOverview from './Gauge/GaugesOverview';
 import Protocol from './Protocol';
 import Treasury from './Treasury';
 
@@ -122,6 +123,7 @@ export default function App() {
 							<Popups />
 							<Switch>
 								<Route exact strict path="/:networkID?/treasury" component={Treasury} />
+								<Route exact strict path="/:networkID?/gauges" component={GaugesOverview} />
 								<Route exact path="/:networkID?" component={Protocol} />
 							</Switch>
 							<Marginer />

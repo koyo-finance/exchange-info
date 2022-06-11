@@ -1,3 +1,4 @@
+import { bobaExchangeClient } from 'apollo/client';
 import ARBITRUM_LOGO_URL from '../assets/images/arbitrum.svg';
 
 export enum SupportedNetwork {
@@ -10,7 +11,7 @@ export interface NetworkInfo {
 	route: string;
 	name: string;
 	startTimeStamp: number;
-	clientUri: string;
+	exchangeClientUri: string;
 	appUri: string;
 	imageURL: string;
 	bgColor: string;
@@ -22,11 +23,11 @@ export interface NetworkInfo {
 export const BobaNetworkInfo: NetworkInfo = {
 	id: SupportedNetwork.BOBA,
 	chainId: '288',
-	route: 'arbitrum',
-	name: 'Arbitrum',
+	route: 'boba',
+	name: 'Boba',
 	startTimeStamp: 1619874000,
-	appUri: 'https://arbitrum.balancer.fi/',
-	clientUri: 'https://api.thegraph.com/subgraphs/name/xeonus/balancer-v2-analytics-arbitrum',
+	appUri: 'https://koyo.finance/',
+	exchangeClientUri: 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-boba',
 	imageURL: ARBITRUM_LOGO_URL,
 	bgColor: '#0A294B',
 	primaryColor: '#0490ED',
