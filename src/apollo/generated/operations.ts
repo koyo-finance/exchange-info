@@ -4,6 +4,7 @@ export const KoyoKyoGauge = gql`
 		id
 		name
 		symbol
+		killed
 		weights {
 			time
 			weight

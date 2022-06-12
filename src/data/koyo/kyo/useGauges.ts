@@ -13,6 +13,7 @@ export interface GaugeInfo {
 	address: string;
 	name: string;
 	symbol: string;
+	killed: boolean;
 	weight: GaugeInfoWeight;
 	lastWeight: number;
 }
@@ -51,6 +52,7 @@ export function useGauges(): GaugeInfo[] {
 			address: gauge.id,
 			name: gauge.name || '',
 			symbol: gauge.symbol || '',
+			killed: gauge.killed,
 			weight: {
 				time: parseInt(weight.time, 10),
 				weight: parseInt(weight.weight, 10)

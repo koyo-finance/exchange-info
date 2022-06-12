@@ -60,6 +60,7 @@ const LinkWrapper = styled(Link)`
 
 const SORT_FIELD = {
 	symbol: 'symbol',
+	killed: 'killed',
 	weight: 'lastWeight'
 };
 
@@ -130,6 +131,9 @@ export default function GaugeTable({ gauges, maxItems = MAX_ITEMS }: { gauges: G
 						</ClickableText>
 						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.weight)}>
 							Weight {arrow(SORT_FIELD.weight)}
+						</ClickableText>
+						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.killed)}>
+							Active {arrow(SORT_FIELD.killed)}
 						</ClickableText>
 					</ResponsiveGrid>
 					<Break />

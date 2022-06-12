@@ -75,6 +75,9 @@ const DataRow: React.FC<DataRowProps> = ({ gaugeInfo, index }) => {
 				<Label end={0} fontWeight={400}>
 					{gaugeInfo.weight.weight.toLocaleString('fullwide', { maximumFractionDigits: 1 })}
 				</Label>
+				<Label end={0} fontWeight={400}>
+					{gaugeInfo.killed ? '❌' : '✔️'}
+				</Label>
 			</ResponsiveGrid>
 		</LinkWrapper>
 	);

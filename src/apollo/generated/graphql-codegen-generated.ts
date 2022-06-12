@@ -306,6 +306,7 @@ export interface Gauge {
 	createdAtBlock: Scalars['BigInt'];
 	createdAtTransaction: Scalars['Bytes'];
 	id: Scalars['ID'];
+	killed: Scalars['Boolean'];
 	name: Scalars['String'];
 	symbol: Scalars['String'];
 	type: GaugeType;
@@ -947,6 +948,10 @@ export interface Gauge_Filter {
 	id_lte?: InputMaybe<Scalars['ID']>;
 	id_not?: InputMaybe<Scalars['ID']>;
 	id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+	killed?: InputMaybe<Scalars['Boolean']>;
+	killed_in?: InputMaybe<Array<Scalars['Boolean']>>;
+	killed_not?: InputMaybe<Scalars['Boolean']>;
+	killed_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
 	name?: InputMaybe<Scalars['String']>;
 	name_contains?: InputMaybe<Scalars['String']>;
 	name_contains_nocase?: InputMaybe<Scalars['String']>;
@@ -1015,6 +1020,7 @@ export type Gauge_OrderBy =
 	| 'createdAtBlock'
 	| 'createdAtTransaction'
 	| 'id'
+	| 'killed'
 	| 'name'
 	| 'symbol'
 	| 'type'
@@ -1491,6 +1497,7 @@ export type KoyoKyoGaugesQuery = {
 		id: string;
 		name: string;
 		symbol: string;
+		killed: boolean;
 		weights?: Array<{ __typename: 'GaugeWeight'; time: string; weight: string }> | null;
 	}>;
 };
@@ -1500,6 +1507,7 @@ export type KoyoKyoGaugeFragment = {
 	id: string;
 	name: string;
 	symbol: string;
+	killed: boolean;
 	weights?: Array<{ __typename: 'GaugeWeight'; time: string; weight: string }> | null;
 };
 
@@ -1508,6 +1516,7 @@ export const KoyoKyoGaugeFragmentDoc = gql`
 		id
 		name
 		symbol
+		killed
 		weights {
 			time
 			weight

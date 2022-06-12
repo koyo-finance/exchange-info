@@ -313,6 +313,7 @@ type Gauge {
 	createdAtBlock: BigInt!
 	createdAtTransaction: Bytes!
 	id: ID!
+	killed: Boolean!
 	name: String!
 	symbol: String!
 	type: GaugeType!
@@ -981,6 +982,10 @@ input Gauge_filter {
 	id_lte: ID
 	id_not: ID
 	id_not_in: [ID!]
+	killed: Boolean
+	killed_in: [Boolean!]
+	killed_not: Boolean
+	killed_not_in: [Boolean!]
 	name: String
 	name_contains: String
 	name_contains_nocase: String
@@ -1049,6 +1054,7 @@ enum Gauge_orderBy {
 	createdAtBlock
 	createdAtTransaction
 	id
+	killed
 	name
 	symbol
 	type

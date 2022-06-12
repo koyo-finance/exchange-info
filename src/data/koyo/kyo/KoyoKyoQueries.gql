@@ -15,6 +15,7 @@ fragment KoyoKyoGauge on Gauge {
 	id
 	name
 	symbol
+	killed
 	weights {
 		time
 		weight
