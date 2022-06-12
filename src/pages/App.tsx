@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { DarkGreyCard } from '../components/Card';
 import Header from '../components/Header';
 import TopBar from '../components/Header/TopBar';
-import URLWarning from '../components/Header/URLWarning';
 import { LocalLoader } from '../components/Loader';
 import Popups from '../components/Popups';
 import { useActiveNetworkVersion, useSubgraphStatus } from '../state/application/hooks';
@@ -96,7 +95,6 @@ export default function App() {
 				<LocalLoader fill={true} />
 			) : (
 				<AppWrapper>
-					<URLWarning />
 					<HeaderWrapper>
 						<Hide1080>
 							<TopBar />
