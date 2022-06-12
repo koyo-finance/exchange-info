@@ -1,8 +1,8 @@
-import { formatDollarAmount } from '@koyofinance/core-sdk';
+import { formatAmount, formatDollarAmount } from '@koyofinance/core-sdk';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import React, { Dispatch, ReactNode, SetStateAction } from 'react';
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import styled from 'styled-components';
 import useTheme from '../../hooks/useTheme';
 import getChartColor from '../../utils/getChartColor';
@@ -28,8 +28,8 @@ const Wrapper = styled(Card)`
 
 export interface PieChartProps extends React.HTMLAttributes<HTMLDivElement> {
 	data: any[];
+	dollarDenominatedData?: boolean;
 	color?: string;
-	tokenSet: string[];
 	height?: number;
 	minHeight?: number;
 	setValue?: Dispatch<SetStateAction<number | undefined>>; // used for value on hover
@@ -42,10 +42,10 @@ export interface PieChartProps extends React.HTMLAttributes<HTMLDivElement> {
 	bottomRight?: ReactNode;
 }
 
-export const BalPieChart: React.FC<PieChartProps> = ({
+export const PieChart: React.FC<PieChartProps> = ({
 	data,
+	dollarDenominatedData = true,
 	color = '#56B2A4',
-	tokenSet,
 	value,
 	label,
 	setValue,
@@ -67,7 +67,7 @@ export const BalPieChart: React.FC<PieChartProps> = ({
 				{topRight ?? null}
 			</RowBetween>
 			<ResponsiveContainer width="100%" height="100%">
-				<PieChart width={400} height={400}>
+				<RechartsPieChart width={400} height={400}>
 					<Pie
 						dataKey="value"
 						isAnimationActive={false}
@@ -86,13 +86,13 @@ export const BalPieChart: React.FC<PieChartProps> = ({
 							const formattedTime = dayjs(props.payload.time).format('MMM D, YYYY');
 							if (setLabel && label !== formattedTime) setLabel(formattedTime);
 
-							return formatDollarAmount(value);
+							return dollarDenominatedData ? formatDollarAmount(value) : formatAmount(value);
 						}}
 					/>
 					{data.map((entry, index) => (
 						<Cell key={`cell-${index}`} fill={getChartColor(entry.name, index)} />
 					))}
-				</PieChart>
+				</RechartsPieChart>
 			</ResponsiveContainer>
 			<RowBetween>
 				{bottomLeft ?? null}
@@ -102,4 +102,4 @@ export const BalPieChart: React.FC<PieChartProps> = ({
 	);
 };
 
-export default BalPieChart;
+export default PieChart;
