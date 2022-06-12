@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { TYPE } from 'theme';
 import { AutoColumn } from '../../components/Column';
 import { PageWrapper } from '../styled';
+import GaugeTable from 'components/gauges/GaugeTable';
 // import TopPoolMovers from 'components/pools/TopPoolMovers'
 
 const GaugesOverview: React.FC = () => {
@@ -17,12 +18,8 @@ const GaugesOverview: React.FC = () => {
 			<AutoColumn gap="lg">
 				{/* eslint-disable-next-line react/jsx-pascal-case */}
 				<TYPE.main>All Gauges</TYPE.main>
+				<GaugeTable gauges={gauges} />
 			</AutoColumn>
-			{gauges.map((gauge) => (
-				<div style={{ marginTop: '8px' }}>
-					<code>{gauge.name}</code> - {Number(gauge.weight.weight).toLocaleString('fullwide', { maximumFractionDigits: 1 })}
-				</div>
-			))}
 		</PageWrapper>
 	);
 };

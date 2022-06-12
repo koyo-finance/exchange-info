@@ -4,7 +4,20 @@ import { useActiveNetworkVersion } from '../../../state/application/hooks';
 import { useKoyoKyoGaugesLazyQuery } from '../../../apollo/generated/graphql-codegen-generated';
 import { useEffect } from 'react';
 
-export function useGauges() {
+export interface GaugeInfoWeight {
+	time: number;
+	weight: number;
+}
+
+export interface GaugeInfo {
+	address: string;
+	name: string;
+	symbol: string;
+	weight: GaugeInfoWeight;
+	lastWeight: number;
+}
+
+export function useGauges(): GaugeInfo[] {
 	const [activeNetwork] = useActiveNetworkVersion();
 	const [tc] = useCurrentTimestamp();
 	const { blocks, error: blockError } = useBlocksFromTimestamps([tc]);
@@ -31,10 +44,18 @@ export function useGauges() {
 		return [];
 	}
 
-	return gauges.gauges.map((gauge) => ({
-		address: gauge.id,
-		name: gauge.name || '',
-		symbol: gauge.symbol || '',
-		weight: (gauge.weights || []).reduce((prev, current) => (prev.time > current.time ? prev : current))
-	}));
+	return gauges.gauges.map<GaugeInfo>((gauge) => {
+		const weight = (gauge.weights || []).reduce((prev, current) => (prev.time > current.time ? prev : current));
+
+		return {
+			address: gauge.id,
+			name: gauge.name || '',
+			symbol: gauge.symbol || '',
+			weight: {
+				time: parseInt(weight.time, 10),
+				weight: parseInt(weight.weight, 10)
+			},
+			lastWeight: parseInt(weight.weight, 10)
+		};
+	});
 }
