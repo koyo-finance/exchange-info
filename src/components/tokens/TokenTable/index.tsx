@@ -3,7 +3,7 @@ import { AutoColumn } from 'components/Column';
 import Loader, { LoadingRows } from 'components/Loader';
 import { Arrow, Break, PageButtons } from 'components/shared';
 import { ClickableText, Label } from 'components/Text';
-import { GaugeInfo } from 'data/koyo/kyo/useGauges';
+import { TokenData } from 'data/koyo/exchange/useTokens';
 import useTheme from 'hooks/useTheme';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -19,56 +19,58 @@ const ResponsiveGrid = styled.div`
 	display: grid;
 	grid-gap: 1em;
 	align-items: center;
-
-	grid-template-columns: 20px 3.5fr repeat(3, 1fr);
-
+	grid-template-columns: 20px 3fr repeat(4, 1fr);
 	@media screen and (max-width: 900px) {
+		grid-template-columns: 20px 1.5fr repeat(3, 1fr);
+		& :nth-child(4) {
+			display: none;
+		}
+	}
+	@media screen and (max-width: 800px) {
 		grid-template-columns: 20px 1.5fr repeat(2, 1fr);
-		& ${Label}:nth-child(3) {
-			display: none;
-		}
-		& ${GreyBadge}:nth-child(3) {
+		& :nth-child(6) {
 			display: none;
 		}
 	}
-
-	@media screen and (max-width: 500px) {
-		grid-template-columns: 20px 1.5fr repeat(1, 1fr);
-		& ${Label}:nth-child(4) {
+	@media screen and (max-width: 670px) {
+		grid-template-columns: repeat(2, 1fr);
+		> *:first-child {
 			display: none;
 		}
-		& ${GreyBadge}:nth-child(4) {
-			display: none;
-		}
-	}
-
-	@media screen and (max-width: 480px) {
-		grid-template-columns: 2.5fr repeat(1, 1fr);
-		> *:nth-child(1) {
+		> *:nth-child(3) {
 			display: none;
 		}
 	}
 `;
 
+const LinkWrapper = styled(Link)`
+	text-decoration: none;
+	:hover {
+		cursor: pointer;
+		opacity: 0.7;
+	}
+`;
+
 const SORT_FIELD = {
-	symbol: 'symbol',
-	killed: 'killed',
-	weight: 'lastWeight'
+	name: 'name',
+	volumeUSD: 'volumeUSD',
+	tvlUSD: 'tvlUSD',
+	priceUSD: 'priceUSD'
 };
 
 const MAX_ITEMS = 10;
 
-export interface GaugeTableProps {
-	gauges: GaugeInfo[];
+export interface TokenTableProps {
+	tokenDatas: TokenData[];
 	maxItems?: number;
 }
 
-const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS }) => {
+const TokenTable: React.FC<TokenTableProps> = ({ tokenDatas, maxItems = MAX_ITEMS }) => {
 	// theming
 	const theme = useTheme();
 
 	// for sorting
-	const [sortField, setSortField] = useState(SORT_FIELD.weight);
+	const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD);
 	const [sortDirection, setSortDirection] = useState<boolean>(true);
 
 	// pagination
@@ -76,19 +78,21 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 	const [maxPage, setMaxPage] = useState(1);
 	useEffect(() => {
 		let extraPages = 1;
-		if (gauges.length % maxItems === 0) {
-			extraPages = 0;
+		if (tokenDatas) {
+			if (tokenDatas.length % maxItems === 0) {
+				extraPages = 0;
+			}
+			setMaxPage(Math.floor(tokenDatas.length / maxItems) + extraPages);
 		}
-		setMaxPage(Math.floor(gauges.length / maxItems) + extraPages);
-	}, [maxItems, gauges]);
+	}, [maxItems, tokenDatas]);
 
-	const sortedGauges = useMemo(() => {
-		return gauges
-			? gauges
-					.filter((x) => Boolean(x))
+	const sortedTokens = useMemo(() => {
+		return tokenDatas
+			? tokenDatas
+					.filter((x) => Boolean(x) && x.volumeUSDChange > 0)
 					.sort((a, b) => {
 						if (a && b) {
-							return a[sortField as keyof GaugeInfo] > b[sortField as keyof GaugeInfo]
+							return a[sortField as keyof TokenData] > b[sortField as keyof TokenData]
 								? Number(sortDirection ? -1 : 1)
 								: (sortDirection ? -1 : 1) * -1;
 						}
@@ -96,7 +100,7 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 					})
 					.slice(maxItems * (page - 1), page * maxItems)
 			: [];
-	}, [maxItems, page, gauges, sortDirection, sortField]);
+	}, [tokenDatas, maxItems, page, sortDirection, sortField]);
 
 	const handleSort = useCallback(
 		(newField: string) => {
@@ -113,32 +117,36 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 		[sortDirection, sortField]
 	);
 
-	if (!gauges) {
+	if (!tokenDatas) {
 		return <Loader />;
 	}
 
 	return (
 		<Wrapper>
-			{sortedGauges.length > 0 ? (
-				<AutoColumn gap="12px">
+			{sortedTokens.length > 0 ? (
+				<AutoColumn gap="8px">
 					<ResponsiveGrid>
 						<Label color={theme.text2}>#</Label>
-						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.symbol)}>
-							Gauge {arrow(SORT_FIELD.symbol)}
+						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.name)}>
+							Name {arrow(SORT_FIELD.name)}
 						</ClickableText>
-						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.weight)}>
-							Weight {arrow(SORT_FIELD.weight)}
+						<ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.priceUSD)}>
+							Price {arrow(SORT_FIELD.priceUSD)}
 						</ClickableText>
-						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.killed)}>
-							Active {arrow(SORT_FIELD.killed)}
+						<ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+							Volume 24H {arrow(SORT_FIELD.volumeUSD)}
+						</ClickableText>
+						<ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
+							TVL {arrow(SORT_FIELD.tvlUSD)}
 						</ClickableText>
 					</ResponsiveGrid>
+
 					<Break />
-					{sortedGauges.map((gaugeData, i) => {
-						if (gaugeData) {
+					{sortedTokens.map((data, i) => {
+						if (data) {
 							return (
 								<React.Fragment key={i}>
-									<DataRow index={(page - 1) * MAX_ITEMS + i} gaugeInfo={gaugeData} />
+									<DataRow index={(page - 1) * MAX_ITEMS + i} tokenData={data} />
 									<Break />
 								</React.Fragment>
 							);
@@ -184,4 +192,4 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 	);
 };
 
-export default GaugeTable;
+export default TokenTable;

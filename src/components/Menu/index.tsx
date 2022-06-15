@@ -142,8 +142,14 @@ const Menu: React.FC = () => {
 							<StyledNavLink id={`pool-nav-link`} to={networkPrefix(activeNewtork)} isActive={(_, { pathname }) => pathname === '/'}>
 								Protocol
 							</StyledNavLink>
+							<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}pools`}>
+								Pools
+							</StyledNavLink>
 							<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}gauges`}>
 								Gauges
+							</StyledNavLink>
+							<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}tokens`}>
+								Tokens
 							</StyledNavLink>
 							<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}treasury`}>
 								Treasury

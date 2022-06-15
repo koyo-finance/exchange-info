@@ -3,7 +3,7 @@ import { AutoColumn } from 'components/Column';
 import Loader, { LoadingRows } from 'components/Loader';
 import { Arrow, Break, PageButtons } from 'components/shared';
 import { ClickableText, Label } from 'components/Text';
-import { GaugeInfo } from 'data/koyo/kyo/useGauges';
+import { PoolData } from 'data/koyo/exchange/usePools';
 import useTheme from 'hooks/useTheme';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -50,25 +50,34 @@ const ResponsiveGrid = styled.div`
 	}
 `;
 
+const LinkWrapper = styled(Link)`
+	text-decoration: none;
+	:hover {
+		cursor: pointer;
+		opacity: 0.7;
+	}
+`;
+
 const SORT_FIELD = {
-	symbol: 'symbol',
-	killed: 'killed',
-	weight: 'lastWeight'
+	feeTier: 'feeTier',
+	volumeUSD: 'volumeUSD',
+	volumeUSDWeek: 'volumeUSDWeek',
+	tvlUSD: 'tvlUSD'
 };
 
 const MAX_ITEMS = 10;
 
-export interface GaugeTableProps {
-	gauges: GaugeInfo[];
+export interface PoolTableProps {
+	poolDatas: PoolData[];
 	maxItems?: number;
 }
 
-const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS }) => {
+const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, maxItems = MAX_ITEMS }) => {
 	// theming
 	const theme = useTheme();
 
 	// for sorting
-	const [sortField, setSortField] = useState(SORT_FIELD.weight);
+	const [sortField, setSortField] = useState(SORT_FIELD.tvlUSD);
 	const [sortDirection, setSortDirection] = useState<boolean>(true);
 
 	// pagination
@@ -76,19 +85,19 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 	const [maxPage, setMaxPage] = useState(1);
 	useEffect(() => {
 		let extraPages = 1;
-		if (gauges.length % maxItems === 0) {
+		if (poolDatas.length % maxItems === 0) {
 			extraPages = 0;
 		}
-		setMaxPage(Math.floor(gauges.length / maxItems) + extraPages);
-	}, [maxItems, gauges]);
+		setMaxPage(Math.floor(poolDatas.length / maxItems) + extraPages);
+	}, [maxItems, poolDatas]);
 
-	const sortedGauges = useMemo(() => {
-		return gauges
-			? gauges
+	const sortedPools = useMemo(() => {
+		return poolDatas
+			? poolDatas
 					.filter((x) => Boolean(x))
 					.sort((a, b) => {
 						if (a && b) {
-							return a[sortField as keyof GaugeInfo] > b[sortField as keyof GaugeInfo]
+							return a[sortField as keyof PoolData] > b[sortField as keyof PoolData]
 								? Number(sortDirection ? -1 : 1)
 								: (sortDirection ? -1 : 1) * -1;
 						}
@@ -96,7 +105,7 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 					})
 					.slice(maxItems * (page - 1), page * maxItems)
 			: [];
-	}, [maxItems, page, gauges, sortDirection, sortField]);
+	}, [maxItems, page, poolDatas, sortDirection, sortField]);
 
 	const handleSort = useCallback(
 		(newField: string) => {
@@ -113,32 +122,35 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 		[sortDirection, sortField]
 	);
 
-	if (!gauges) {
+	if (!poolDatas) {
 		return <Loader />;
 	}
 
 	return (
 		<Wrapper>
-			{sortedGauges.length > 0 ? (
+			{sortedPools.length > 0 ? (
 				<AutoColumn gap="12px">
 					<ResponsiveGrid>
 						<Label color={theme.text2}>#</Label>
-						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.symbol)}>
-							Gauge {arrow(SORT_FIELD.symbol)}
+						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.feeTier)}>
+							Pool {arrow(SORT_FIELD.feeTier)}
 						</ClickableText>
-						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.weight)}>
-							Weight {arrow(SORT_FIELD.weight)}
+						<ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSD)}>
+							Volume 24H {arrow(SORT_FIELD.volumeUSD)}
 						</ClickableText>
-						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.killed)}>
-							Active {arrow(SORT_FIELD.killed)}
+						<ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.volumeUSDWeek)}>
+							Volume 7D {arrow(SORT_FIELD.volumeUSDWeek)}
+						</ClickableText>
+						<ClickableText color={theme.text2} end={1} onClick={() => handleSort(SORT_FIELD.tvlUSD)}>
+							TVL{arrow(SORT_FIELD.tvlUSD)}
 						</ClickableText>
 					</ResponsiveGrid>
 					<Break />
-					{sortedGauges.map((gaugeData, i) => {
-						if (gaugeData) {
+					{sortedPools.map((poolData, i) => {
+						if (poolData) {
 							return (
 								<React.Fragment key={i}>
-									<DataRow index={(page - 1) * MAX_ITEMS + i} gaugeInfo={gaugeData} />
+									<DataRow index={(page - 1) * MAX_ITEMS + i} poolData={poolData} />
 									<Break />
 								</React.Fragment>
 							);
@@ -184,4 +196,4 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 	);
 };
 
-export default GaugeTable;
+export default PoolTable;

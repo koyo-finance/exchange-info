@@ -12,7 +12,10 @@ import { loadTokenListTokens } from '../state/token-lists/token-lists';
 import { ExternalLink, TYPE } from '../theme';
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader';
 import GaugesOverview from './Gauge/GaugesOverview';
+import PoolsOverview from './Pool/PoolsOverview';
 import Protocol from './Protocol';
+import { RedirectInvalidToken } from './Token/redirects';
+import TokensOverview from './Token/TokensOverview';
 import Treasury from './Treasury';
 
 const AppWrapper = styled.div`
@@ -122,6 +125,9 @@ export default function App() {
 							<Switch>
 								<Route exact strict path="/:networkID?/treasury" component={Treasury} />
 								<Route exact strict path="/:networkID?/gauges" component={GaugesOverview} />
+								<Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
+								<Route exact strict path="/:networkID?/tokens/:address" component={RedirectInvalidToken} />
+								<Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
 								<Route exact path="/:networkID?" component={Protocol} />
 							</Switch>
 							<Marginer />
