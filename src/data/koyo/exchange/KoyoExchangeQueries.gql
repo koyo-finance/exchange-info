@@ -65,30 +65,23 @@ query GetTokenPageData($address: String!, $startTimestamp: Int!) {
     }
 }
 
-fragment KoyoPool on Pool {
-	id
-	address
-	poolType
-	symbol
-	name
-	swapFee
-	totalWeight
-	totalSwapVolume
-	totalSwapFee
-	totalLiquidity
-	totalShares
-	swapsCount
-	holdersCount
-	createTime
-	owner {
-		id
-	}
-	strategyType
-	swapEnabled
-
-	tokens(first: 1000) {
-		...KoyoPoolToken
-	}
+query GetPoolChartData($poolId: String!, $startTimestamp: Int!) {
+    poolSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: {pool: $poolId, timestamp_gte: $startTimestamp}) {
+        id
+        amounts
+        totalShares
+        swapVolume
+        swapFees
+        timestamp
+        totalSwapVolume
+        totalSwapFee
+        totalLiquidity
+        swapsCount
+        holdersCount
+        pool {
+            id
+        }
+    }
 }
 
 query KoyoChartTokenPrices(
@@ -148,6 +141,32 @@ query KoyoChartTokenPrices(
     ) {
         ...KoyoChartTokenPrice
     }
+}
+
+fragment KoyoPool on Pool {
+	id
+	address
+	poolType
+	symbol
+	name
+	swapFee
+	totalWeight
+	totalSwapVolume
+	totalSwapFee
+	totalLiquidity
+	totalShares
+	swapsCount
+	holdersCount
+	createTime
+	owner {
+		id
+	}
+	strategyType
+	swapEnabled
+
+	tokens(first: 1000) {
+		...KoyoPoolToken
+	}
 }
 
 fragment KoyoPoolToken on PoolToken {

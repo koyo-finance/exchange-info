@@ -1,5 +1,7 @@
+import { unixToDate } from '@koyofinance/core-sdk';
 import { useEffect } from 'react';
-import { KoyoPoolFragment, useGetPoolDataLazyQuery } from '../../../apollo/generated/graphql-codegen-generated';
+import { GenericChartEntry } from 'types';
+import { KoyoPoolFragment, useGetPoolChartDataQuery, useGetPoolDataLazyQuery } from '../../../apollo/generated/graphql-codegen-generated';
 import { useBlocksFromTimestamps } from '../../../hooks/useBlocksFromTimestamp';
 import { useDeltaTimestamps } from '../../../hooks/useDeltaTimestamps';
 import { useActiveNetworkVersion } from '../../../state/application/hooks';
@@ -145,8 +147,65 @@ export function useKoyoPools(): PoolData[] {
 	});
 }
 
+export function useKoyoPoolData(poolId: string): PoolData | null {
+	const pools = useKoyoPools();
+	const pool = pools.find((pool) => pool.id === poolId);
+
+	return pool || null;
+}
+
 export function useKoyoPoolsForToken(address: string) {
 	const pools = useKoyoPools();
 
 	return pools.filter((pool) => pool.tokens.find((token) => token.address === address));
+}
+
+export function useKoyoPoolPageData(poolId: string): {
+	tvlData: GenericChartEntry[];
+	volumeData: GenericChartEntry[];
+	feesData: GenericChartEntry[];
+} {
+	const [activeNetwork] = useActiveNetworkVersion();
+	const { data } = useGetPoolChartDataQuery({
+		variables: { poolId, startTimestamp: activeNetwork.startTimeStamp },
+		context: {
+			uri: activeNetwork.exchangeClientUri
+		}
+	});
+	if (!data) {
+		return { tvlData: [], volumeData: [], feesData: [] };
+	}
+
+	const { poolSnapshots } = data;
+
+	const tvlData = poolSnapshots.map((snapshot) => ({
+		value: parseFloat(snapshot.totalLiquidity),
+		time: unixToDate(snapshot.timestamp)
+	}));
+
+	const volumeData = poolSnapshots.map((snapshot, idx) => {
+		const prevValue = idx === 0 ? 0 : parseFloat(poolSnapshots[idx - 1].swapVolume);
+		const value = parseFloat(snapshot.swapVolume);
+
+		return {
+			value: value - prevValue > 0 ? value - prevValue : 0,
+			time: unixToDate(snapshot.timestamp)
+		};
+	});
+
+	const feesData = poolSnapshots.map((snapshot, idx) => {
+		const prevValue = idx === 0 ? 0 : parseFloat(poolSnapshots[idx - 1].swapFees);
+		const value = parseFloat(snapshot.swapFees);
+
+		return {
+			value: value - prevValue > 0 ? value - prevValue : 0,
+			time: unixToDate(snapshot.timestamp)
+		};
+	});
+
+	return {
+		tvlData,
+		volumeData,
+		feesData
+	};
 }

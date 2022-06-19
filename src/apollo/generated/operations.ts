@@ -170,6 +170,26 @@ export const GetTokenPageData = gql`
 	}
 	${TokenSnapshot}
 `;
+export const GetPoolChartData = gql`
+	query GetPoolChartData($poolId: String!, $startTimestamp: Int!) {
+		poolSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: { pool: $poolId, timestamp_gte: $startTimestamp }) {
+			id
+			amounts
+			totalShares
+			swapVolume
+			swapFees
+			timestamp
+			totalSwapVolume
+			totalSwapFee
+			totalLiquidity
+			swapsCount
+			holdersCount
+			pool {
+				id
+			}
+		}
+	}
+`;
 export const KoyoChartTokenPrices = gql`
 	query KoyoChartTokenPrices($asset: Bytes!) {
 		prices1: tokenPrices(skip: 0, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {

@@ -141,6 +141,92 @@ export interface Account_Filter {
 
 export type Account_OrderBy = 'address' | 'gaugeWeightVotes' | 'gauges' | 'id' | 'internalBalances';
 
+export interface AmpUpdate {
+	__typename: 'AmpUpdate';
+	endAmp: Scalars['BigInt'];
+	endTimestamp: Scalars['BigInt'];
+	id: Scalars['ID'];
+	poolId: Pool;
+	scheduledTimestamp: Scalars['Int'];
+	startAmp: Scalars['BigInt'];
+	startTimestamp: Scalars['BigInt'];
+}
+
+export interface AmpUpdate_Filter {
+	/** Filter for the block changed event. */
+	_change_block?: InputMaybe<BlockChangedFilter>;
+	endAmp?: InputMaybe<Scalars['BigInt']>;
+	endAmp_gt?: InputMaybe<Scalars['BigInt']>;
+	endAmp_gte?: InputMaybe<Scalars['BigInt']>;
+	endAmp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	endAmp_lt?: InputMaybe<Scalars['BigInt']>;
+	endAmp_lte?: InputMaybe<Scalars['BigInt']>;
+	endAmp_not?: InputMaybe<Scalars['BigInt']>;
+	endAmp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	endTimestamp?: InputMaybe<Scalars['BigInt']>;
+	endTimestamp_gt?: InputMaybe<Scalars['BigInt']>;
+	endTimestamp_gte?: InputMaybe<Scalars['BigInt']>;
+	endTimestamp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	endTimestamp_lt?: InputMaybe<Scalars['BigInt']>;
+	endTimestamp_lte?: InputMaybe<Scalars['BigInt']>;
+	endTimestamp_not?: InputMaybe<Scalars['BigInt']>;
+	endTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	id?: InputMaybe<Scalars['ID']>;
+	id_gt?: InputMaybe<Scalars['ID']>;
+	id_gte?: InputMaybe<Scalars['ID']>;
+	id_in?: InputMaybe<Array<Scalars['ID']>>;
+	id_lt?: InputMaybe<Scalars['ID']>;
+	id_lte?: InputMaybe<Scalars['ID']>;
+	id_not?: InputMaybe<Scalars['ID']>;
+	id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+	poolId?: InputMaybe<Scalars['String']>;
+	poolId_contains?: InputMaybe<Scalars['String']>;
+	poolId_contains_nocase?: InputMaybe<Scalars['String']>;
+	poolId_ends_with?: InputMaybe<Scalars['String']>;
+	poolId_ends_with_nocase?: InputMaybe<Scalars['String']>;
+	poolId_gt?: InputMaybe<Scalars['String']>;
+	poolId_gte?: InputMaybe<Scalars['String']>;
+	poolId_in?: InputMaybe<Array<Scalars['String']>>;
+	poolId_lt?: InputMaybe<Scalars['String']>;
+	poolId_lte?: InputMaybe<Scalars['String']>;
+	poolId_not?: InputMaybe<Scalars['String']>;
+	poolId_not_contains?: InputMaybe<Scalars['String']>;
+	poolId_not_contains_nocase?: InputMaybe<Scalars['String']>;
+	poolId_not_ends_with?: InputMaybe<Scalars['String']>;
+	poolId_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+	poolId_not_in?: InputMaybe<Array<Scalars['String']>>;
+	poolId_not_starts_with?: InputMaybe<Scalars['String']>;
+	poolId_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+	poolId_starts_with?: InputMaybe<Scalars['String']>;
+	poolId_starts_with_nocase?: InputMaybe<Scalars['String']>;
+	scheduledTimestamp?: InputMaybe<Scalars['Int']>;
+	scheduledTimestamp_gt?: InputMaybe<Scalars['Int']>;
+	scheduledTimestamp_gte?: InputMaybe<Scalars['Int']>;
+	scheduledTimestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+	scheduledTimestamp_lt?: InputMaybe<Scalars['Int']>;
+	scheduledTimestamp_lte?: InputMaybe<Scalars['Int']>;
+	scheduledTimestamp_not?: InputMaybe<Scalars['Int']>;
+	scheduledTimestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+	startAmp?: InputMaybe<Scalars['BigInt']>;
+	startAmp_gt?: InputMaybe<Scalars['BigInt']>;
+	startAmp_gte?: InputMaybe<Scalars['BigInt']>;
+	startAmp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	startAmp_lt?: InputMaybe<Scalars['BigInt']>;
+	startAmp_lte?: InputMaybe<Scalars['BigInt']>;
+	startAmp_not?: InputMaybe<Scalars['BigInt']>;
+	startAmp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	startTimestamp?: InputMaybe<Scalars['BigInt']>;
+	startTimestamp_gt?: InputMaybe<Scalars['BigInt']>;
+	startTimestamp_gte?: InputMaybe<Scalars['BigInt']>;
+	startTimestamp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	startTimestamp_lt?: InputMaybe<Scalars['BigInt']>;
+	startTimestamp_lte?: InputMaybe<Scalars['BigInt']>;
+	startTimestamp_not?: InputMaybe<Scalars['BigInt']>;
+	startTimestamp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+}
+
+export type AmpUpdate_OrderBy = 'endAmp' | 'endTimestamp' | 'id' | 'poolId' | 'scheduledTimestamp' | 'startAmp' | 'startTimestamp';
+
 export interface Block {
 	__typename: 'Block';
 	author?: Maybe<Scalars['String']>;
@@ -1203,9 +1289,16 @@ export type JoinExit_OrderBy = 'account' | 'amounts' | 'id' | 'pool' | 'sender' 
 
 export interface Koyo {
 	__typename: 'Koyo';
+	/**  Address of the Kōyō vault  */
 	address: Scalars['Bytes'];
+	/**  Number of gauges registered  */
+	gaugeCount: Scalars['BigInt'];
+	/**  Number of gauge types registered  */
+	gaugeTypeCount: Scalars['BigInt'];
 	id: Scalars['ID'];
+	/**  Number of pools registered  */
 	poolCount: Scalars['Int'];
+	/**  List of registered pools  */
 	pools?: Maybe<Array<Pool>>;
 	totalLiquidity: Scalars['BigDecimal'];
 	totalSwapCount: Scalars['BigInt'];
@@ -1230,6 +1323,22 @@ export interface Koyo_Filter {
 	address_not?: InputMaybe<Scalars['Bytes']>;
 	address_not_contains?: InputMaybe<Scalars['Bytes']>;
 	address_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+	gaugeCount?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_gt?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_gte?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	gaugeCount_lt?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_lte?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_not?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	gaugeTypeCount?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_gt?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_gte?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	gaugeTypeCount_lt?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_lte?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_not?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
 	id?: InputMaybe<Scalars['ID']>;
 	id_gt?: InputMaybe<Scalars['ID']>;
 	id_gte?: InputMaybe<Scalars['ID']>;
@@ -1280,7 +1389,17 @@ export interface Koyo_Filter {
 	totalSwapVolume_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
 }
 
-export type Koyo_OrderBy = 'address' | 'id' | 'poolCount' | 'pools' | 'totalLiquidity' | 'totalSwapCount' | 'totalSwapFee' | 'totalSwapVolume';
+export type Koyo_OrderBy =
+	| 'address'
+	| 'gaugeCount'
+	| 'gaugeTypeCount'
+	| 'id'
+	| 'poolCount'
+	| 'pools'
+	| 'totalLiquidity'
+	| 'totalSwapCount'
+	| 'totalSwapFee'
+	| 'totalSwapVolume';
 
 export interface LatestPrice {
 	__typename: 'LatestPrice';
@@ -1370,6 +1489,7 @@ export type OrderDirection = 'asc' | 'desc';
 export interface Pool {
 	__typename: 'Pool';
 	address: Scalars['Bytes'];
+	amp?: Maybe<Scalars['BigInt']>;
 	createTime: Scalars['Int'];
 	factory?: Maybe<Scalars['Bytes']>;
 	historicalValues?: Maybe<Array<PoolHistoricalLiquidity>>;
@@ -1394,7 +1514,7 @@ export interface Pool {
 	totalSwapVolume: Scalars['BigDecimal'];
 	totalWeight?: Maybe<Scalars['BigDecimal']>;
 	tx?: Maybe<Scalars['Bytes']>;
-	vaultID: Koyo;
+	vault: Koyo;
 }
 
 export interface PoolHistoricalValuesArgs {
@@ -1517,7 +1637,6 @@ export interface PoolShare {
 	__typename: 'PoolShare';
 	account: Account;
 	balance: Scalars['BigDecimal'];
-	balanceRaw: Scalars['BigInt'];
 	id: Scalars['ID'];
 	poolId: Pool;
 }
@@ -1546,14 +1665,6 @@ export interface PoolShare_Filter {
 	account_starts_with?: InputMaybe<Scalars['String']>;
 	account_starts_with_nocase?: InputMaybe<Scalars['String']>;
 	balance?: InputMaybe<Scalars['BigDecimal']>;
-	balanceRaw?: InputMaybe<Scalars['BigInt']>;
-	balanceRaw_gt?: InputMaybe<Scalars['BigInt']>;
-	balanceRaw_gte?: InputMaybe<Scalars['BigInt']>;
-	balanceRaw_in?: InputMaybe<Array<Scalars['BigInt']>>;
-	balanceRaw_lt?: InputMaybe<Scalars['BigInt']>;
-	balanceRaw_lte?: InputMaybe<Scalars['BigInt']>;
-	balanceRaw_not?: InputMaybe<Scalars['BigInt']>;
-	balanceRaw_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
 	balance_gt?: InputMaybe<Scalars['BigDecimal']>;
 	balance_gte?: InputMaybe<Scalars['BigDecimal']>;
 	balance_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
@@ -1591,7 +1702,148 @@ export interface PoolShare_Filter {
 	poolId_starts_with_nocase?: InputMaybe<Scalars['String']>;
 }
 
-export type PoolShare_OrderBy = 'account' | 'balance' | 'balanceRaw' | 'id' | 'poolId';
+export type PoolShare_OrderBy = 'account' | 'balance' | 'id' | 'poolId';
+
+export interface PoolSnapshot {
+	__typename: 'PoolSnapshot';
+	amounts: Array<Scalars['BigDecimal']>;
+	holdersCount: Scalars['BigInt'];
+	id: Scalars['ID'];
+	pool: Pool;
+	swapFees: Scalars['BigDecimal'];
+	swapVolume: Scalars['BigDecimal'];
+	swapsCount: Scalars['BigInt'];
+	timestamp: Scalars['Int'];
+	totalLiquidity: Scalars['BigDecimal'];
+	totalShares: Scalars['BigDecimal'];
+	totalSwapFee: Scalars['BigDecimal'];
+	totalSwapVolume: Scalars['BigDecimal'];
+}
+
+export interface PoolSnapshot_Filter {
+	/** Filter for the block changed event. */
+	_change_block?: InputMaybe<BlockChangedFilter>;
+	amounts?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	amounts_contains?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	amounts_contains_nocase?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	amounts_not?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	amounts_not_contains?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	amounts_not_contains_nocase?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	holdersCount?: InputMaybe<Scalars['BigInt']>;
+	holdersCount_gt?: InputMaybe<Scalars['BigInt']>;
+	holdersCount_gte?: InputMaybe<Scalars['BigInt']>;
+	holdersCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	holdersCount_lt?: InputMaybe<Scalars['BigInt']>;
+	holdersCount_lte?: InputMaybe<Scalars['BigInt']>;
+	holdersCount_not?: InputMaybe<Scalars['BigInt']>;
+	holdersCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	id?: InputMaybe<Scalars['ID']>;
+	id_gt?: InputMaybe<Scalars['ID']>;
+	id_gte?: InputMaybe<Scalars['ID']>;
+	id_in?: InputMaybe<Array<Scalars['ID']>>;
+	id_lt?: InputMaybe<Scalars['ID']>;
+	id_lte?: InputMaybe<Scalars['ID']>;
+	id_not?: InputMaybe<Scalars['ID']>;
+	id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+	pool?: InputMaybe<Scalars['String']>;
+	pool_contains?: InputMaybe<Scalars['String']>;
+	pool_contains_nocase?: InputMaybe<Scalars['String']>;
+	pool_ends_with?: InputMaybe<Scalars['String']>;
+	pool_ends_with_nocase?: InputMaybe<Scalars['String']>;
+	pool_gt?: InputMaybe<Scalars['String']>;
+	pool_gte?: InputMaybe<Scalars['String']>;
+	pool_in?: InputMaybe<Array<Scalars['String']>>;
+	pool_lt?: InputMaybe<Scalars['String']>;
+	pool_lte?: InputMaybe<Scalars['String']>;
+	pool_not?: InputMaybe<Scalars['String']>;
+	pool_not_contains?: InputMaybe<Scalars['String']>;
+	pool_not_contains_nocase?: InputMaybe<Scalars['String']>;
+	pool_not_ends_with?: InputMaybe<Scalars['String']>;
+	pool_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+	pool_not_in?: InputMaybe<Array<Scalars['String']>>;
+	pool_not_starts_with?: InputMaybe<Scalars['String']>;
+	pool_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+	pool_starts_with?: InputMaybe<Scalars['String']>;
+	pool_starts_with_nocase?: InputMaybe<Scalars['String']>;
+	swapFees?: InputMaybe<Scalars['BigDecimal']>;
+	swapFees_gt?: InputMaybe<Scalars['BigDecimal']>;
+	swapFees_gte?: InputMaybe<Scalars['BigDecimal']>;
+	swapFees_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	swapFees_lt?: InputMaybe<Scalars['BigDecimal']>;
+	swapFees_lte?: InputMaybe<Scalars['BigDecimal']>;
+	swapFees_not?: InputMaybe<Scalars['BigDecimal']>;
+	swapFees_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	swapVolume?: InputMaybe<Scalars['BigDecimal']>;
+	swapVolume_gt?: InputMaybe<Scalars['BigDecimal']>;
+	swapVolume_gte?: InputMaybe<Scalars['BigDecimal']>;
+	swapVolume_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	swapVolume_lt?: InputMaybe<Scalars['BigDecimal']>;
+	swapVolume_lte?: InputMaybe<Scalars['BigDecimal']>;
+	swapVolume_not?: InputMaybe<Scalars['BigDecimal']>;
+	swapVolume_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	swapsCount?: InputMaybe<Scalars['BigInt']>;
+	swapsCount_gt?: InputMaybe<Scalars['BigInt']>;
+	swapsCount_gte?: InputMaybe<Scalars['BigInt']>;
+	swapsCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	swapsCount_lt?: InputMaybe<Scalars['BigInt']>;
+	swapsCount_lte?: InputMaybe<Scalars['BigInt']>;
+	swapsCount_not?: InputMaybe<Scalars['BigInt']>;
+	swapsCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	timestamp?: InputMaybe<Scalars['Int']>;
+	timestamp_gt?: InputMaybe<Scalars['Int']>;
+	timestamp_gte?: InputMaybe<Scalars['Int']>;
+	timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+	timestamp_lt?: InputMaybe<Scalars['Int']>;
+	timestamp_lte?: InputMaybe<Scalars['Int']>;
+	timestamp_not?: InputMaybe<Scalars['Int']>;
+	timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+	totalLiquidity?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_gt?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_gte?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalLiquidity_lt?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_lte?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_not?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalShares?: InputMaybe<Scalars['BigDecimal']>;
+	totalShares_gt?: InputMaybe<Scalars['BigDecimal']>;
+	totalShares_gte?: InputMaybe<Scalars['BigDecimal']>;
+	totalShares_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalShares_lt?: InputMaybe<Scalars['BigDecimal']>;
+	totalShares_lte?: InputMaybe<Scalars['BigDecimal']>;
+	totalShares_not?: InputMaybe<Scalars['BigDecimal']>;
+	totalShares_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalSwapFee?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalSwapFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_not?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalSwapVolume?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_gt?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_gte?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalSwapVolume_lt?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_lte?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_not?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+}
+
+export type PoolSnapshot_OrderBy =
+	| 'amounts'
+	| 'holdersCount'
+	| 'id'
+	| 'pool'
+	| 'swapFees'
+	| 'swapVolume'
+	| 'swapsCount'
+	| 'timestamp'
+	| 'totalLiquidity'
+	| 'totalShares'
+	| 'totalSwapFee'
+	| 'totalSwapVolume';
 
 export interface PoolToken {
 	__typename: 'PoolToken';
@@ -1793,6 +2045,14 @@ export interface Pool_Filter {
 	address_not?: InputMaybe<Scalars['Bytes']>;
 	address_not_contains?: InputMaybe<Scalars['Bytes']>;
 	address_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+	amp?: InputMaybe<Scalars['BigInt']>;
+	amp_gt?: InputMaybe<Scalars['BigInt']>;
+	amp_gte?: InputMaybe<Scalars['BigInt']>;
+	amp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	amp_lt?: InputMaybe<Scalars['BigInt']>;
+	amp_lte?: InputMaybe<Scalars['BigInt']>;
+	amp_not?: InputMaybe<Scalars['BigInt']>;
+	amp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
 	createTime?: InputMaybe<Scalars['Int']>;
 	createTime_gt?: InputMaybe<Scalars['Int']>;
 	createTime_gte?: InputMaybe<Scalars['Int']>;
@@ -1991,30 +2251,31 @@ export interface Pool_Filter {
 	tx_not?: InputMaybe<Scalars['Bytes']>;
 	tx_not_contains?: InputMaybe<Scalars['Bytes']>;
 	tx_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
-	vaultID?: InputMaybe<Scalars['String']>;
-	vaultID_contains?: InputMaybe<Scalars['String']>;
-	vaultID_contains_nocase?: InputMaybe<Scalars['String']>;
-	vaultID_ends_with?: InputMaybe<Scalars['String']>;
-	vaultID_ends_with_nocase?: InputMaybe<Scalars['String']>;
-	vaultID_gt?: InputMaybe<Scalars['String']>;
-	vaultID_gte?: InputMaybe<Scalars['String']>;
-	vaultID_in?: InputMaybe<Array<Scalars['String']>>;
-	vaultID_lt?: InputMaybe<Scalars['String']>;
-	vaultID_lte?: InputMaybe<Scalars['String']>;
-	vaultID_not?: InputMaybe<Scalars['String']>;
-	vaultID_not_contains?: InputMaybe<Scalars['String']>;
-	vaultID_not_contains_nocase?: InputMaybe<Scalars['String']>;
-	vaultID_not_ends_with?: InputMaybe<Scalars['String']>;
-	vaultID_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-	vaultID_not_in?: InputMaybe<Array<Scalars['String']>>;
-	vaultID_not_starts_with?: InputMaybe<Scalars['String']>;
-	vaultID_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-	vaultID_starts_with?: InputMaybe<Scalars['String']>;
-	vaultID_starts_with_nocase?: InputMaybe<Scalars['String']>;
+	vault?: InputMaybe<Scalars['String']>;
+	vault_contains?: InputMaybe<Scalars['String']>;
+	vault_contains_nocase?: InputMaybe<Scalars['String']>;
+	vault_ends_with?: InputMaybe<Scalars['String']>;
+	vault_ends_with_nocase?: InputMaybe<Scalars['String']>;
+	vault_gt?: InputMaybe<Scalars['String']>;
+	vault_gte?: InputMaybe<Scalars['String']>;
+	vault_in?: InputMaybe<Array<Scalars['String']>>;
+	vault_lt?: InputMaybe<Scalars['String']>;
+	vault_lte?: InputMaybe<Scalars['String']>;
+	vault_not?: InputMaybe<Scalars['String']>;
+	vault_not_contains?: InputMaybe<Scalars['String']>;
+	vault_not_contains_nocase?: InputMaybe<Scalars['String']>;
+	vault_not_ends_with?: InputMaybe<Scalars['String']>;
+	vault_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+	vault_not_in?: InputMaybe<Array<Scalars['String']>>;
+	vault_not_starts_with?: InputMaybe<Scalars['String']>;
+	vault_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+	vault_starts_with?: InputMaybe<Scalars['String']>;
+	vault_starts_with_nocase?: InputMaybe<Scalars['String']>;
 }
 
 export type Pool_OrderBy =
 	| 'address'
+	| 'amp'
 	| 'createTime'
 	| 'factory'
 	| 'historicalValues'
@@ -2039,7 +2300,7 @@ export type Pool_OrderBy =
 	| 'totalSwapVolume'
 	| 'totalWeight'
 	| 'tx'
-	| 'vaultID';
+	| 'vault';
 
 export interface Query {
 	__typename: 'Query';
@@ -2049,6 +2310,8 @@ export interface Query {
 	accountInternalBalance?: Maybe<AccountInternalBalance>;
 	accountInternalBalances: Array<AccountInternalBalance>;
 	accounts: Array<Account>;
+	ampUpdate?: Maybe<AmpUpdate>;
+	ampUpdates: Array<AmpUpdate>;
 	block?: Maybe<Block>;
 	blocks: Array<Block>;
 	gauge?: Maybe<Gauge>;
@@ -2080,6 +2343,8 @@ export interface Query {
 	poolHistoricalLiquidity?: Maybe<PoolHistoricalLiquidity>;
 	poolShare?: Maybe<PoolShare>;
 	poolShares: Array<PoolShare>;
+	poolSnapshot?: Maybe<PoolSnapshot>;
+	poolSnapshots: Array<PoolSnapshot>;
 	poolToken?: Maybe<PoolToken>;
 	poolTokens: Array<PoolToken>;
 	pools: Array<Pool>;
@@ -2129,6 +2394,22 @@ export interface QueryAccountsArgs {
 	skip?: InputMaybe<Scalars['Int']>;
 	subgraphError?: _SubgraphErrorPolicy_;
 	where?: InputMaybe<Account_Filter>;
+}
+
+export interface QueryAmpUpdateArgs {
+	block?: InputMaybe<Block_Height>;
+	id: Scalars['ID'];
+	subgraphError?: _SubgraphErrorPolicy_;
+}
+
+export interface QueryAmpUpdatesArgs {
+	block?: InputMaybe<Block_Height>;
+	first?: InputMaybe<Scalars['Int']>;
+	orderBy?: InputMaybe<AmpUpdate_OrderBy>;
+	orderDirection?: InputMaybe<OrderDirection>;
+	skip?: InputMaybe<Scalars['Int']>;
+	subgraphError?: _SubgraphErrorPolicy_;
+	where?: InputMaybe<AmpUpdate_Filter>;
 }
 
 export interface QueryBlockArgs {
@@ -2377,6 +2658,22 @@ export interface QueryPoolSharesArgs {
 	where?: InputMaybe<PoolShare_Filter>;
 }
 
+export interface QueryPoolSnapshotArgs {
+	block?: InputMaybe<Block_Height>;
+	id: Scalars['ID'];
+	subgraphError?: _SubgraphErrorPolicy_;
+}
+
+export interface QueryPoolSnapshotsArgs {
+	block?: InputMaybe<Block_Height>;
+	first?: InputMaybe<Scalars['Int']>;
+	orderBy?: InputMaybe<PoolSnapshot_OrderBy>;
+	orderDirection?: InputMaybe<OrderDirection>;
+	skip?: InputMaybe<Scalars['Int']>;
+	subgraphError?: _SubgraphErrorPolicy_;
+	where?: InputMaybe<PoolSnapshot_Filter>;
+}
+
 export interface QueryPoolTokenArgs {
 	block?: InputMaybe<Block_Height>;
 	id: Scalars['ID'];
@@ -2491,6 +2788,8 @@ export interface Subscription {
 	accountInternalBalance?: Maybe<AccountInternalBalance>;
 	accountInternalBalances: Array<AccountInternalBalance>;
 	accounts: Array<Account>;
+	ampUpdate?: Maybe<AmpUpdate>;
+	ampUpdates: Array<AmpUpdate>;
 	block?: Maybe<Block>;
 	blocks: Array<Block>;
 	gauge?: Maybe<Gauge>;
@@ -2522,6 +2821,8 @@ export interface Subscription {
 	poolHistoricalLiquidity?: Maybe<PoolHistoricalLiquidity>;
 	poolShare?: Maybe<PoolShare>;
 	poolShares: Array<PoolShare>;
+	poolSnapshot?: Maybe<PoolSnapshot>;
+	poolSnapshots: Array<PoolSnapshot>;
 	poolToken?: Maybe<PoolToken>;
 	poolTokens: Array<PoolToken>;
 	pools: Array<Pool>;
@@ -2571,6 +2872,22 @@ export interface SubscriptionAccountsArgs {
 	skip?: InputMaybe<Scalars['Int']>;
 	subgraphError?: _SubgraphErrorPolicy_;
 	where?: InputMaybe<Account_Filter>;
+}
+
+export interface SubscriptionAmpUpdateArgs {
+	block?: InputMaybe<Block_Height>;
+	id: Scalars['ID'];
+	subgraphError?: _SubgraphErrorPolicy_;
+}
+
+export interface SubscriptionAmpUpdatesArgs {
+	block?: InputMaybe<Block_Height>;
+	first?: InputMaybe<Scalars['Int']>;
+	orderBy?: InputMaybe<AmpUpdate_OrderBy>;
+	orderDirection?: InputMaybe<OrderDirection>;
+	skip?: InputMaybe<Scalars['Int']>;
+	subgraphError?: _SubgraphErrorPolicy_;
+	where?: InputMaybe<AmpUpdate_Filter>;
 }
 
 export interface SubscriptionBlockArgs {
@@ -2817,6 +3134,22 @@ export interface SubscriptionPoolSharesArgs {
 	skip?: InputMaybe<Scalars['Int']>;
 	subgraphError?: _SubgraphErrorPolicy_;
 	where?: InputMaybe<PoolShare_Filter>;
+}
+
+export interface SubscriptionPoolSnapshotArgs {
+	block?: InputMaybe<Block_Height>;
+	id: Scalars['ID'];
+	subgraphError?: _SubgraphErrorPolicy_;
+}
+
+export interface SubscriptionPoolSnapshotsArgs {
+	block?: InputMaybe<Block_Height>;
+	first?: InputMaybe<Scalars['Int']>;
+	orderBy?: InputMaybe<PoolSnapshot_OrderBy>;
+	orderDirection?: InputMaybe<OrderDirection>;
+	skip?: InputMaybe<Scalars['Int']>;
+	subgraphError?: _SubgraphErrorPolicy_;
+	where?: InputMaybe<PoolSnapshot_Filter>;
 }
 
 export interface SubscriptionPoolTokenArgs {
@@ -3847,6 +4180,44 @@ export type GetTokenPageDataQuery = {
 	}>;
 };
 
+export type GetPoolChartDataQueryVariables = Exact<{
+	poolId: Scalars['String'];
+	startTimestamp: Scalars['Int'];
+}>;
+
+export type GetPoolChartDataQuery = {
+	__typename: 'Query';
+	poolSnapshots: Array<{
+		__typename: 'PoolSnapshot';
+		id: string;
+		amounts: Array<string>;
+		totalShares: string;
+		swapVolume: string;
+		swapFees: string;
+		timestamp: number;
+		totalSwapVolume: string;
+		totalSwapFee: string;
+		totalLiquidity: string;
+		swapsCount: string;
+		holdersCount: string;
+		pool: { __typename: 'Pool'; id: string };
+	}>;
+};
+
+export type KoyoChartTokenPricesQueryVariables = Exact<{
+	asset: Scalars['Bytes'];
+}>;
+
+export type KoyoChartTokenPricesQuery = {
+	__typename: 'Query';
+	prices1: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
+	prices2: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
+	prices3: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
+	prices4: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
+	prices5: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
+	prices6: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
+};
+
 export type KoyoPoolFragment = {
 	__typename: 'Pool';
 	id: string;
@@ -3879,20 +4250,6 @@ export type KoyoPoolFragment = {
 		priceRate: string;
 		poolId: { __typename: 'Pool'; id: string; address: string };
 	}> | null;
-};
-
-export type KoyoChartTokenPricesQueryVariables = Exact<{
-	asset: Scalars['Bytes'];
-}>;
-
-export type KoyoChartTokenPricesQuery = {
-	__typename: 'Query';
-	prices1: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
-	prices2: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
-	prices3: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
-	prices4: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
-	prices5: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
-	prices6: Array<{ __typename: 'TokenPrice'; id: string; timestamp: number; price: string; priceUSD: string; amount: string }>;
 };
 
 export type KoyoPoolTokenFragment = {
@@ -4275,6 +4632,55 @@ export function useGetTokenPageDataLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetTokenPageDataQueryHookResult = ReturnType<typeof useGetTokenPageDataQuery>;
 export type GetTokenPageDataLazyQueryHookResult = ReturnType<typeof useGetTokenPageDataLazyQuery>;
 export type GetTokenPageDataQueryResult = Apollo.QueryResult<GetTokenPageDataQuery, GetTokenPageDataQueryVariables>;
+export const GetPoolChartDataDocument = gql`
+	query GetPoolChartData($poolId: String!, $startTimestamp: Int!) {
+		poolSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: { pool: $poolId, timestamp_gte: $startTimestamp }) {
+			id
+			amounts
+			totalShares
+			swapVolume
+			swapFees
+			timestamp
+			totalSwapVolume
+			totalSwapFee
+			totalLiquidity
+			swapsCount
+			holdersCount
+			pool {
+				id
+			}
+		}
+	}
+`;
+
+/**
+ * __useGetPoolChartDataQuery__
+ *
+ * To run a query within a React component, call `useGetPoolChartDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoolChartDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoolChartDataQuery({
+ *   variables: {
+ *      poolId: // value for 'poolId'
+ *      startTimestamp: // value for 'startTimestamp'
+ *   },
+ * });
+ */
+export function useGetPoolChartDataQuery(baseOptions: Apollo.QueryHookOptions<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useQuery<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>(GetPoolChartDataDocument, options);
+}
+export function useGetPoolChartDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useLazyQuery<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>(GetPoolChartDataDocument, options);
+}
+export type GetPoolChartDataQueryHookResult = ReturnType<typeof useGetPoolChartDataQuery>;
+export type GetPoolChartDataLazyQueryHookResult = ReturnType<typeof useGetPoolChartDataLazyQuery>;
+export type GetPoolChartDataQueryResult = Apollo.QueryResult<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>;
 export const KoyoChartTokenPricesDocument = gql`
 	query KoyoChartTokenPrices($asset: Bytes!) {
 		prices1: tokenPrices(skip: 0, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
