@@ -1,3 +1,4 @@
+import VotingCycleCountdown from 'components/VotingCycleCountdown';
 import React, { useEffect } from 'react';
 import { DarkGreyCard } from '../../components/Card';
 import { AutoColumn } from '../../components/Column';
@@ -19,6 +20,8 @@ const GaugesOverview: React.FC = () => {
 	return (
 		<PageWrapper>
 			<AutoColumn gap="lg">
+				<VotingCycleCountdown />
+
 				{/* eslint-disable-next-line react/jsx-pascal-case */}
 				<TYPE.main>All Gauges</TYPE.main>
 				<GaugeTable gauges={gauges} />
