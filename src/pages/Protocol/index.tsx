@@ -1,4 +1,8 @@
 import { formatDollarAmount, unixToDate } from '@koyofinance/core-sdk';
+import { DarkGreyCard } from 'components/Card';
+import { LocalLoader } from 'components/Loader';
+import SwapsTable from 'components/TransactionsTable/SwapsTable';
+import { useKoyoAllTransactionsData } from 'data/koyo/exchange/useTransactions';
 import { useDefiLlamaData } from 'hooks/useDefiLlamaData';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
@@ -23,6 +27,7 @@ const Protocol: React.FC = () => {
 	}, []);
 
 	const { data: tvlData } = useDefiLlamaData('koyo-finance');
+	const { swaps } = useKoyoAllTransactionsData();
 
 	const [liquidityHover, setLiquidityHover] = useState<number | undefined>();
 	const [leftLabel, setLeftLabel] = useState<string | undefined>();
@@ -79,6 +84,10 @@ const Protocol: React.FC = () => {
 						/>
 					</ChartWrapper>
 				</ResponsiveRow>
+
+				{/* eslint-disable-next-line react/jsx-pascal-case */}
+				<TYPE.main fontSize="24px">Transactions</TYPE.main>
+				<DarkGreyCard>{swaps.length > 0 ? <SwapsTable swaps={swaps} /> : <LocalLoader fill={false} />}</DarkGreyCard>
 			</AutoColumn>
 		</PageWrapper>
 	);

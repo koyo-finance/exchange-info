@@ -152,6 +152,12 @@ query GetTransactionData($addresses: [Bytes!]!, $poolIds: [String!]!, $startTime
     }
 }
 
+query GetAllTransactionData($startTimestamp: Int!) {
+    swaps: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: {timestamp_gte: $startTimestamp}) {
+        ...KoyoSwap
+    }
+}
+
 fragment KoyoPool on Pool {
 	id
 	address

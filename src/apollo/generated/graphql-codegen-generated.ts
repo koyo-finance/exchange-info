@@ -4336,6 +4336,30 @@ export type GetTransactionDataQuery = {
 	}>;
 };
 
+export type GetAllTransactionDataQueryVariables = Exact<{
+	startTimestamp: Scalars['Int'];
+}>;
+
+export type GetAllTransactionDataQuery = {
+	__typename: 'Query';
+	swaps: Array<{
+		__typename: 'Swap';
+		id: string;
+		caller: string;
+		tokenIn: string;
+		tokenInSym: string;
+		tokenOut: string;
+		tokenOutSym: string;
+		tokenAmountIn: string;
+		tokenAmountOut: string;
+		timestamp: number;
+		tx: string;
+		valueUSD: string;
+		poolId: { __typename: 'Pool'; id: string; name?: string | null; address: string; swapFee: string };
+		account: { __typename: 'Account'; address: string };
+	}>;
+};
+
 export type KoyoPoolFragment = {
 	__typename: 'Pool';
 	id: string;
@@ -4944,6 +4968,44 @@ export function useGetTransactionDataLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetTransactionDataQueryHookResult = ReturnType<typeof useGetTransactionDataQuery>;
 export type GetTransactionDataLazyQueryHookResult = ReturnType<typeof useGetTransactionDataLazyQuery>;
 export type GetTransactionDataQueryResult = Apollo.QueryResult<GetTransactionDataQuery, GetTransactionDataQueryVariables>;
+export const GetAllTransactionDataDocument = gql`
+	query GetAllTransactionData($startTimestamp: Int!) {
+		swaps: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: { timestamp_gte: $startTimestamp }) {
+			...KoyoSwap
+		}
+	}
+	${KoyoSwapFragmentDoc}
+`;
+
+/**
+ * __useGetAllTransactionDataQuery__
+ *
+ * To run a query within a React component, call `useGetAllTransactionDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllTransactionDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllTransactionDataQuery({
+ *   variables: {
+ *      startTimestamp: // value for 'startTimestamp'
+ *   },
+ * });
+ */
+export function useGetAllTransactionDataQuery(baseOptions: Apollo.QueryHookOptions<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useQuery<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>(GetAllTransactionDataDocument, options);
+}
+export function useGetAllTransactionDataLazyQuery(
+	baseOptions?: Apollo.LazyQueryHookOptions<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useLazyQuery<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>(GetAllTransactionDataDocument, options);
+}
+export type GetAllTransactionDataQueryHookResult = ReturnType<typeof useGetAllTransactionDataQuery>;
+export type GetAllTransactionDataLazyQueryHookResult = ReturnType<typeof useGetAllTransactionDataLazyQuery>;
+export type GetAllTransactionDataQueryResult = Apollo.QueryResult<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>;
 export const KoyoKyoGaugesDocument = gql`
 	query KoyoKyoGauges(
 		$skip: Int

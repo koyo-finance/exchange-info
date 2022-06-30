@@ -258,6 +258,14 @@ export const GetTransactionData = gql`
 	}
 	${KoyoSwap}
 `;
+export const GetAllTransactionData = gql`
+	query GetAllTransactionData($startTimestamp: Int!) {
+		swaps: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: { timestamp_gte: $startTimestamp }) {
+			...KoyoSwap
+		}
+	}
+	${KoyoSwap}
+`;
 export const KoyoKyoGauges = gql`
 	query KoyoKyoGauges(
 		$skip: Int

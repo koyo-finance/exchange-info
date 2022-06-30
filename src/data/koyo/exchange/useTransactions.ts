@@ -1,4 +1,4 @@
-import { KoyoSwapFragment, useGetTransactionDataLazyQuery } from 'apollo/generated/graphql-codegen-generated';
+import { KoyoSwapFragment, useGetAllTransactionDataQuery, useGetTransactionDataLazyQuery } from 'apollo/generated/graphql-codegen-generated';
 import { groupBy, map, orderBy, sumBy, uniqBy } from 'lodash';
 import { useEffect, useRef } from 'react';
 import { useActiveNetworkVersion } from 'state/application/hooks';
@@ -33,6 +33,31 @@ export function useKoyoTransactionData(
 	}, [poolIds, addresses]);
 
 	const swaps = uniqBy(orderBy([...(data?.swapsIn || []), ...(data?.swapsOut || [])], 'timestamp', 'desc'), (swap) => swap.id);
+
+	const groupedByPair = groupBy(swaps, (swap) => `${swap.tokenInSym} -> ${swap.tokenOutSym}`);
+	const swapPairVolumes = map(groupedByPair, (swaps, key) => {
+		return {
+			name: key,
+			value: sumBy(swaps, (swap) => parseFloat(swap.valueUSD))
+		};
+	});
+
+	return {
+		swaps,
+		swapPairVolumes
+	};
+}
+
+export function useKoyoAllTransactionsData(): {
+	swaps: KoyoSwapFragment[];
+	swapPairVolumes: { name: string; value: number }[];
+} {
+	const [activeNetwork] = useActiveNetworkVersion();
+	const { data } = useGetAllTransactionDataQuery({
+		variables: { startTimestamp: activeNetwork.startTimeStamp },
+		context: { uri: activeNetwork.exchangeClientUri }
+	});
+	const swaps = uniqBy(orderBy([...(data?.swaps || [])], 'timestamp', 'desc'), (swap) => swap.id);
 
 	const groupedByPair = groupBy(swaps, (swap) => `${swap.tokenInSym} -> ${swap.tokenOutSym}`);
 	const swapPairVolumes = map(groupedByPair, (swaps, key) => {
