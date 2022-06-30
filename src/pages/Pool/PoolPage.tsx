@@ -11,7 +11,9 @@ import PoolCurrencyLogo from 'components/PoolCurrencyLogo';
 import Row, { AutoRow, RowBetween, RowFixed } from 'components/Row';
 import { MonoSpace } from 'components/shared';
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index';
+import SwapsTable from 'components/TransactionsTable/SwapsTable';
 import { useKoyoPoolData, useKoyoPoolPageData } from 'data/koyo/exchange/usePools';
+import { useKoyoTransactionData } from 'data/koyo/exchange/useTransactions';
 import { PageWrapper, ThemedBackground } from 'pages/styled';
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -89,6 +91,11 @@ export default function PoolPage({
 
 	const poolData = useKoyoPoolData(poolId);
 	const { tvlData, volumeData, feesData } = useKoyoPoolPageData(poolId);
+
+	const { swaps } = useKoyoTransactionData(
+		(poolData?.tokens || []).map((token) => token.address),
+		poolData ? [poolData.id] : []
+	);
 
 	const [view, setView] = useState(ChartView.VOL);
 	const [latestValue, setLatestValue] = useState<number | undefined>();
@@ -248,6 +255,8 @@ export default function PoolPage({
 							)}
 						</DarkGreyCard>
 					</ContentLayout>
+					<TYPE.main fontSize="24px">Swaps</TYPE.main>
+					<DarkGreyCard>{swaps.length > 0 ? <SwapsTable swaps={swaps} /> : <LocalLoader fill={false} />}</DarkGreyCard>
 				</AutoColumn>
 			) : (
 				<AutoColumn gap="lg">

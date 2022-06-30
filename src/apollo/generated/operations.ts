@@ -96,6 +96,30 @@ export const TokenSnapshot = gql`
 		totalSwapCount
 	}
 `;
+export const KoyoSwap = gql`
+	fragment KoyoSwap on Swap {
+		id
+		caller
+		tokenIn
+		tokenInSym
+		tokenOut
+		tokenOutSym
+		tokenAmountIn
+		tokenAmountOut
+		poolId {
+			id
+			name
+			address
+			swapFee
+		}
+		account {
+			address
+		}
+		timestamp
+		tx
+		valueUSD
+	}
+`;
 export const KoyoKyoGauge = gql`
 	fragment KoyoKyoGauge on Gauge {
 		id
@@ -212,6 +236,27 @@ export const KoyoChartTokenPrices = gql`
 		}
 	}
 	${KoyoChartTokenPrice}
+`;
+export const GetTransactionData = gql`
+	query GetTransactionData($addresses: [Bytes!]!, $poolIds: [String!]!, $startTimestamp: Int!) {
+		swapsIn: swaps(
+			first: 1000
+			orderBy: timestamp
+			orderDirection: desc
+			where: { tokenIn_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp }
+		) {
+			...KoyoSwap
+		}
+		swapsOut: swaps(
+			first: 1000
+			orderBy: timestamp
+			orderDirection: desc
+			where: { tokenOut_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp }
+		) {
+			...KoyoSwap
+		}
+	}
+	${KoyoSwap}
 `;
 export const KoyoKyoGauges = gql`
 	query KoyoKyoGauges(
