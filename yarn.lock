@@ -2838,6 +2838,17 @@
     numbro "^2.3.6"
     tslib "^2.4.0"
 
+"@koyofinance/core-sdk@^0.4.0-next.f327636.0":
+  version "0.4.0-next.f327636.0"
+  resolved "https://registry.yarnpkg.com/@koyofinance/core-sdk/-/core-sdk-0.4.0-next.f327636.0.tgz#2b0c8878d4b7ab40c896c7aa6022b8833298a283"
+  integrity sha512-9DPz4LpNuwGbzBUzmjYAMx8SFDOHpNC80MaG63bfomaq/Sxv4MOwhjUmGFQ1jE8Ae3bzBfT2A3clqeHS4t5Eow==
+  dependencies:
+    "@uniswap/token-lists" "^1.0.0-beta.28"
+    dayjs "^1.11.2"
+    ethers "^5.6.6"
+    numbro "^2.3.6"
+    tslib "^2.4.0"
+
 "@koyofinance/exchange-sdk@^0.2.0-next.e26b3fa.0":
   version "0.2.0-next.e26b3fa.0"
   resolved "https://registry.yarnpkg.com/@koyofinance/exchange-sdk/-/exchange-sdk-0.2.0-next.e26b3fa.0.tgz#5426b86273721b98b05a90cce5a848d6acbf8ede"

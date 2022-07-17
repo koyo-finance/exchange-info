@@ -1,13 +1,11 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { ChainId, CHAIN_BLOCKS_SUBGRAPH } from '@koyofinance/core-sdk';
-import gql from 'graphql-tag';
 import {
 	fetcher,
 	GetTimestampedBlockDocument,
 	GetTimestampedBlockQuery,
 	GetTimestampedBlockQueryVariables
 } from 'query/generated/graphql-codegen-generated';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useQueries } from 'react-query';
 import { useActiveNetworkVersion } from '../../state/application/hooks';
 
@@ -17,7 +15,7 @@ import { useActiveNetworkVersion } from '../../state/application/hooks';
  */
 export function useBlocksFromTimestamps(
 	timestamps: number[],
-	blockSubgraphOverride?: string
+	chainOverried?: ChainId
 ): {
 	blocks:
 		| {
@@ -32,7 +30,7 @@ export function useBlocksFromTimestamps(
 		timestamps.map((timestamp) => ({
 			queryKey: ['GetTimestampedBlock', timestamp],
 			queryFn: fetcher<GetTimestampedBlockQuery, GetTimestampedBlockQueryVariables>(
-				blockSubgraphOverride || CHAIN_BLOCKS_SUBGRAPH[activeNetwork.id as number as ChainId] || '',
+				CHAIN_BLOCKS_SUBGRAPH[chainOverried || (activeNetwork.id as number as ChainId)] || '',
 				{},
 				GetTimestampedBlockDocument,
 				{

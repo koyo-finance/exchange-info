@@ -15,7 +15,7 @@
 		"@craco/craco": "^6.4.3",
 		"@data-ui/histogram": "^0.0.84",
 		"@elementfi/elf-council-typechain": "^1.0.2",
-		"@koyofinance/core-sdk": "^0.4.0-next.e26b3fa.0",
+		"@koyofinance/core-sdk": "^0.4.0-next.f327636.0",
 		"@koyofinance/exchange-sdk": "^0.2.0-next.e26b3fa.0",
 		"@koyofinance/react-query-typechain": "^1.1.0-next.c0ebd86.0",
 		"@rainbow-me/rainbowkit": "^0.1.2",

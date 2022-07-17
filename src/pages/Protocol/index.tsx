@@ -1,13 +1,15 @@
-import { formatDollarAmount, unixToDate } from '@koyofinance/core-sdk';
+import { ChainDisplayName, ChainId, formatDollarAmount } from '@koyofinance/core-sdk';
 import { DarkGreyCard } from 'components/Card';
 import { LocalLoader } from 'components/Loader';
+import StackedAreaChart from 'components/StackedAreaChart';
 import SwapsTable from 'components/TransactionsTable/SwapsTable';
+import { BobaNetworkInfo } from 'constants/networks';
+import { useKoyoChainProtocolData } from 'data/koyo/exchange/useAggregatedProtocolData';
 import { useKoyoAllTransactionsData } from 'data/koyo/exchange/useTransactions';
-import { useDefiLlamaData } from 'hooks/useDefiLlamaData';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import getAggregatedProtocolChartData, { AggregateProtocolChartData } from 'utils/getAggregatedProtocolChartData';
 import { AutoColumn } from '../../components/Column';
-import LineChart from '../../components/LineChart/alt';
 import { ResponsiveRow } from '../../components/Row';
 import { MonoSpace } from '../../components/shared';
 import { TYPE } from '../../theme';
@@ -16,9 +18,7 @@ import { PageWrapper, ThemedBackgroundGlobal } from '../styled';
 const ChartWrapper = styled.div`
 	width: 98%;
 
-	${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
-  `};
+	${({ theme }) => theme.mediaWidth.upToSmall` width: 100%; `};
 `;
 
 const Protocol: React.FC = () => {
@@ -26,29 +26,35 @@ const Protocol: React.FC = () => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	const { data: tvlData } = useDefiLlamaData('koyo-finance');
+	const protocolBobaData = useKoyoChainProtocolData(BobaNetworkInfo.startTimeStamp, ChainId.BOBA);
+
 	const { swaps } = useKoyoAllTransactionsData();
 
 	const [liquidityHover, setLiquidityHover] = useState<number | undefined>();
-	const [leftLabel, setLeftLabel] = useState<string | undefined>();
+	const [leftLabel] = useState<string | undefined>();
 
-	const formattedTvlData = useMemo(() => {
-		if (tvlData) {
-			return tvlData.tvl.map((tvl) => {
-				return {
-					time: unixToDate(tvl.date),
-					value: tvl.totalLiquidityUSD
-				};
-			});
+	let aggregatedTVL: AggregateProtocolChartData[] = [];
+	let protocolTVL = 0;
+	// let protocolTVLChange = 0;
+	if (protocolBobaData.tvlData) {
+		aggregatedTVL = getAggregatedProtocolChartData([{ chain: ChainDisplayName.BOBA, data: protocolBobaData.tvlData }], NaN);
+		if (protocolBobaData.tvl) {
+			protocolTVL = protocolBobaData.tvl;
 		}
-		return [];
-	}, [tvlData]);
+		// if (protocolBobaData.tvlChange) {
+		// 	protocolTVLChange = protocolBobaData.tvlChange;
+		// }
+	}
 
 	useEffect(() => {
-		if (liquidityHover === undefined && formattedTvlData.length !== 0) {
-			setLiquidityHover(formattedTvlData.at(-1)!.value);
+		setLiquidityHover(protocolTVL);
+	}, [protocolTVL]);
+
+	useEffect(() => {
+		if (liquidityHover === undefined && protocolTVL > 0) {
+			setLiquidityHover(protocolTVL);
 		}
-	}, [liquidityHover, formattedTvlData]);
+	}, [liquidityHover, protocolBobaData, protocolTVL]);
 
 	return (
 		<PageWrapper>
@@ -58,15 +64,14 @@ const Protocol: React.FC = () => {
 				<TYPE.largeHeader>Kōyō Finance: Protocol Overview</TYPE.largeHeader>
 				<ResponsiveRow>
 					<ChartWrapper>
-						<LineChart
-							data={formattedTvlData}
+						<StackedAreaChart
+							data={aggregatedTVL}
+							tokenSet={[ChainDisplayName.BOBA]}
 							height={220}
 							minHeight={332}
 							color="#d7fe44"
 							value={liquidityHover}
 							label={leftLabel}
-							setValue={setLiquidityHover}
-							setLabel={setLeftLabel}
 							topLeft={
 								<AutoColumn gap="4px">
 									{/* eslint-disable-next-line react/jsx-pascal-case */}
