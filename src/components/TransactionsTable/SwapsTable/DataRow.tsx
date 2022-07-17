@@ -1,5 +1,5 @@
 import { formatAmount, formatDollarAmount } from '@koyofinance/core-sdk';
-import { KoyoSwapFragment } from 'apollo/generated/graphql-codegen-generated';
+import { KoyoSwapFragment } from 'query/generated/graphql-codegen-generated';
 import { DarkGreyCard } from 'components/Card';
 import HoverInlineText from 'components/HoverInlineText';
 import { Label } from 'components/Text';

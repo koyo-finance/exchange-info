@@ -1,0 +1,18 @@
+query GetSubgraphHealth($name: String!) {
+	indexingStatusForCurrentVersion(subgraphName: $name) {
+		...IndexingStatus
+	}
+}
+
+fragment IndexingStatus on SubgraphIndexingStatus {
+	synced
+	health
+	chains {
+		chainHeadBlock {
+			number
+		}
+		latestBlock {
+			number
+		}
+	}
+}

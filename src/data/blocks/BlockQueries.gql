@@ -1,7 +1,13 @@
 query GetLatestBlock {
-    blocks(first: 1, orderBy: timestamp, orderDirection: desc) {
-        id
-        number
-        timestamp
-    }
+	blocks(first: 1, orderBy: timestamp, orderDirection: desc) {
+		id
+		number
+		timestamp
+	}
+}
+
+query GetTimestampedBlock($gt: BigInt!, $lt: BigInt!) {
+	blocks(first: 1, orderBy: timestamp, orderDirection: desc, where: { timestamp_gt: $gt, timestamp_lt: $lt }) {
+		number
+	}
 }

@@ -1,8 +1,8 @@
-import { useBlocksFromTimestamps } from '../../../hooks/useBlocksFromTimestamp';
+import { BOBA_EXCHANGE_SUBGRAPH_URL } from '@koyofinance/exchange-sdk';
+import { useKoyoKyoGaugesQuery } from 'query/generated/graphql-codegen-generated';
 import { useCurrentTimestamp } from '../../../hooks/useCurrentTimestamp';
 import { useActiveNetworkVersion } from '../../../state/application/hooks';
-import { useKoyoKyoGaugesLazyQuery } from '../../../apollo/generated/graphql-codegen-generated';
-import { useEffect } from 'react';
+import { useBlocksFromTimestamps } from '../../blocks/useBlocksFromTimestamp';
 
 export interface GaugeInfoWeight {
 	time: number;
@@ -21,25 +21,14 @@ export interface GaugeInfo {
 export function useGauges(): GaugeInfo[] {
 	const [activeNetwork] = useActiveNetworkVersion();
 	const [tc] = useCurrentTimestamp();
-	const { blocks, error: blockError } = useBlocksFromTimestamps([tc]);
+	const { blocks } = useBlocksFromTimestamps([tc]);
 	const [blockTc] = blocks ?? [];
 
-	const [getGauges, { data: gauges }] = useKoyoKyoGaugesLazyQuery();
-
-	useEffect(() => {
-		console.log(tc, blockTc, blocks, blockError);
-		if (blockTc) {
-			void getGauges({
-				variables: {
-					block: { number: parseInt(blockTc.number, 10) }
-				},
-				context: {
-					uri: activeNetwork.exchangeClientUri
-				}
-			});
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [blockTc]);
+	const { data: gauges } = useKoyoKyoGaugesQuery(
+		{ endpoint: BOBA_EXCHANGE_SUBGRAPH_URL },
+		{ block: { number: parseInt(blockTc?.number || 0, 10) } },
+		{ enabled: Boolean(blockTc) }
+	);
 
 	if (!gauges) {
 		return [];

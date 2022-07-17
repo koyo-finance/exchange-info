@@ -17,7 +17,7 @@ export function getEtherscanLink(
 	type: 'transaction' | 'token' | 'address' | 'block',
 	_networkVersion: NetworkInfo
 ): string {
-	const prefix = 'https://blockexplorer.boba.network';
+	const prefix = 'https://bobascan.com';
 
 	switch (type) {
 		case 'transaction': {
@@ -27,7 +27,7 @@ export function getEtherscanLink(
 			return `${prefix}/token/${data}`;
 		}
 		case 'block': {
-			return `${prefix}/blocks/${data}`;
+			return `https://blockexplorer.boba.network/blocks/${data}`;
 		}
 		case 'address':
 		default: {

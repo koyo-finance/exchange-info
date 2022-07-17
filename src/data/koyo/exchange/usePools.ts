@@ -1,10 +1,12 @@
 import { unixToDate } from '@koyofinance/core-sdk';
+import { useExchangeSubgraphURL } from 'data/useExchangeSubgraphURL';
+import { options } from 'numeral';
 import { useEffect } from 'react';
 import { GenericChartEntry } from 'types';
-import { KoyoPoolFragment, useGetPoolChartDataQuery, useGetPoolDataLazyQuery } from '../../../apollo/generated/graphql-codegen-generated';
-import { useBlocksFromTimestamps } from '../../../hooks/useBlocksFromTimestamp';
 import { useDeltaTimestamps } from '../../../hooks/useDeltaTimestamps';
+import { KoyoPoolFragment, useGetPoolChartDataQuery, useGetPoolDataQuery } from '../../../query/generated/graphql-codegen-generated';
 import { useActiveNetworkVersion } from '../../../state/application/hooks';
+import { useBlocksFromTimestamps } from '../../blocks/useBlocksFromTimestamp';
 
 export interface PoolValues {
 	tvl: number;
@@ -74,31 +76,21 @@ export interface PoolData {
 }
 
 export function useKoyoPools(): PoolData[] {
-	const [activeNetwork] = useActiveNetworkVersion();
+	const subgraphUrl = useExchangeSubgraphURL();
 	const [t24, t48, tWeek] = useDeltaTimestamps();
-	const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek]);
+	const { blocks } = useBlocksFromTimestamps([t24, t48, tWeek]);
 	const [block24, block48, blockWeek] = blocks ?? [];
-	const [getPoolData, { data }] = useGetPoolDataLazyQuery();
-
-	// const incentives = GetIncentiveList();
-	// console.log("incentives", incentives['week_52']);
-
-	useEffect(() => {
-		if (block24) {
-			// TODO: replace this once the graph has caught up
-			void getPoolData({
-				variables: {
-					block24: { number: parseInt(block24.number, 10) },
-					block48: { number: parseInt(block48.number, 10) },
-					blockWeek: { number: parseInt(blockWeek.number, 10) }
-				},
-				context: {
-					uri: activeNetwork.exchangeClientUri
-				}
-			});
+	const { data } = useGetPoolDataQuery(
+		{ endpoint: subgraphUrl },
+		{
+			block24: { number: parseInt(block24?.number || 0, 10) },
+			block48: { number: parseInt(block48?.number || 0, 10) },
+			blockWeek: { number: parseInt(blockWeek?.number || 0, 10) }
+		},
+		{
+			enabled: Boolean(block24 && block48 && blockWeek)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [block24]);
+	);
 
 	if (!data) {
 		return [];
@@ -166,12 +158,8 @@ export function useKoyoPoolPageData(poolId: string): {
 	feesData: GenericChartEntry[];
 } {
 	const [activeNetwork] = useActiveNetworkVersion();
-	const { data } = useGetPoolChartDataQuery({
-		variables: { poolId, startTimestamp: activeNetwork.startTimeStamp },
-		context: {
-			uri: activeNetwork.exchangeClientUri
-		}
-	});
+	const subgraphUrl = useExchangeSubgraphURL();
+	const { data } = useGetPoolChartDataQuery({ endpoint: subgraphUrl }, { poolId, startTimestamp: activeNetwork.startTimeStamp });
 	if (!data) {
 		return { tvlData: [], volumeData: [], feesData: [] };
 	}

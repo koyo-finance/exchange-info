@@ -1,4 +1,4 @@
-import { KoyoSwapFragment } from 'apollo/generated/graphql-codegen-generated';
+import { KoyoSwapFragment } from 'query/generated/graphql-codegen-generated';
 import { DarkGreyCard } from 'components/Card';
 import { AutoColumn } from 'components/Column';
 import Loader from 'components/Loader';

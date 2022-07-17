@@ -1,8 +1,8 @@
-import { bobaExchangeClient } from 'apollo/client';
+import { ChainId } from '@koyofinance/core-sdk';
 import ARBITRUM_LOGO_URL from '../assets/images/arbitrum.svg';
 
 export enum SupportedNetwork {
-	BOBA
+	BOBA = ChainId.BOBA
 }
 
 export interface NetworkInfo {

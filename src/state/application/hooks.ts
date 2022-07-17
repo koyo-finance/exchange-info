@@ -1,5 +1,5 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
-import { bobaBlockClient } from '../../apollo/client';
+import { bobaBlockClient } from '../../query/client';
 import { NetworkInfo, SupportedNetwork } from '../../constants/networks';
 import { useActiveWeb3 } from '../../hooks/useActiveWeb3';
 import { useCallback, useMemo } from 'react';

@@ -1,4 +1,29 @@
 import gql from 'graphql-tag';
+export const IndexingStatus = gql`
+	fragment IndexingStatus on SubgraphIndexingStatus {
+		synced
+		health
+		chains {
+			chainHeadBlock {
+				number
+			}
+			latestBlock {
+				number
+			}
+		}
+	}
+`;
+export const KoyoSnapshot = gql`
+	fragment KoyoSnapshot on KoyoSnapshot {
+		id
+		timestamp
+		poolCount
+		totalLiquidity
+		totalSwapCount
+		totalSwapVolume
+		totalSwapFee
+	}
+`;
 export const KoyoPoolToken = gql`
 	fragment KoyoPoolToken on PoolToken {
 		id
@@ -132,6 +157,14 @@ export const KoyoKyoGauge = gql`
 		}
 	}
 `;
+export const GetSubgraphHealth = gql`
+	query GetSubgraphHealth($name: String!) {
+		indexingStatusForCurrentVersion(subgraphName: $name) {
+			...IndexingStatus
+		}
+	}
+	${IndexingStatus}
+`;
 export const GetLatestBlock = gql`
 	query GetLatestBlock {
 		blocks(first: 1, orderBy: timestamp, orderDirection: desc) {
@@ -140,6 +173,42 @@ export const GetLatestBlock = gql`
 			timestamp
 		}
 	}
+`;
+export const GetTimestampedBlock = gql`
+	query GetTimestampedBlock($gt: BigInt!, $lt: BigInt!) {
+		blocks(first: 1, orderBy: timestamp, orderDirection: desc, where: { timestamp_gt: $gt, timestamp_lt: $lt }) {
+			number
+		}
+	}
+`;
+export const GetProtocolData = gql`
+	query GetProtocolData($startTimestamp: Int!, $block24: Block_height!, $block48: Block_height!) {
+		koyos(first: 1) {
+			totalLiquidity
+			totalSwapCount
+			totalSwapFee
+			totalSwapVolume
+			poolCount
+		}
+		koyos24: koyos(first: 1, block: $block24) {
+			totalLiquidity
+			totalSwapCount
+			totalSwapFee
+			totalSwapVolume
+			poolCount
+		}
+		koyos48: koyos(first: 1, block: $block48) {
+			totalLiquidity
+			totalSwapCount
+			totalSwapFee
+			totalSwapVolume
+			poolCount
+		}
+		koyoSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: { timestamp_gte: $startTimestamp }) {
+			...KoyoSnapshot
+		}
+	}
+	${KoyoSnapshot}
 `;
 export const GetPoolData = gql`
 	query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: Block_height!) {

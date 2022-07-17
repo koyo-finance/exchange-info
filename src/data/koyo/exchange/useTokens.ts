@@ -1,13 +1,8 @@
 import { unixToDate } from '@koyofinance/core-sdk';
-import {
-	KoyoTokenFragment,
-	LatestPriceFragment,
-	useGetTokenDataLazyQuery,
-	useGetTokenDataQuery,
-	useGetTokenPageDataQuery
-} from 'apollo/generated/graphql-codegen-generated';
-import { useBlocksFromTimestamps } from 'hooks/useBlocksFromTimestamp';
+import { useBlocksFromTimestamps } from 'data/blocks/useBlocksFromTimestamp';
+import { useExchangeSubgraphURL } from 'data/useExchangeSubgraphURL';
 import { useDeltaTimestamps } from 'hooks/useDeltaTimestamps';
+import { KoyoTokenFragment, LatestPriceFragment, useGetTokenDataQuery, useGetTokenPageDataQuery } from 'query/generated/graphql-codegen-generated';
 import { useEffect } from 'react';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import { ChartDataPoint } from 'types/charts';
@@ -73,27 +68,21 @@ export interface TokenData {
 }
 
 export function useKoyoTokens(): TokenData[] {
-	const [activeNetwork] = useActiveNetworkVersion();
+	const subgraphUrl = useExchangeSubgraphURL();
 	const [t24, t48, tWeek] = useDeltaTimestamps();
-	const { blocks, error: blockError } = useBlocksFromTimestamps([t24, t48, tWeek]);
+	const { blocks } = useBlocksFromTimestamps([t24, t48, tWeek]);
 	const [block24, _block48, blockWeek] = blocks ?? [];
-	const [getTokenData, { data }] = useGetTokenDataLazyQuery();
-
-	useEffect(() => {
-		if (block24) {
-			getTokenData({
-				variables: {
-					block24: { number: parseInt(block24.number, 10) },
-					// block48: { number: parseInt(block48.number) },
-					blockWeek: { number: parseInt(blockWeek.number, 10) }
-				},
-				context: {
-					uri: activeNetwork.exchangeClientUri
-				}
-			});
+	const { data } = useGetTokenDataQuery(
+		{ endpoint: subgraphUrl },
+		{
+			block24: { number: parseInt(block24?.number || 0, 10) },
+			// block48: { number: parseInt(block48?.number || 0, 10) },
+			blockWeek: { number: parseInt(blockWeek?.number || 0, 10) }
+		},
+		{
+			enabled: Boolean(block24 && blockWeek)
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [block24]);
+	);
 
 	if (!data) {
 		return [];
@@ -146,12 +135,8 @@ export function useKoyoTokenPageData(address: string): {
 	priceData: ChartDataPoint[];
 } {
 	const [activeNetwork] = useActiveNetworkVersion();
-	const { data } = useGetTokenPageDataQuery({
-		variables: { address, startTimestamp: activeNetwork.startTimeStamp },
-		context: {
-			uri: activeNetwork.exchangeClientUri
-		}
-	});
+	const subgraphUrl = useExchangeSubgraphURL();
+	const { data } = useGetTokenPageDataQuery({ endpoint: subgraphUrl }, { address, startTimestamp: activeNetwork.startTimeStamp });
 	const snapshots = data?.tokenSnapshots || [];
 
 	const tvlData = snapshots.map((snapshot) => {

@@ -1,12 +1,30 @@
 /* tslint:disable */ /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import { useQuery, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {} as const;
+
+function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
+	return async (): Promise<TData> => {
+		const res = await fetch(endpoint, {
+			method: 'POST',
+			...requestInit,
+			body: JSON.stringify({ query, variables })
+		});
+
+		const json = await res.json();
+
+		if (json.errors) {
+			const { message } = json.errors[0];
+
+			throw new Error(message);
+		}
+
+		return json.data;
+	};
+}
 /** All built-in and custom scalars, mapped to their actual values */
 export interface Scalars {
 	ID: string;
@@ -17,6 +35,8 @@ export interface Scalars {
 	BigDecimal: string;
 	BigInt: string;
 	Bytes: string;
+	Date: any;
+	JSONObject: any;
 }
 
 export interface Account {
@@ -238,6 +258,7 @@ export interface Block {
 	difficulty?: Maybe<Scalars['BigInt']>;
 	gasLimit?: Maybe<Scalars['BigInt']>;
 	gasUsed?: Maybe<Scalars['BigInt']>;
+	hash: Scalars['Bytes'];
 	id: Scalars['ID'];
 	number: Scalars['BigInt'];
 	parentHash?: Maybe<Scalars['String']>;
@@ -252,6 +273,11 @@ export interface Block {
 
 export interface BlockChangedFilter {
 	number_gte: Scalars['Int'];
+}
+
+export interface BlockInput {
+	hash: Scalars['Bytes'];
+	number: Scalars['BigInt'];
 }
 
 export interface Block_Filter {
@@ -464,6 +490,57 @@ export type Block_OrderBy =
 	| 'totalDifficulty'
 	| 'transactionsRoot'
 	| 'unclesHash';
+
+export interface CachedEthereumCall {
+	__typename: 'CachedEthereumCall';
+	block: Block;
+	contractAddress: Scalars['Bytes'];
+	idHash: Scalars['Bytes'];
+	returnValue: Scalars['Bytes'];
+}
+
+export interface ChainIndexingStatus {
+	chainHeadBlock?: Maybe<Block>;
+	earliestBlock?: Maybe<EarliestBlock>;
+	lastHealthyBlock?: Maybe<Block>;
+	latestBlock?: Maybe<Block>;
+	network: Scalars['String'];
+}
+
+export interface EarliestBlock {
+	__typename: 'EarliestBlock';
+	hash: Scalars['Bytes'];
+	number: Scalars['BigInt'];
+}
+
+export interface EntityChanges {
+	__typename: 'EntityChanges';
+	deletions: Array<EntityTypeDeletions>;
+	updates: Array<EntityTypeUpdates>;
+}
+
+export interface EntityTypeDeletions {
+	__typename: 'EntityTypeDeletions';
+	entities: Array<Scalars['ID']>;
+	type: Scalars['String'];
+}
+
+export interface EntityTypeUpdates {
+	__typename: 'EntityTypeUpdates';
+	entities: Array<Scalars['JSONObject']>;
+	type: Scalars['String'];
+}
+
+export interface EthereumIndexingStatus extends ChainIndexingStatus {
+	__typename: 'EthereumIndexingStatus';
+	chainHeadBlock?: Maybe<Block>;
+	earliestBlock?: Maybe<EarliestBlock>;
+	lastHealthyBlock?: Maybe<Block>;
+	latestBlock?: Maybe<Block>;
+	network: Scalars['String'];
+}
+
+export type Feature = 'fullTextSearch' | 'grafting' | 'ipfsOnEthereumContracts' | 'nonFatalErrors';
 
 export interface Gauge {
 	__typename: 'Gauge';
@@ -1231,6 +1308,14 @@ export type Gauge_OrderBy =
 	| 'weightVotes'
 	| 'weights';
 
+export type Health =
+	/** Subgraph halted due to errors */
+	| 'failed'
+	/** Subgraph syncing normally */
+	| 'healthy'
+	/** Subgraph syncing but with errors */
+	| 'unhealthy';
+
 export type InvestType = 'Exit' | 'Join';
 
 export interface JoinExit {
@@ -1358,6 +1443,138 @@ export interface KoyoPoolsArgs {
 	skip?: InputMaybe<Scalars['Int']>;
 	where?: InputMaybe<Pool_Filter>;
 }
+
+export interface KoyoSnapshot {
+	__typename: 'KoyoSnapshot';
+	address: Scalars['Bytes'];
+	gaugeCount: Scalars['BigInt'];
+	gaugeTypeCount: Scalars['BigInt'];
+	id: Scalars['ID'];
+	poolCount: Scalars['Int'];
+	timestamp: Scalars['Int'];
+	totalLiquidity: Scalars['BigDecimal'];
+	totalSwapCount: Scalars['BigInt'];
+	totalSwapFee: Scalars['BigDecimal'];
+	totalSwapVolume: Scalars['BigDecimal'];
+	vault: Koyo;
+}
+
+export interface KoyoSnapshot_Filter {
+	/** Filter for the block changed event. */
+	_change_block?: InputMaybe<BlockChangedFilter>;
+	address?: InputMaybe<Scalars['Bytes']>;
+	address_contains?: InputMaybe<Scalars['Bytes']>;
+	address_in?: InputMaybe<Array<Scalars['Bytes']>>;
+	address_not?: InputMaybe<Scalars['Bytes']>;
+	address_not_contains?: InputMaybe<Scalars['Bytes']>;
+	address_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+	gaugeCount?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_gt?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_gte?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	gaugeCount_lt?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_lte?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_not?: InputMaybe<Scalars['BigInt']>;
+	gaugeCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	gaugeTypeCount?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_gt?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_gte?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	gaugeTypeCount_lt?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_lte?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_not?: InputMaybe<Scalars['BigInt']>;
+	gaugeTypeCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	id?: InputMaybe<Scalars['ID']>;
+	id_gt?: InputMaybe<Scalars['ID']>;
+	id_gte?: InputMaybe<Scalars['ID']>;
+	id_in?: InputMaybe<Array<Scalars['ID']>>;
+	id_lt?: InputMaybe<Scalars['ID']>;
+	id_lte?: InputMaybe<Scalars['ID']>;
+	id_not?: InputMaybe<Scalars['ID']>;
+	id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+	poolCount?: InputMaybe<Scalars['Int']>;
+	poolCount_gt?: InputMaybe<Scalars['Int']>;
+	poolCount_gte?: InputMaybe<Scalars['Int']>;
+	poolCount_in?: InputMaybe<Array<Scalars['Int']>>;
+	poolCount_lt?: InputMaybe<Scalars['Int']>;
+	poolCount_lte?: InputMaybe<Scalars['Int']>;
+	poolCount_not?: InputMaybe<Scalars['Int']>;
+	poolCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+	timestamp?: InputMaybe<Scalars['Int']>;
+	timestamp_gt?: InputMaybe<Scalars['Int']>;
+	timestamp_gte?: InputMaybe<Scalars['Int']>;
+	timestamp_in?: InputMaybe<Array<Scalars['Int']>>;
+	timestamp_lt?: InputMaybe<Scalars['Int']>;
+	timestamp_lte?: InputMaybe<Scalars['Int']>;
+	timestamp_not?: InputMaybe<Scalars['Int']>;
+	timestamp_not_in?: InputMaybe<Array<Scalars['Int']>>;
+	totalLiquidity?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_gt?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_gte?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalLiquidity_lt?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_lte?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_not?: InputMaybe<Scalars['BigDecimal']>;
+	totalLiquidity_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalSwapCount?: InputMaybe<Scalars['BigInt']>;
+	totalSwapCount_gt?: InputMaybe<Scalars['BigInt']>;
+	totalSwapCount_gte?: InputMaybe<Scalars['BigInt']>;
+	totalSwapCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	totalSwapCount_lt?: InputMaybe<Scalars['BigInt']>;
+	totalSwapCount_lte?: InputMaybe<Scalars['BigInt']>;
+	totalSwapCount_not?: InputMaybe<Scalars['BigInt']>;
+	totalSwapCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+	totalSwapFee?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_gt?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_gte?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalSwapFee_lt?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_lte?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_not?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapFee_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalSwapVolume?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_gt?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_gte?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	totalSwapVolume_lt?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_lte?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_not?: InputMaybe<Scalars['BigDecimal']>;
+	totalSwapVolume_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	vault?: InputMaybe<Scalars['String']>;
+	vault_?: InputMaybe<Koyo_Filter>;
+	vault_contains?: InputMaybe<Scalars['String']>;
+	vault_contains_nocase?: InputMaybe<Scalars['String']>;
+	vault_ends_with?: InputMaybe<Scalars['String']>;
+	vault_ends_with_nocase?: InputMaybe<Scalars['String']>;
+	vault_gt?: InputMaybe<Scalars['String']>;
+	vault_gte?: InputMaybe<Scalars['String']>;
+	vault_in?: InputMaybe<Array<Scalars['String']>>;
+	vault_lt?: InputMaybe<Scalars['String']>;
+	vault_lte?: InputMaybe<Scalars['String']>;
+	vault_not?: InputMaybe<Scalars['String']>;
+	vault_not_contains?: InputMaybe<Scalars['String']>;
+	vault_not_contains_nocase?: InputMaybe<Scalars['String']>;
+	vault_not_ends_with?: InputMaybe<Scalars['String']>;
+	vault_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+	vault_not_in?: InputMaybe<Array<Scalars['String']>>;
+	vault_not_starts_with?: InputMaybe<Scalars['String']>;
+	vault_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+	vault_starts_with?: InputMaybe<Scalars['String']>;
+	vault_starts_with_nocase?: InputMaybe<Scalars['String']>;
+}
+
+export type KoyoSnapshot_OrderBy =
+	| 'address'
+	| 'gaugeCount'
+	| 'gaugeTypeCount'
+	| 'id'
+	| 'poolCount'
+	| 'timestamp'
+	| 'totalLiquidity'
+	| 'totalSwapCount'
+	| 'totalSwapFee'
+	| 'totalSwapVolume'
+	| 'vault';
 
 export interface Koyo_Filter {
 	/** Filter for the block changed event. */
@@ -1532,6 +1749,12 @@ export type LatestPrice_OrderBy = 'asset' | 'block' | 'id' | 'poolId' | 'price' 
 
 /** Defines the order direction, either ascending or descending */
 export type OrderDirection = 'asc' | 'desc';
+
+export interface PartialBlock {
+	__typename: 'PartialBlock';
+	hash?: Maybe<Scalars['Bytes']>;
+	number: Scalars['BigInt'];
+}
 
 export interface Pool {
 	__typename: 'Pool';
@@ -2361,6 +2584,31 @@ export type Pool_OrderBy =
 	| 'tx'
 	| 'vault';
 
+export interface ProofOfIndexingRequest {
+	block: BlockInput;
+	deployment: Scalars['String'];
+}
+
+export interface ProofOfIndexingResult {
+	__typename: 'ProofOfIndexingResult';
+	block: Block;
+	deployment: Scalars['String'];
+	/** There may not be a proof of indexing available for the deployment and block */
+	proofOfIndexing?: Maybe<Scalars['Bytes']>;
+}
+
+export interface PublicProofOfIndexingRequest {
+	blockNumber: Scalars['BigInt'];
+	deployment: Scalars['String'];
+}
+
+export interface PublicProofOfIndexingResult {
+	__typename: 'PublicProofOfIndexingResult';
+	block: PartialBlock;
+	deployment: Scalars['String'];
+	proofOfIndexing: Scalars['Bytes'];
+}
+
 export interface Query {
 	__typename: 'Query';
 	/** Access to subgraph metadata */
@@ -2372,7 +2620,10 @@ export interface Query {
 	ampUpdate?: Maybe<AmpUpdate>;
 	ampUpdates: Array<AmpUpdate>;
 	block?: Maybe<Block>;
+	blockData?: Maybe<Scalars['JSONObject']>;
 	blocks: Array<Block>;
+	cachedEthereumCalls?: Maybe<Array<CachedEthereumCall>>;
+	entityChangesInBlock: EntityChanges;
 	gauge?: Maybe<Gauge>;
 	gaugeDeposit?: Maybe<GaugeDeposit>;
 	gaugeDeposits: Array<GaugeDeposit>;
@@ -2391,9 +2642,15 @@ export interface Query {
 	gaugeWithdraw?: Maybe<GaugeWithdraw>;
 	gaugeWithdraws: Array<GaugeWithdraw>;
 	gauges: Array<Gauge>;
+	indexingStatusForCurrentVersion?: Maybe<SubgraphIndexingStatus>;
+	indexingStatusForPendingVersion?: Maybe<SubgraphIndexingStatus>;
+	indexingStatuses: Array<SubgraphIndexingStatus>;
+	indexingStatusesForSubgraphName: Array<SubgraphIndexingStatus>;
 	joinExit?: Maybe<JoinExit>;
 	joinExits: Array<JoinExit>;
 	koyo?: Maybe<Koyo>;
+	koyoSnapshot?: Maybe<KoyoSnapshot>;
+	koyoSnapshots: Array<KoyoSnapshot>;
 	koyos: Array<Koyo>;
 	latestPrice?: Maybe<LatestPrice>;
 	latestPrices: Array<LatestPrice>;
@@ -2407,6 +2664,15 @@ export interface Query {
 	poolToken?: Maybe<PoolToken>;
 	poolTokens: Array<PoolToken>;
 	pools: Array<Pool>;
+	proofOfIndexing?: Maybe<Scalars['Bytes']>;
+	/**
+	 * Proofs of indexing for several deployments and blocks that can be shared and
+	 * compared in public without revealing the _actual_ proof of indexing that every
+	 * indexer has in their database
+	 *
+	 */
+	publicProofsOfIndexing: Array<PublicProofOfIndexingResult>;
+	subgraphFeatures: SubgraphFeatures;
 	swap?: Maybe<Swap>;
 	swaps: Array<Swap>;
 	token?: Maybe<Token>;
@@ -2477,6 +2743,11 @@ export interface QueryBlockArgs {
 	subgraphError?: _SubgraphErrorPolicy_;
 }
 
+export interface QueryBlockDataArgs {
+	blockHash: Scalars['Bytes'];
+	network: Scalars['String'];
+}
+
 export interface QueryBlocksArgs {
 	block?: InputMaybe<Block_Height>;
 	first?: InputMaybe<Scalars['Int']>;
@@ -2485,6 +2756,16 @@ export interface QueryBlocksArgs {
 	skip?: InputMaybe<Scalars['Int']>;
 	subgraphError?: _SubgraphErrorPolicy_;
 	where?: InputMaybe<Block_Filter>;
+}
+
+export interface QueryCachedEthereumCallsArgs {
+	blockHash: Scalars['Bytes'];
+	network: Scalars['String'];
+}
+
+export interface QueryEntityChangesInBlockArgs {
+	blockNumber: Scalars['Int'];
+	subgraphId: Scalars['String'];
 }
 
 export interface QueryGaugeArgs {
@@ -2631,6 +2912,22 @@ export interface QueryGaugesArgs {
 	where?: InputMaybe<Gauge_Filter>;
 }
 
+export interface QueryIndexingStatusForCurrentVersionArgs {
+	subgraphName: Scalars['String'];
+}
+
+export interface QueryIndexingStatusForPendingVersionArgs {
+	subgraphName: Scalars['String'];
+}
+
+export interface QueryIndexingStatusesArgs {
+	subgraphs?: InputMaybe<Array<Scalars['String']>>;
+}
+
+export interface QueryIndexingStatusesForSubgraphNameArgs {
+	subgraphName: Scalars['String'];
+}
+
 export interface QueryJoinExitArgs {
 	block?: InputMaybe<Block_Height>;
 	id: Scalars['ID'];
@@ -2651,6 +2948,22 @@ export interface QueryKoyoArgs {
 	block?: InputMaybe<Block_Height>;
 	id: Scalars['ID'];
 	subgraphError?: _SubgraphErrorPolicy_;
+}
+
+export interface QueryKoyoSnapshotArgs {
+	block?: InputMaybe<Block_Height>;
+	id: Scalars['ID'];
+	subgraphError?: _SubgraphErrorPolicy_;
+}
+
+export interface QueryKoyoSnapshotsArgs {
+	block?: InputMaybe<Block_Height>;
+	first?: InputMaybe<Scalars['Int']>;
+	orderBy?: InputMaybe<KoyoSnapshot_OrderBy>;
+	orderDirection?: InputMaybe<OrderDirection>;
+	skip?: InputMaybe<Scalars['Int']>;
+	subgraphError?: _SubgraphErrorPolicy_;
+	where?: InputMaybe<KoyoSnapshot_Filter>;
 }
 
 export interface QueryKoyosArgs {
@@ -2759,6 +3072,21 @@ export interface QueryPoolsArgs {
 	where?: InputMaybe<Pool_Filter>;
 }
 
+export interface QueryProofOfIndexingArgs {
+	blockHash: Scalars['Bytes'];
+	blockNumber: Scalars['Int'];
+	indexer?: InputMaybe<Scalars['Bytes']>;
+	subgraph: Scalars['String'];
+}
+
+export interface QueryPublicProofsOfIndexingArgs {
+	requests: Array<PublicProofOfIndexingRequest>;
+}
+
+export interface QuerySubgraphFeaturesArgs {
+	subgraphId: Scalars['String'];
+}
+
 export interface QuerySwapArgs {
 	block?: InputMaybe<Block_Height>;
 	id: Scalars['ID'];
@@ -2839,6 +3167,35 @@ export interface QueryTradePairsArgs {
 	where?: InputMaybe<TradePair_Filter>;
 }
 
+export interface SubgraphError {
+	__typename: 'SubgraphError';
+	block?: Maybe<Block>;
+	deterministic: Scalars['Boolean'];
+	handler?: Maybe<Scalars['String']>;
+	message: Scalars['String'];
+}
+
+export interface SubgraphFeatures {
+	__typename: 'SubgraphFeatures';
+	errors: Array<Scalars['String']>;
+	features: Array<Feature>;
+	network?: Maybe<Scalars['String']>;
+}
+
+export interface SubgraphIndexingStatus {
+	__typename: 'SubgraphIndexingStatus';
+	chains: Array<ChainIndexingStatus>;
+	entityCount: Scalars['BigInt'];
+	/** If the subgraph has failed, this is the error caused it */
+	fatalError?: Maybe<SubgraphError>;
+	health: Health;
+	node?: Maybe<Scalars['String']>;
+	/** Sorted from first to last, limited to first 1000 */
+	nonFatalErrors: Array<SubgraphError>;
+	subgraph: Scalars['String'];
+	synced: Scalars['Boolean'];
+}
+
 export interface Subscription {
 	__typename: 'Subscription';
 	/** Access to subgraph metadata */
@@ -2872,6 +3229,8 @@ export interface Subscription {
 	joinExit?: Maybe<JoinExit>;
 	joinExits: Array<JoinExit>;
 	koyo?: Maybe<Koyo>;
+	koyoSnapshot?: Maybe<KoyoSnapshot>;
+	koyoSnapshots: Array<KoyoSnapshot>;
 	koyos: Array<Koyo>;
 	latestPrice?: Maybe<LatestPrice>;
 	latestPrices: Array<LatestPrice>;
@@ -3129,6 +3488,22 @@ export interface SubscriptionKoyoArgs {
 	block?: InputMaybe<Block_Height>;
 	id: Scalars['ID'];
 	subgraphError?: _SubgraphErrorPolicy_;
+}
+
+export interface SubscriptionKoyoSnapshotArgs {
+	block?: InputMaybe<Block_Height>;
+	id: Scalars['ID'];
+	subgraphError?: _SubgraphErrorPolicy_;
+}
+
+export interface SubscriptionKoyoSnapshotsArgs {
+	block?: InputMaybe<Block_Height>;
+	first?: InputMaybe<Scalars['Int']>;
+	orderBy?: InputMaybe<KoyoSnapshot_OrderBy>;
+	orderDirection?: InputMaybe<OrderDirection>;
+	skip?: InputMaybe<Scalars['Int']>;
+	subgraphError?: _SubgraphErrorPolicy_;
+	where?: InputMaybe<KoyoSnapshot_Filter>;
 }
 
 export interface SubscriptionKoyosArgs {
@@ -3990,9 +4365,89 @@ export type _SubgraphErrorPolicy_ =
 	/** If the subgraph has indexing errors, data will be omitted. The default. */
 	| 'deny';
 
+export type GetSubgraphHealthQueryVariables = Exact<{
+	name: Scalars['String'];
+}>;
+
+export type GetSubgraphHealthQuery = {
+	__typename: 'Query';
+	indexingStatusForCurrentVersion?: {
+		__typename: 'SubgraphIndexingStatus';
+		synced: boolean;
+		health: Health;
+		chains: Array<{
+			__typename: 'EthereumIndexingStatus';
+			chainHeadBlock?: { __typename: 'Block'; number: string } | null;
+			latestBlock?: { __typename: 'Block'; number: string } | null;
+		}>;
+	} | null;
+};
+
+export type IndexingStatusFragment = {
+	__typename: 'SubgraphIndexingStatus';
+	synced: boolean;
+	health: Health;
+	chains: Array<{
+		__typename: 'EthereumIndexingStatus';
+		chainHeadBlock?: { __typename: 'Block'; number: string } | null;
+		latestBlock?: { __typename: 'Block'; number: string } | null;
+	}>;
+};
+
 export type GetLatestBlockQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetLatestBlockQuery = { __typename: 'Query'; blocks: Array<{ __typename: 'Block'; id: string; number: string; timestamp: string }> };
+
+export type GetTimestampedBlockQueryVariables = Exact<{
+	gt: Scalars['BigInt'];
+	lt: Scalars['BigInt'];
+}>;
+
+export type GetTimestampedBlockQuery = { __typename: 'Query'; blocks: Array<{ __typename: 'Block'; number: string }> };
+
+export type GetProtocolDataQueryVariables = Exact<{
+	startTimestamp: Scalars['Int'];
+	block24: Block_Height;
+	block48: Block_Height;
+}>;
+
+export type GetProtocolDataQuery = {
+	__typename: 'Query';
+	koyos: Array<{
+		__typename: 'Koyo';
+		totalLiquidity: string;
+		totalSwapCount: string;
+		totalSwapFee: string;
+		totalSwapVolume: string;
+		poolCount: number;
+	}>;
+	koyos24: Array<{
+		__typename: 'Koyo';
+		totalLiquidity: string;
+		totalSwapCount: string;
+		totalSwapFee: string;
+		totalSwapVolume: string;
+		poolCount: number;
+	}>;
+	koyos48: Array<{
+		__typename: 'Koyo';
+		totalLiquidity: string;
+		totalSwapCount: string;
+		totalSwapFee: string;
+		totalSwapVolume: string;
+		poolCount: number;
+	}>;
+	koyoSnapshots: Array<{
+		__typename: 'KoyoSnapshot';
+		id: string;
+		timestamp: number;
+		poolCount: number;
+		totalLiquidity: string;
+		totalSwapCount: string;
+		totalSwapVolume: string;
+		totalSwapFee: string;
+	}>;
+};
 
 export type GetPoolDataQueryVariables = Exact<{
 	block24: Block_Height;
@@ -4360,6 +4815,17 @@ export type GetAllTransactionDataQuery = {
 	}>;
 };
 
+export type KoyoSnapshotFragment = {
+	__typename: 'KoyoSnapshot';
+	id: string;
+	timestamp: number;
+	poolCount: number;
+	totalLiquidity: string;
+	totalSwapCount: string;
+	totalSwapVolume: string;
+	totalSwapFee: string;
+};
+
 export type KoyoPoolFragment = {
 	__typename: 'Pool';
 	id: string;
@@ -4505,552 +4971,604 @@ export type KoyoKyoGaugeFragment = {
 	weights?: Array<{ __typename: 'GaugeWeight'; time: string; weight: string }> | null;
 };
 
-export const KoyoPoolTokenFragmentDoc = gql`
-	fragment KoyoPoolToken on PoolToken {
-		id
-		symbol
-		name
-		decimals
-		address
-		balance
-		invested
-		weight
-		priceRate
-		poolId {
-			id
-			address
-		}
-	}
-`;
-export const KoyoPoolFragmentDoc = gql`
-	fragment KoyoPool on Pool {
-		id
-		address
-		poolType
-		symbol
-		name
-		swapFee
-		totalWeight
-		totalSwapVolume
-		totalSwapFee
-		totalLiquidity
-		totalShares
-		swapsCount
-		holdersCount
-		createTime
-		owner {
-			id
-		}
-		strategyType
-		swapEnabled
-		tokens(first: 1000) {
-			...KoyoPoolToken
-		}
-	}
-	${KoyoPoolTokenFragmentDoc}
-`;
-export const KoyoTokenFragmentDoc = gql`
-	fragment KoyoToken on Token {
-		id
-		address
-		decimals
-		name
-		symbol
-		totalBalanceUSD
-		totalBalanceNotional
-		totalVolumeUSD
-		totalVolumeNotional
-		totalSwapCount
-		latestPrice {
-			asset
-			pricingAsset
-			price
-			poolId {
-				id
-			}
-		}
-	}
-`;
-export const KoyoChartTokenPriceFragmentDoc = gql`
-	fragment KoyoChartTokenPrice on TokenPrice {
-		id
-		timestamp
-		price
-		priceUSD
-		amount
-	}
-`;
-export const LatestPriceFragmentDoc = gql`
-	fragment LatestPrice on LatestPrice {
-		asset
-		pricingAsset
-		price
-		priceUSD
-		poolId {
-			id
-		}
-	}
-`;
-export const TokenSnapshotFragmentDoc = gql`
-	fragment TokenSnapshot on TokenSnapshot {
-		id
-		timestamp
-		totalBalanceUSD
-		totalBalanceNotional
-		totalVolumeUSD
-		totalVolumeNotional
-		totalSwapCount
-	}
-`;
-export const KoyoSwapFragmentDoc = gql`
-	fragment KoyoSwap on Swap {
-		id
-		caller
-		tokenIn
-		tokenInSym
-		tokenOut
-		tokenOutSym
-		tokenAmountIn
-		tokenAmountOut
-		poolId {
-			id
-			name
-			address
-			swapFee
-		}
-		account {
-			address
-		}
-		timestamp
-		tx
-		valueUSD
-	}
-`;
-export const KoyoKyoGaugeFragmentDoc = gql`
-	fragment KoyoKyoGauge on Gauge {
-		id
-		name
-		symbol
-		killed
-		weights {
-			time
-			weight
-		}
-	}
-`;
-export const GetLatestBlockDocument = gql`
-	query GetLatestBlock {
-		blocks(first: 1, orderBy: timestamp, orderDirection: desc) {
-			id
-			number
-			timestamp
-		}
-	}
-`;
-
-/**
- * __useGetLatestBlockQuery__
- *
- * To run a query within a React component, call `useGetLatestBlockQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetLatestBlockQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetLatestBlockQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetLatestBlockQuery(baseOptions?: Apollo.QueryHookOptions<GetLatestBlockQuery, GetLatestBlockQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<GetLatestBlockQuery, GetLatestBlockQueryVariables>(GetLatestBlockDocument, options);
+export const IndexingStatusFragmentDoc = `
+    fragment IndexingStatus on SubgraphIndexingStatus {
+  synced
+  health
+  chains {
+    chainHeadBlock {
+      number
+    }
+    latestBlock {
+      number
+    }
+  }
 }
-export function useGetLatestBlockLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLatestBlockQuery, GetLatestBlockQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<GetLatestBlockQuery, GetLatestBlockQueryVariables>(GetLatestBlockDocument, options);
+    `;
+export const KoyoSnapshotFragmentDoc = `
+    fragment KoyoSnapshot on KoyoSnapshot {
+  id
+  timestamp
+  poolCount
+  totalLiquidity
+  totalSwapCount
+  totalSwapVolume
+  totalSwapFee
 }
-export type GetLatestBlockQueryHookResult = ReturnType<typeof useGetLatestBlockQuery>;
-export type GetLatestBlockLazyQueryHookResult = ReturnType<typeof useGetLatestBlockLazyQuery>;
-export type GetLatestBlockQueryResult = Apollo.QueryResult<GetLatestBlockQuery, GetLatestBlockQueryVariables>;
-export const GetPoolDataDocument = gql`
-	query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: Block_height!) {
-		pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }) {
-			...KoyoPool
-		}
-		pools24: pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }, block: $block24) {
-			...KoyoPool
-		}
-		pools48: pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }, block: $block48) {
-			...KoyoPool
-		}
-		poolsWeek: pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }, block: $blockWeek) {
-			...KoyoPool
-		}
-		prices: latestPrices(first: 1000) {
-			...LatestPrice
-		}
-	}
-	${KoyoPoolFragmentDoc}
-	${LatestPriceFragmentDoc}
-`;
-
-/**
- * __useGetPoolDataQuery__
- *
- * To run a query within a React component, call `useGetPoolDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPoolDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPoolDataQuery({
- *   variables: {
- *      block24: // value for 'block24'
- *      block48: // value for 'block48'
- *      blockWeek: // value for 'blockWeek'
- *   },
- * });
- */
-export function useGetPoolDataQuery(baseOptions: Apollo.QueryHookOptions<GetPoolDataQuery, GetPoolDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<GetPoolDataQuery, GetPoolDataQueryVariables>(GetPoolDataDocument, options);
+    `;
+export const KoyoPoolTokenFragmentDoc = `
+    fragment KoyoPoolToken on PoolToken {
+  id
+  symbol
+  name
+  decimals
+  address
+  balance
+  invested
+  weight
+  priceRate
+  poolId {
+    id
+    address
+  }
 }
-export function useGetPoolDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoolDataQuery, GetPoolDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<GetPoolDataQuery, GetPoolDataQueryVariables>(GetPoolDataDocument, options);
+    `;
+export const KoyoPoolFragmentDoc = `
+    fragment KoyoPool on Pool {
+  id
+  address
+  poolType
+  symbol
+  name
+  swapFee
+  totalWeight
+  totalSwapVolume
+  totalSwapFee
+  totalLiquidity
+  totalShares
+  swapsCount
+  holdersCount
+  createTime
+  owner {
+    id
+  }
+  strategyType
+  swapEnabled
+  tokens(first: 1000) {
+    ...KoyoPoolToken
+  }
 }
-export type GetPoolDataQueryHookResult = ReturnType<typeof useGetPoolDataQuery>;
-export type GetPoolDataLazyQueryHookResult = ReturnType<typeof useGetPoolDataLazyQuery>;
-export type GetPoolDataQueryResult = Apollo.QueryResult<GetPoolDataQuery, GetPoolDataQueryVariables>;
-export const GetTokenDataDocument = gql`
-	query GetTokenData($block24: Block_height!, $blockWeek: Block_height!) {
-		tokens: tokens(first: 1000, orderBy: totalBalanceUSD, orderDirection: desc) {
-			...KoyoToken
-		}
-		prices: latestPrices(first: 1000) {
-			...LatestPrice
-		}
-		tokens24: tokens(first: 1000, orderBy: totalBalanceUSD, orderDirection: desc, block: $block24) {
-			...KoyoToken
-		}
-		prices24: latestPrices(first: 1000, block: $block24) {
-			...LatestPrice
-		}
-		tokensWeek: tokens(first: 1000, orderBy: totalBalanceUSD, orderDirection: desc, block: $blockWeek) {
-			...KoyoToken
-		}
-		pricesWeek: latestPrices(first: 1000, block: $blockWeek) {
-			...LatestPrice
-		}
-	}
-	${KoyoTokenFragmentDoc}
-	${LatestPriceFragmentDoc}
-`;
-
-/**
- * __useGetTokenDataQuery__
- *
- * To run a query within a React component, call `useGetTokenDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTokenDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetTokenDataQuery({
- *   variables: {
- *      block24: // value for 'block24'
- *      blockWeek: // value for 'blockWeek'
- *   },
- * });
- */
-export function useGetTokenDataQuery(baseOptions: Apollo.QueryHookOptions<GetTokenDataQuery, GetTokenDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<GetTokenDataQuery, GetTokenDataQueryVariables>(GetTokenDataDocument, options);
+    ${KoyoPoolTokenFragmentDoc}`;
+export const KoyoTokenFragmentDoc = `
+    fragment KoyoToken on Token {
+  id
+  address
+  decimals
+  name
+  symbol
+  totalBalanceUSD
+  totalBalanceNotional
+  totalVolumeUSD
+  totalVolumeNotional
+  totalSwapCount
+  latestPrice {
+    asset
+    pricingAsset
+    price
+    poolId {
+      id
+    }
+  }
 }
-export function useGetTokenDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTokenDataQuery, GetTokenDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<GetTokenDataQuery, GetTokenDataQueryVariables>(GetTokenDataDocument, options);
+    `;
+export const KoyoChartTokenPriceFragmentDoc = `
+    fragment KoyoChartTokenPrice on TokenPrice {
+  id
+  timestamp
+  price
+  priceUSD
+  amount
 }
-export type GetTokenDataQueryHookResult = ReturnType<typeof useGetTokenDataQuery>;
-export type GetTokenDataLazyQueryHookResult = ReturnType<typeof useGetTokenDataLazyQuery>;
-export type GetTokenDataQueryResult = Apollo.QueryResult<GetTokenDataQuery, GetTokenDataQueryVariables>;
-export const GetTokenPageDataDocument = gql`
-	query GetTokenPageData($address: String!, $startTimestamp: Int!) {
-		tokenSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: { token: $address, timestamp_gte: $startTimestamp }) {
-			...TokenSnapshot
-		}
-	}
-	${TokenSnapshotFragmentDoc}
-`;
-
-/**
- * __useGetTokenPageDataQuery__
- *
- * To run a query within a React component, call `useGetTokenPageDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTokenPageDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetTokenPageDataQuery({
- *   variables: {
- *      address: // value for 'address'
- *      startTimestamp: // value for 'startTimestamp'
- *   },
- * });
- */
-export function useGetTokenPageDataQuery(baseOptions: Apollo.QueryHookOptions<GetTokenPageDataQuery, GetTokenPageDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<GetTokenPageDataQuery, GetTokenPageDataQueryVariables>(GetTokenPageDataDocument, options);
+    `;
+export const LatestPriceFragmentDoc = `
+    fragment LatestPrice on LatestPrice {
+  asset
+  pricingAsset
+  price
+  priceUSD
+  poolId {
+    id
+  }
 }
-export function useGetTokenPageDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTokenPageDataQuery, GetTokenPageDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<GetTokenPageDataQuery, GetTokenPageDataQueryVariables>(GetTokenPageDataDocument, options);
+    `;
+export const TokenSnapshotFragmentDoc = `
+    fragment TokenSnapshot on TokenSnapshot {
+  id
+  timestamp
+  totalBalanceUSD
+  totalBalanceNotional
+  totalVolumeUSD
+  totalVolumeNotional
+  totalSwapCount
 }
-export type GetTokenPageDataQueryHookResult = ReturnType<typeof useGetTokenPageDataQuery>;
-export type GetTokenPageDataLazyQueryHookResult = ReturnType<typeof useGetTokenPageDataLazyQuery>;
-export type GetTokenPageDataQueryResult = Apollo.QueryResult<GetTokenPageDataQuery, GetTokenPageDataQueryVariables>;
-export const GetPoolChartDataDocument = gql`
-	query GetPoolChartData($poolId: String!, $startTimestamp: Int!) {
-		poolSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: { pool: $poolId, timestamp_gte: $startTimestamp }) {
-			id
-			amounts
-			totalShares
-			swapVolume
-			swapFees
-			timestamp
-			totalSwapVolume
-			totalSwapFee
-			totalLiquidity
-			swapsCount
-			holdersCount
-			pool {
-				id
-			}
-		}
-	}
-`;
-
-/**
- * __useGetPoolChartDataQuery__
- *
- * To run a query within a React component, call `useGetPoolChartDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPoolChartDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPoolChartDataQuery({
- *   variables: {
- *      poolId: // value for 'poolId'
- *      startTimestamp: // value for 'startTimestamp'
- *   },
- * });
- */
-export function useGetPoolChartDataQuery(baseOptions: Apollo.QueryHookOptions<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>(GetPoolChartDataDocument, options);
+    `;
+export const KoyoSwapFragmentDoc = `
+    fragment KoyoSwap on Swap {
+  id
+  caller
+  tokenIn
+  tokenInSym
+  tokenOut
+  tokenOutSym
+  tokenAmountIn
+  tokenAmountOut
+  poolId {
+    id
+    name
+    address
+    swapFee
+  }
+  account {
+    address
+  }
+  timestamp
+  tx
+  valueUSD
 }
-export function useGetPoolChartDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>(GetPoolChartDataDocument, options);
+    `;
+export const KoyoKyoGaugeFragmentDoc = `
+    fragment KoyoKyoGauge on Gauge {
+  id
+  name
+  symbol
+  killed
+  weights {
+    time
+    weight
+  }
 }
-export type GetPoolChartDataQueryHookResult = ReturnType<typeof useGetPoolChartDataQuery>;
-export type GetPoolChartDataLazyQueryHookResult = ReturnType<typeof useGetPoolChartDataLazyQuery>;
-export type GetPoolChartDataQueryResult = Apollo.QueryResult<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>;
-export const KoyoChartTokenPricesDocument = gql`
-	query KoyoChartTokenPrices($asset: Bytes!) {
-		prices1: tokenPrices(skip: 0, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
-			...KoyoChartTokenPrice
-		}
-		prices2: tokenPrices(skip: 1000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
-			...KoyoChartTokenPrice
-		}
-		prices3: tokenPrices(skip: 2000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
-			...KoyoChartTokenPrice
-		}
-		prices4: tokenPrices(skip: 3000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
-			...KoyoChartTokenPrice
-		}
-		prices5: tokenPrices(skip: 4000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
-			...KoyoChartTokenPrice
-		}
-		prices6: tokenPrices(skip: 5000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
-			...KoyoChartTokenPrice
-		}
-	}
-	${KoyoChartTokenPriceFragmentDoc}
-`;
-
-/**
- * __useKoyoChartTokenPricesQuery__
- *
- * To run a query within a React component, call `useKoyoChartTokenPricesQuery` and pass it any options that fit your needs.
- * When your component renders, `useKoyoChartTokenPricesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useKoyoChartTokenPricesQuery({
- *   variables: {
- *      asset: // value for 'asset'
- *   },
- * });
- */
-export function useKoyoChartTokenPricesQuery(baseOptions: Apollo.QueryHookOptions<KoyoChartTokenPricesQuery, KoyoChartTokenPricesQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<KoyoChartTokenPricesQuery, KoyoChartTokenPricesQueryVariables>(KoyoChartTokenPricesDocument, options);
+    `;
+export const GetSubgraphHealthDocument = `
+    query GetSubgraphHealth($name: String!) {
+  indexingStatusForCurrentVersion(subgraphName: $name) {
+    ...IndexingStatus
+  }
 }
-export function useKoyoChartTokenPricesLazyQuery(
-	baseOptions?: Apollo.LazyQueryHookOptions<KoyoChartTokenPricesQuery, KoyoChartTokenPricesQueryVariables>
-) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<KoyoChartTokenPricesQuery, KoyoChartTokenPricesQueryVariables>(KoyoChartTokenPricesDocument, options);
+    ${IndexingStatusFragmentDoc}`;
+export const useGetSubgraphHealthQuery = <TData = GetSubgraphHealthQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetSubgraphHealthQueryVariables,
+	options?: UseQueryOptions<GetSubgraphHealthQuery, TError, TData>
+) =>
+	useQuery<GetSubgraphHealthQuery, TError, TData>(
+		['GetSubgraphHealth', variables],
+		fetcher<GetSubgraphHealthQuery, GetSubgraphHealthQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetSubgraphHealthDocument,
+			variables
+		),
+		options
+	);
+export const GetLatestBlockDocument = `
+    query GetLatestBlock {
+  blocks(first: 1, orderBy: timestamp, orderDirection: desc) {
+    id
+    number
+    timestamp
+  }
 }
-export type KoyoChartTokenPricesQueryHookResult = ReturnType<typeof useKoyoChartTokenPricesQuery>;
-export type KoyoChartTokenPricesLazyQueryHookResult = ReturnType<typeof useKoyoChartTokenPricesLazyQuery>;
-export type KoyoChartTokenPricesQueryResult = Apollo.QueryResult<KoyoChartTokenPricesQuery, KoyoChartTokenPricesQueryVariables>;
-export const GetTransactionDataDocument = gql`
-	query GetTransactionData($addresses: [Bytes!]!, $poolIds: [String!]!, $startTimestamp: Int!) {
-		swapsIn: swaps(
-			first: 1000
-			orderBy: timestamp
-			orderDirection: desc
-			where: { tokenIn_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp }
-		) {
-			...KoyoSwap
-		}
-		swapsOut: swaps(
-			first: 1000
-			orderBy: timestamp
-			orderDirection: desc
-			where: { tokenOut_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp }
-		) {
-			...KoyoSwap
-		}
-	}
-	${KoyoSwapFragmentDoc}
-`;
-
-/**
- * __useGetTransactionDataQuery__
- *
- * To run a query within a React component, call `useGetTransactionDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTransactionDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetTransactionDataQuery({
- *   variables: {
- *      addresses: // value for 'addresses'
- *      poolIds: // value for 'poolIds'
- *      startTimestamp: // value for 'startTimestamp'
- *   },
- * });
- */
-export function useGetTransactionDataQuery(baseOptions: Apollo.QueryHookOptions<GetTransactionDataQuery, GetTransactionDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<GetTransactionDataQuery, GetTransactionDataQueryVariables>(GetTransactionDataDocument, options);
+    `;
+export const useGetLatestBlockQuery = <TData = GetLatestBlockQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables?: GetLatestBlockQueryVariables,
+	options?: UseQueryOptions<GetLatestBlockQuery, TError, TData>
+) =>
+	useQuery<GetLatestBlockQuery, TError, TData>(
+		variables === undefined ? ['GetLatestBlock'] : ['GetLatestBlock', variables],
+		fetcher<GetLatestBlockQuery, GetLatestBlockQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetLatestBlockDocument,
+			variables
+		),
+		options
+	);
+export const GetTimestampedBlockDocument = `
+    query GetTimestampedBlock($gt: BigInt!, $lt: BigInt!) {
+  blocks(
+    first: 1
+    orderBy: timestamp
+    orderDirection: desc
+    where: {timestamp_gt: $gt, timestamp_lt: $lt}
+  ) {
+    number
+  }
 }
-export function useGetTransactionDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTransactionDataQuery, GetTransactionDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<GetTransactionDataQuery, GetTransactionDataQueryVariables>(GetTransactionDataDocument, options);
+    `;
+export const useGetTimestampedBlockQuery = <TData = GetTimestampedBlockQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetTimestampedBlockQueryVariables,
+	options?: UseQueryOptions<GetTimestampedBlockQuery, TError, TData>
+) =>
+	useQuery<GetTimestampedBlockQuery, TError, TData>(
+		['GetTimestampedBlock', variables],
+		fetcher<GetTimestampedBlockQuery, GetTimestampedBlockQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetTimestampedBlockDocument,
+			variables
+		),
+		options
+	);
+export const GetProtocolDataDocument = `
+    query GetProtocolData($startTimestamp: Int!, $block24: Block_height!, $block48: Block_height!) {
+  koyos(first: 1) {
+    totalLiquidity
+    totalSwapCount
+    totalSwapFee
+    totalSwapVolume
+    poolCount
+  }
+  koyos24: koyos(first: 1, block: $block24) {
+    totalLiquidity
+    totalSwapCount
+    totalSwapFee
+    totalSwapVolume
+    poolCount
+  }
+  koyos48: koyos(first: 1, block: $block48) {
+    totalLiquidity
+    totalSwapCount
+    totalSwapFee
+    totalSwapVolume
+    poolCount
+  }
+  koyoSnapshots(
+    first: 1000
+    orderBy: timestamp
+    orderDirection: asc
+    where: {timestamp_gte: $startTimestamp}
+  ) {
+    ...KoyoSnapshot
+  }
 }
-export type GetTransactionDataQueryHookResult = ReturnType<typeof useGetTransactionDataQuery>;
-export type GetTransactionDataLazyQueryHookResult = ReturnType<typeof useGetTransactionDataLazyQuery>;
-export type GetTransactionDataQueryResult = Apollo.QueryResult<GetTransactionDataQuery, GetTransactionDataQueryVariables>;
-export const GetAllTransactionDataDocument = gql`
-	query GetAllTransactionData($startTimestamp: Int!) {
-		swaps: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: { timestamp_gte: $startTimestamp }) {
-			...KoyoSwap
-		}
-	}
-	${KoyoSwapFragmentDoc}
-`;
-
-/**
- * __useGetAllTransactionDataQuery__
- *
- * To run a query within a React component, call `useGetAllTransactionDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllTransactionDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllTransactionDataQuery({
- *   variables: {
- *      startTimestamp: // value for 'startTimestamp'
- *   },
- * });
- */
-export function useGetAllTransactionDataQuery(baseOptions: Apollo.QueryHookOptions<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>(GetAllTransactionDataDocument, options);
+    ${KoyoSnapshotFragmentDoc}`;
+export const useGetProtocolDataQuery = <TData = GetProtocolDataQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetProtocolDataQueryVariables,
+	options?: UseQueryOptions<GetProtocolDataQuery, TError, TData>
+) =>
+	useQuery<GetProtocolDataQuery, TError, TData>(
+		['GetProtocolData', variables],
+		fetcher<GetProtocolDataQuery, GetProtocolDataQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetProtocolDataDocument,
+			variables
+		),
+		options
+	);
+export const GetPoolDataDocument = `
+    query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: Block_height!) {
+  pools(
+    first: 1000
+    orderBy: totalLiquidity
+    orderDirection: desc
+    where: {totalLiquidity_gt: "0.01"}
+  ) {
+    ...KoyoPool
+  }
+  pools24: pools(
+    first: 1000
+    orderBy: totalLiquidity
+    orderDirection: desc
+    where: {totalLiquidity_gt: "0.01"}
+    block: $block24
+  ) {
+    ...KoyoPool
+  }
+  pools48: pools(
+    first: 1000
+    orderBy: totalLiquidity
+    orderDirection: desc
+    where: {totalLiquidity_gt: "0.01"}
+    block: $block48
+  ) {
+    ...KoyoPool
+  }
+  poolsWeek: pools(
+    first: 1000
+    orderBy: totalLiquidity
+    orderDirection: desc
+    where: {totalLiquidity_gt: "0.01"}
+    block: $blockWeek
+  ) {
+    ...KoyoPool
+  }
+  prices: latestPrices(first: 1000) {
+    ...LatestPrice
+  }
 }
-export function useGetAllTransactionDataLazyQuery(
-	baseOptions?: Apollo.LazyQueryHookOptions<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>
-) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>(GetAllTransactionDataDocument, options);
+    ${KoyoPoolFragmentDoc}
+${LatestPriceFragmentDoc}`;
+export const useGetPoolDataQuery = <TData = GetPoolDataQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetPoolDataQueryVariables,
+	options?: UseQueryOptions<GetPoolDataQuery, TError, TData>
+) =>
+	useQuery<GetPoolDataQuery, TError, TData>(
+		['GetPoolData', variables],
+		fetcher<GetPoolDataQuery, GetPoolDataQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetPoolDataDocument, variables),
+		options
+	);
+export const GetTokenDataDocument = `
+    query GetTokenData($block24: Block_height!, $blockWeek: Block_height!) {
+  tokens: tokens(first: 1000, orderBy: totalBalanceUSD, orderDirection: desc) {
+    ...KoyoToken
+  }
+  prices: latestPrices(first: 1000) {
+    ...LatestPrice
+  }
+  tokens24: tokens(
+    first: 1000
+    orderBy: totalBalanceUSD
+    orderDirection: desc
+    block: $block24
+  ) {
+    ...KoyoToken
+  }
+  prices24: latestPrices(first: 1000, block: $block24) {
+    ...LatestPrice
+  }
+  tokensWeek: tokens(
+    first: 1000
+    orderBy: totalBalanceUSD
+    orderDirection: desc
+    block: $blockWeek
+  ) {
+    ...KoyoToken
+  }
+  pricesWeek: latestPrices(first: 1000, block: $blockWeek) {
+    ...LatestPrice
+  }
 }
-export type GetAllTransactionDataQueryHookResult = ReturnType<typeof useGetAllTransactionDataQuery>;
-export type GetAllTransactionDataLazyQueryHookResult = ReturnType<typeof useGetAllTransactionDataLazyQuery>;
-export type GetAllTransactionDataQueryResult = Apollo.QueryResult<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>;
-export const KoyoKyoGaugesDocument = gql`
-	query KoyoKyoGauges(
-		$skip: Int
-		$first: Int
-		$orderBy: Gauge_orderBy
-		$orderDirection: OrderDirection
-		$where: Gauge_filter
-		$block: Block_height
-	) {
-		gauges(skip: $skip, first: $first, orderBy: $orderBy, orderDirection: $orderDirection, where: $where, block: $block) {
-			...KoyoKyoGauge
-		}
-	}
-	${KoyoKyoGaugeFragmentDoc}
-`;
-
-/**
- * __useKoyoKyoGaugesQuery__
- *
- * To run a query within a React component, call `useKoyoKyoGaugesQuery` and pass it any options that fit your needs.
- * When your component renders, `useKoyoKyoGaugesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useKoyoKyoGaugesQuery({
- *   variables: {
- *      skip: // value for 'skip'
- *      first: // value for 'first'
- *      orderBy: // value for 'orderBy'
- *      orderDirection: // value for 'orderDirection'
- *      where: // value for 'where'
- *      block: // value for 'block'
- *   },
- * });
- */
-export function useKoyoKyoGaugesQuery(baseOptions?: Apollo.QueryHookOptions<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useQuery<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>(KoyoKyoGaugesDocument, options);
+    ${KoyoTokenFragmentDoc}
+${LatestPriceFragmentDoc}`;
+export const useGetTokenDataQuery = <TData = GetTokenDataQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetTokenDataQueryVariables,
+	options?: UseQueryOptions<GetTokenDataQuery, TError, TData>
+) =>
+	useQuery<GetTokenDataQuery, TError, TData>(
+		['GetTokenData', variables],
+		fetcher<GetTokenDataQuery, GetTokenDataQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetTokenDataDocument, variables),
+		options
+	);
+export const GetTokenPageDataDocument = `
+    query GetTokenPageData($address: String!, $startTimestamp: Int!) {
+  tokenSnapshots(
+    first: 1000
+    orderBy: timestamp
+    orderDirection: asc
+    where: {token: $address, timestamp_gte: $startTimestamp}
+  ) {
+    ...TokenSnapshot
+  }
 }
-export function useKoyoKyoGaugesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>) {
-	const options = { ...defaultOptions, ...baseOptions };
-	return Apollo.useLazyQuery<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>(KoyoKyoGaugesDocument, options);
+    ${TokenSnapshotFragmentDoc}`;
+export const useGetTokenPageDataQuery = <TData = GetTokenPageDataQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetTokenPageDataQueryVariables,
+	options?: UseQueryOptions<GetTokenPageDataQuery, TError, TData>
+) =>
+	useQuery<GetTokenPageDataQuery, TError, TData>(
+		['GetTokenPageData', variables],
+		fetcher<GetTokenPageDataQuery, GetTokenPageDataQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetTokenPageDataDocument,
+			variables
+		),
+		options
+	);
+export const GetPoolChartDataDocument = `
+    query GetPoolChartData($poolId: String!, $startTimestamp: Int!) {
+  poolSnapshots(
+    first: 1000
+    orderBy: timestamp
+    orderDirection: asc
+    where: {pool: $poolId, timestamp_gte: $startTimestamp}
+  ) {
+    id
+    amounts
+    totalShares
+    swapVolume
+    swapFees
+    timestamp
+    totalSwapVolume
+    totalSwapFee
+    totalLiquidity
+    swapsCount
+    holdersCount
+    pool {
+      id
+    }
+  }
 }
-export type KoyoKyoGaugesQueryHookResult = ReturnType<typeof useKoyoKyoGaugesQuery>;
-export type KoyoKyoGaugesLazyQueryHookResult = ReturnType<typeof useKoyoKyoGaugesLazyQuery>;
-export type KoyoKyoGaugesQueryResult = Apollo.QueryResult<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>;
+    `;
+export const useGetPoolChartDataQuery = <TData = GetPoolChartDataQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetPoolChartDataQueryVariables,
+	options?: UseQueryOptions<GetPoolChartDataQuery, TError, TData>
+) =>
+	useQuery<GetPoolChartDataQuery, TError, TData>(
+		['GetPoolChartData', variables],
+		fetcher<GetPoolChartDataQuery, GetPoolChartDataQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetPoolChartDataDocument,
+			variables
+		),
+		options
+	);
+export const KoyoChartTokenPricesDocument = `
+    query KoyoChartTokenPrices($asset: Bytes!) {
+  prices1: tokenPrices(
+    skip: 0
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {asset: $asset}
+  ) {
+    ...KoyoChartTokenPrice
+  }
+  prices2: tokenPrices(
+    skip: 1000
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {asset: $asset}
+  ) {
+    ...KoyoChartTokenPrice
+  }
+  prices3: tokenPrices(
+    skip: 2000
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {asset: $asset}
+  ) {
+    ...KoyoChartTokenPrice
+  }
+  prices4: tokenPrices(
+    skip: 3000
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {asset: $asset}
+  ) {
+    ...KoyoChartTokenPrice
+  }
+  prices5: tokenPrices(
+    skip: 4000
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {asset: $asset}
+  ) {
+    ...KoyoChartTokenPrice
+  }
+  prices6: tokenPrices(
+    skip: 5000
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {asset: $asset}
+  ) {
+    ...KoyoChartTokenPrice
+  }
+}
+    ${KoyoChartTokenPriceFragmentDoc}`;
+export const useKoyoChartTokenPricesQuery = <TData = KoyoChartTokenPricesQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: KoyoChartTokenPricesQueryVariables,
+	options?: UseQueryOptions<KoyoChartTokenPricesQuery, TError, TData>
+) =>
+	useQuery<KoyoChartTokenPricesQuery, TError, TData>(
+		['KoyoChartTokenPrices', variables],
+		fetcher<KoyoChartTokenPricesQuery, KoyoChartTokenPricesQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			KoyoChartTokenPricesDocument,
+			variables
+		),
+		options
+	);
+export const GetTransactionDataDocument = `
+    query GetTransactionData($addresses: [Bytes!]!, $poolIds: [String!]!, $startTimestamp: Int!) {
+  swapsIn: swaps(
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {tokenIn_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp}
+  ) {
+    ...KoyoSwap
+  }
+  swapsOut: swaps(
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {tokenOut_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp}
+  ) {
+    ...KoyoSwap
+  }
+}
+    ${KoyoSwapFragmentDoc}`;
+export const useGetTransactionDataQuery = <TData = GetTransactionDataQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetTransactionDataQueryVariables,
+	options?: UseQueryOptions<GetTransactionDataQuery, TError, TData>
+) =>
+	useQuery<GetTransactionDataQuery, TError, TData>(
+		['GetTransactionData', variables],
+		fetcher<GetTransactionDataQuery, GetTransactionDataQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetTransactionDataDocument,
+			variables
+		),
+		options
+	);
+export const GetAllTransactionDataDocument = `
+    query GetAllTransactionData($startTimestamp: Int!) {
+  swaps: swaps(
+    first: 1000
+    orderBy: timestamp
+    orderDirection: desc
+    where: {timestamp_gte: $startTimestamp}
+  ) {
+    ...KoyoSwap
+  }
+}
+    ${KoyoSwapFragmentDoc}`;
+export const useGetAllTransactionDataQuery = <TData = GetAllTransactionDataQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetAllTransactionDataQueryVariables,
+	options?: UseQueryOptions<GetAllTransactionDataQuery, TError, TData>
+) =>
+	useQuery<GetAllTransactionDataQuery, TError, TData>(
+		['GetAllTransactionData', variables],
+		fetcher<GetAllTransactionDataQuery, GetAllTransactionDataQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetAllTransactionDataDocument,
+			variables
+		),
+		options
+	);
+export const KoyoKyoGaugesDocument = `
+    query KoyoKyoGauges($skip: Int, $first: Int, $orderBy: Gauge_orderBy, $orderDirection: OrderDirection, $where: Gauge_filter, $block: Block_height) {
+  gauges(
+    skip: $skip
+    first: $first
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    where: $where
+    block: $block
+  ) {
+    ...KoyoKyoGauge
+  }
+}
+    ${KoyoKyoGaugeFragmentDoc}`;
+export const useKoyoKyoGaugesQuery = <TData = KoyoKyoGaugesQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables?: KoyoKyoGaugesQueryVariables,
+	options?: UseQueryOptions<KoyoKyoGaugesQuery, TError, TData>
+) =>
+	useQuery<KoyoKyoGaugesQuery, TError, TData>(
+		variables === undefined ? ['KoyoKyoGauges'] : ['KoyoKyoGauges', variables],
+		fetcher<KoyoKyoGaugesQuery, KoyoKyoGaugesQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, KoyoKyoGaugesDocument, variables),
+		options
+	);
+export { fetcher };

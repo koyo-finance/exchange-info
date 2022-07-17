@@ -1,3 +1,30 @@
+query GetProtocolData($startTimestamp: Int!, $block24: Block_height!, $block48: Block_height!) {
+	koyos(first: 1) {
+		totalLiquidity
+		totalSwapCount
+		totalSwapFee
+		totalSwapVolume
+		poolCount
+	}
+	koyos24: koyos(first: 1, block: $block24) {
+		totalLiquidity
+		totalSwapCount
+		totalSwapFee
+		totalSwapVolume
+		poolCount
+	}
+	koyos48: koyos(first: 1, block: $block48) {
+		totalLiquidity
+		totalSwapCount
+		totalSwapFee
+		totalSwapVolume
+		poolCount
+	}
+	koyoSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: { timestamp_gte: $startTimestamp }) {
+		...KoyoSnapshot
+	}
+}
+
 query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: Block_height!) {
 	pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }) {
 		...KoyoPool
@@ -17,145 +44,105 @@ query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: 
 }
 
 query GetTokenData($block24: Block_height!, $blockWeek: Block_height!) {
-    tokens: tokens(
-        first: 1000
-        orderBy: totalBalanceUSD
-        orderDirection: desc
-    ) {
-        ...KoyoToken
-    }
-    prices: latestPrices(
-        first: 1000
-    ) {
-        ...LatestPrice
-    }
-    tokens24: tokens(
-        first: 1000
-        orderBy: totalBalanceUSD
-        orderDirection: desc,
-        block: $block24
-    ) {
-        ...KoyoToken
-    }
-    prices24: latestPrices(
-        first: 1000,
-        block: $block24
-    ) {
-        ...LatestPrice
-    }
-    tokensWeek: tokens(
-        first: 1000
-        orderBy: totalBalanceUSD
-        orderDirection: desc,
-        block: $blockWeek
-    ) {
-        ...KoyoToken
-    }
-    pricesWeek: latestPrices(
-        first: 1000,
-        block: $blockWeek
-    ) {
-        ...LatestPrice
-    }
+	tokens: tokens(first: 1000, orderBy: totalBalanceUSD, orderDirection: desc) {
+		...KoyoToken
+	}
+	prices: latestPrices(first: 1000) {
+		...LatestPrice
+	}
+	tokens24: tokens(first: 1000, orderBy: totalBalanceUSD, orderDirection: desc, block: $block24) {
+		...KoyoToken
+	}
+	prices24: latestPrices(first: 1000, block: $block24) {
+		...LatestPrice
+	}
+	tokensWeek: tokens(first: 1000, orderBy: totalBalanceUSD, orderDirection: desc, block: $blockWeek) {
+		...KoyoToken
+	}
+	pricesWeek: latestPrices(first: 1000, block: $blockWeek) {
+		...LatestPrice
+	}
 }
 
 query GetTokenPageData($address: String!, $startTimestamp: Int!) {
-    tokenSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: {token: $address, timestamp_gte: $startTimestamp}) {
-        ...TokenSnapshot
-    }
+	tokenSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: { token: $address, timestamp_gte: $startTimestamp }) {
+		...TokenSnapshot
+	}
 }
 
 query GetPoolChartData($poolId: String!, $startTimestamp: Int!) {
-    poolSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: {pool: $poolId, timestamp_gte: $startTimestamp}) {
-        id
-        amounts
-        totalShares
-        swapVolume
-        swapFees
-        timestamp
-        totalSwapVolume
-        totalSwapFee
-        totalLiquidity
-        swapsCount
-        holdersCount
-        pool {
-            id
-        }
-    }
+	poolSnapshots(first: 1000, orderBy: timestamp, orderDirection: asc, where: { pool: $poolId, timestamp_gte: $startTimestamp }) {
+		id
+		amounts
+		totalShares
+		swapVolume
+		swapFees
+		timestamp
+		totalSwapVolume
+		totalSwapFee
+		totalLiquidity
+		swapsCount
+		holdersCount
+		pool {
+			id
+		}
+	}
 }
 
-query KoyoChartTokenPrices(
-    $asset: Bytes!
-) {
-    prices1: tokenPrices(
-        skip: 0
-        first: 1000
-        orderBy: timestamp
-        orderDirection: desc
-        where: { asset: $asset }
-    ) {
-        ...KoyoChartTokenPrice
-    }
-    prices2: tokenPrices(
-        skip: 1000
-        first: 1000
-        orderBy: timestamp
-        orderDirection: desc
-        where: { asset: $asset }
-    ) {
-        ...KoyoChartTokenPrice
-    }
-    prices3: tokenPrices(
-        skip: 2000
-        first: 1000
-        orderBy: timestamp
-        orderDirection: desc
-        where: { asset: $asset }
-    ) {
-        ...KoyoChartTokenPrice
-    }
-    prices4: tokenPrices(
-        skip: 3000
-        first: 1000
-        orderBy: timestamp
-        orderDirection: desc
-        where: { asset: $asset }
-    ) {
-        ...KoyoChartTokenPrice
-    }
-    prices5: tokenPrices(
-        skip: 4000
-        first: 1000
-        orderBy: timestamp
-        orderDirection: desc
-        where: { asset: $asset }
-    ) {
-        ...KoyoChartTokenPrice
-    }
-    prices6: tokenPrices(
-        skip: 5000
-        first: 1000
-        orderBy: timestamp
-        orderDirection: desc
-        where: { asset: $asset }
-    ) {
-        ...KoyoChartTokenPrice
-    }
+query KoyoChartTokenPrices($asset: Bytes!) {
+	prices1: tokenPrices(skip: 0, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
+		...KoyoChartTokenPrice
+	}
+	prices2: tokenPrices(skip: 1000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
+		...KoyoChartTokenPrice
+	}
+	prices3: tokenPrices(skip: 2000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
+		...KoyoChartTokenPrice
+	}
+	prices4: tokenPrices(skip: 3000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
+		...KoyoChartTokenPrice
+	}
+	prices5: tokenPrices(skip: 4000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
+		...KoyoChartTokenPrice
+	}
+	prices6: tokenPrices(skip: 5000, first: 1000, orderBy: timestamp, orderDirection: desc, where: { asset: $asset }) {
+		...KoyoChartTokenPrice
+	}
 }
 
 query GetTransactionData($addresses: [Bytes!]!, $poolIds: [String!]!, $startTimestamp: Int!) {
-    swapsIn: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: {tokenIn_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp}) {
-        ...KoyoSwap
-    }
-    swapsOut: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: {tokenOut_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp}) {
-        ...KoyoSwap
-    }
+	swapsIn: swaps(
+		first: 1000
+		orderBy: timestamp
+		orderDirection: desc
+		where: { tokenIn_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp }
+	) {
+		...KoyoSwap
+	}
+	swapsOut: swaps(
+		first: 1000
+		orderBy: timestamp
+		orderDirection: desc
+		where: { tokenOut_in: $addresses, poolId_in: $poolIds, timestamp_gte: $startTimestamp }
+	) {
+		...KoyoSwap
+	}
 }
 
 query GetAllTransactionData($startTimestamp: Int!) {
-    swaps: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: {timestamp_gte: $startTimestamp}) {
-        ...KoyoSwap
-    }
+	swaps: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: { timestamp_gte: $startTimestamp }) {
+		...KoyoSwap
+	}
+}
+
+fragment KoyoSnapshot on KoyoSnapshot {
+	id
+	timestamp
+	poolCount
+	totalLiquidity
+	totalSwapCount
+	totalSwapVolume
+	totalSwapFee
 }
 
 fragment KoyoPool on Pool {
@@ -201,74 +188,74 @@ fragment KoyoPoolToken on PoolToken {
 }
 
 fragment KoyoToken on Token {
-    id
-    address
-    decimals
-    name
-    symbol
+	id
+	address
+	decimals
+	name
+	symbol
 
-    totalBalanceUSD
-    totalBalanceNotional
-    totalVolumeUSD
-    totalVolumeNotional
-    totalSwapCount
-    latestPrice {
-        asset
-        pricingAsset
-        price
-        poolId {
-            id
-        }
-    }
+	totalBalanceUSD
+	totalBalanceNotional
+	totalVolumeUSD
+	totalVolumeNotional
+	totalSwapCount
+	latestPrice {
+		asset
+		pricingAsset
+		price
+		poolId {
+			id
+		}
+	}
 }
 
 fragment KoyoChartTokenPrice on TokenPrice {
-    id
-    timestamp
-    price
-    priceUSD
-    amount
+	id
+	timestamp
+	price
+	priceUSD
+	amount
 }
 
 fragment LatestPrice on LatestPrice {
-    asset
-    pricingAsset
-    price
-    priceUSD
-    poolId {
-        id
-    }
+	asset
+	pricingAsset
+	price
+	priceUSD
+	poolId {
+		id
+	}
 }
 
 fragment TokenSnapshot on TokenSnapshot {
-    id
-    timestamp
-    totalBalanceUSD
-    totalBalanceNotional
-    totalVolumeUSD
-    totalVolumeNotional
-    totalSwapCount
+	id
+	timestamp
+	totalBalanceUSD
+	totalBalanceNotional
+	totalVolumeUSD
+	totalVolumeNotional
+	totalSwapCount
 }
 
 fragment KoyoSwap on Swap {
-    id
-    caller
-    tokenIn
-    tokenInSym
-    tokenOut
-    tokenOutSym
-    tokenAmountIn
-    tokenAmountOut
-    poolId {
-        id
-        name
-        address
-        swapFee
-    }
-    account {
-        address
-    }
-    timestamp
-    tx
-    valueUSD
+	id
+	caller
+	tokenIn
+	tokenInSym
+	tokenOut
+	tokenOutSym
+	tokenAmountIn
+	tokenAmountOut
+	poolId {
+		id
+		name
+		address
+		swapFee
+	}
+	account {
+		address
+	}
+	timestamp
+	tx
+	valueUSD
 }

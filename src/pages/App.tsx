@@ -8,7 +8,6 @@ import TopBar from '../components/Header/TopBar';
 import { LocalLoader } from '../components/Loader';
 import Popups from '../components/Popups';
 import { useActiveNetworkVersion, useSubgraphStatus } from '../state/application/hooks';
-import { loadTokenListTokens } from '../state/token-lists/token-lists';
 import { ExternalLink, TYPE } from '../theme';
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader';
 import GaugesOverview from './Gauge/GaugesOverview';
@@ -72,7 +71,6 @@ export default function App() {
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
 		setTimeout(() => setLoading(false), 1300);
-		void loadTokenListTokens().catch();
 	}, []);
 
 	const location = useLocation();

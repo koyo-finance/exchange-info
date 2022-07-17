@@ -1,6 +1,7 @@
+import { useExchangeSubgraphURL } from 'data/useExchangeSubgraphURL';
 import { groupBy, head, map, orderBy } from 'lodash';
 import { PriceChartEntry } from 'types';
-import { useKoyoChartTokenPricesQuery } from '../../../apollo/generated/graphql-codegen-generated';
+import { useKoyoChartTokenPricesQuery } from '../../../query/generated/graphql-codegen-generated';
 
 const TIME_INTERVAL = 60 * 60;
 
@@ -10,7 +11,8 @@ export interface KoyoTokenData {
 }
 
 export function useKoyoToken(tokenAddress: string): KoyoTokenData {
-	const { data: pricesData, loading } = useKoyoChartTokenPricesQuery({ variables: { asset: tokenAddress } });
+	const subgraphUrl = useExchangeSubgraphURL();
+	const { data: pricesData, isLoading } = useKoyoChartTokenPricesQuery({ endpoint: subgraphUrl }, { asset: tokenAddress });
 
 	const prices = [
 		...(pricesData?.prices1 || []),
@@ -51,6 +53,6 @@ export function useKoyoToken(tokenAddress: string): KoyoTokenData {
 	});
 	return {
 		chartData: orderBy(filtered, 'timestamp', 'asc'),
-		loading
+		loading: isLoading
 	};
 }

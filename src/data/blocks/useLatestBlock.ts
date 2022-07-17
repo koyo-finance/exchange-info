@@ -1,11 +1,16 @@
-import { useGetLatestBlockQuery } from '../../apollo/generated/graphql-codegen-generated';
-import { bobaBlockClient } from '../../apollo/client';
+import { useBlocksSubgraphURL } from 'data/useBlocksSubgraphURL';
+import { useGetLatestBlockQuery } from '../../query/generated/graphql-codegen-generated';
 
 export function useLatestBlock(): { blockNumber?: number; loading: boolean } {
-	const { data, loading } = useGetLatestBlockQuery({ pollInterval: 10000, client: bobaBlockClient });
+	const subgraphUrl = useBlocksSubgraphURL();
+	const { data, isLoading } = useGetLatestBlockQuery(
+		{ endpoint: subgraphUrl },
+		{},
+		{ refetchInterval: 10000, refetchOnWindowFocus: true, refetchOnMount: true }
+	);
 
 	return {
 		blockNumber: data?.blocks[0]?.number ? parseFloat(data?.blocks[0]?.number) : undefined,
-		loading
+		loading: isLoading
 	};
 }

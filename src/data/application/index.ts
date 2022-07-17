@@ -1,37 +1,5 @@
-import { useQuery } from '@apollo/client';
-import gql from 'graphql-tag';
-import { healthClient } from './../../apollo/client';
-
-export const SUBGRAPH_HEALTH = gql`
-	query health($name: Bytes) {
-		indexingStatusForCurrentVersion(subgraphName: $name, subgraphError: allow) {
-			synced
-			health
-			chains {
-				chainHeadBlock {
-					number
-				}
-				latestBlock {
-					number
-				}
-			}
-		}
-	}
-`;
-
-interface HealthResponse {
-	indexingStatusForCurrentVersion: {
-		chains: {
-			chainHeadBlock: {
-				number: string;
-			};
-			latestBlock: {
-				number: string;
-			};
-		}[];
-		synced: boolean;
-	};
-}
+import { HEALTH_API_URL } from 'query/client';
+import { useGetSubgraphHealthQuery } from 'query/generated/graphql-codegen-generated';
 
 /**
  * Fetch top addresses by volume
@@ -41,17 +9,10 @@ export function useFetchedSubgraphStatus(): {
 	syncedBlock: number | undefined;
 	headBlock: number | undefined;
 } {
-	const { loading, error, data } = useQuery<HealthResponse>(SUBGRAPH_HEALTH, {
-		client: healthClient,
-		fetchPolicy: 'network-only',
-		variables: {
-			name: 'koyo-finance/boba-blocks'
-		}
-	});
-
+	const { isLoading, error, data } = useGetSubgraphHealthQuery({ endpoint: HEALTH_API_URL }, { name: 'koyo-finance/boba-blocks' });
 	const parsed = data?.indexingStatusForCurrentVersion;
 
-	if (loading) {
+	if (isLoading) {
 		return {
 			available: null,
 			syncedBlock: undefined,
@@ -59,7 +20,7 @@ export function useFetchedSubgraphStatus(): {
 		};
 	}
 
-	if ((!loading && !parsed) || error) {
+	if ((!isLoading && !parsed) || error) {
 		return {
 			available: false,
 			syncedBlock: undefined,
@@ -67,8 +28,8 @@ export function useFetchedSubgraphStatus(): {
 		};
 	}
 
-	const syncedBlock = parsed?.chains[0].latestBlock.number;
-	const headBlock = parsed?.chains[0].chainHeadBlock.number;
+	const syncedBlock = parsed?.chains[0]?.latestBlock?.number;
+	const headBlock = parsed?.chains[0]?.chainHeadBlock?.number;
 
 	return {
 		available: true,
