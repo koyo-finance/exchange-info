@@ -11,7 +11,8 @@ const SymbolCurrencyLogo: React.FC<SymbolCurrencyLogoProps> = ({ symbol, size = 
 	// Secondary assets are loaded through Balancer
 	const tempSources: { [symbol: string]: string } = useMemo(() => {
 		return {
-			[`${symbol}`]: `https://tassets.koyo.finance/logos/${symbol?.toUpperCase()}/512x512.png`
+			[`${symbol?.toUpperCase()}`]: `https://tassets.koyo.finance/logos/${symbol?.toUpperCase()}/512x512.png`,
+			[`${symbol}`]: `https://tassets.koyo.finance/logos/${symbol}/512x512.png`
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -19,7 +20,9 @@ const SymbolCurrencyLogo: React.FC<SymbolCurrencyLogoProps> = ({ symbol, size = 
 	const srcs: string[] = useMemo(() => {
 		if (symbol) {
 			const override = tempSources[symbol];
-			return [override];
+			const wETHOverride = symbol.toLowerCase() === 'weth' ? ['https://tassets.koyo.finance/logos/wETH/512x512.png'] : [];
+
+			return [override].concat(wETHOverride);
 		}
 		return [];
 		// eslint-disable-next-line react-hooks/exhaustive-deps

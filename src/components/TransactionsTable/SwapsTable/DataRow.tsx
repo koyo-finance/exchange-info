@@ -11,6 +11,7 @@ import { ExternalLink } from 'theme';
 import { getEtherscanLink } from 'utils';
 import { formatTime } from 'utils/formatTime';
 import { shortenAddress } from 'utils/shortenAddress';
+import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 
 const Wrapper = styled(DarkGreyCard)`
 	width: 100%;
@@ -72,7 +73,16 @@ const DataRow: React.FC<DataRowProps> = ({ swap, color }) => {
 		<ResponsiveGrid>
 			<ExternalLink href={getEtherscanLink(1, swap.tx, 'transaction', activeNetwork)}>
 				<Label color={color ?? theme.blue1} fontWeight={400}>
-					{`Swap ${swap.tokenInSym} for ${swap.tokenOutSym}`}
+					<div>
+						Swap{' '}
+						<span>
+							{swap.tokenInSym} <SymbolCurrencyLogo symbol={swap.tokenInSym} size={'16px'} />
+						</span>{' '}
+						for{' '}
+						<span>
+							{swap.tokenOutSym} <SymbolCurrencyLogo symbol={swap.tokenOutSym} size={'16px'} />
+						</span>
+					</div>
 				</Label>
 			</ExternalLink>
 			<Label end={1} fontWeight={400}>
