@@ -10,6 +10,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { TYPE } from 'theme';
 import DataRow from './DataRow';
+import { ChainedKoyoSwapFragment } from 'data/koyo/exchange/useTransactions';
+import { getChainColor } from 'utils/getChainColor';
 
 const Wrapper = styled(DarkGreyCard)`
 	width: 100%;
@@ -64,7 +66,7 @@ const SORT_FIELD = {
 };
 
 export interface SwapsTableProps {
-	swaps: KoyoSwapFragment[];
+	swaps: (KoyoSwapFragment | ChainedKoyoSwapFragment)[];
 	maxItems?: number;
 	color?: string;
 }
@@ -151,7 +153,12 @@ const SwapsTable: React.FC<SwapsTableProps> = ({ swaps, maxItems = 10, color }) 
 					if (swap) {
 						return (
 							<React.Fragment key={i}>
-								<DataRow swap={swap} color={color} />
+								<DataRow
+									swap={swap}
+									color={
+										color || ((swap as ChainedKoyoSwapFragment).chain && getChainColor((swap as ChainedKoyoSwapFragment).chain))
+									}
+								/>
 								<Break />
 							</React.Fragment>
 						);

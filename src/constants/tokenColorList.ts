@@ -15,11 +15,3 @@ export const ALTERNATIVE_COLORS = [
 	'#485136',
 	'#5c412f'
 ];
-
-export const CHAIN_COLORS = [
-	{
-		name: 'Boba',
-		chainId: 288,
-		color: '#D7FE44'
-	}
-];

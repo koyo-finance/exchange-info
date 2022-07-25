@@ -12,6 +12,7 @@ import { getEtherscanLink } from 'utils';
 import { formatTime } from 'utils/formatTime';
 import { shortenAddress } from 'utils/shortenAddress';
 import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
+import { ChainedKoyoSwapFragment } from 'data/koyo/exchange/useTransactions';
 
 const Wrapper = styled(DarkGreyCard)`
 	width: 100%;
@@ -58,7 +59,7 @@ const ResponsiveGrid = styled.div`
 `;
 
 export interface DataRowProps {
-	swap: KoyoSwapFragment;
+	swap: KoyoSwapFragment | ChainedKoyoSwapFragment;
 	color?: string;
 }
 
