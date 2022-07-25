@@ -1,4 +1,4 @@
-import { formatAmount, formatDollarAmount, fromBigNumber, unixToDate } from '@koyofinance/core-sdk';
+import { ChainId, ExplorerTarget, formatAmount, formatDollarAmount, fromBigNumber, getExplorerLink, unixToDate } from '@koyofinance/core-sdk';
 import { DarkGreyCard, GreyCard } from 'components/Card';
 import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 import { LocalLoader } from 'components/Loader';
@@ -10,9 +10,7 @@ import { useHistoricalProtocolData } from 'hooks/useHistoricalProtocolData';
 import useTheme from 'hooks/useTheme';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ExternalLink } from 'react-feather';
-import { useActiveNetworkVersion } from 'state/application/hooks';
 import styled from 'styled-components';
-import { getEtherscanLink } from 'utils';
 import DebankLogo from '../../assets/svg/debank.svg';
 import { AutoColumn } from '../../components/Column';
 import LineChart from '../../components/LineChart/alt';
@@ -48,8 +46,6 @@ const Treasury: React.FC = () => {
 	const KYO_ADDRESS = '0x618CC6549ddf12de637d46CDDadaFC0C2951131C';
 
 	const theme = useTheme();
-
-	const [activeNetwork] = useActiveNetworkVersion();
 
 	const { Treasury: treasuryData } = useHistoricalProtocolData('koyo-finance');
 	const { data: protocolData } = useDefiLlamaData('koyo-finance');
@@ -193,7 +189,7 @@ const Treasury: React.FC = () => {
 										<StyledDebankLogo src={DebankLogo} />
 									</StyledExternalLink>
 								)}
-								<StyledExternalLink href={getEtherscanLink(1, TREASURY_ADDRESS, 'address', activeNetwork)}>
+								<StyledExternalLink href={getExplorerLink(ChainId.BOBA, ExplorerTarget.ADDRESS, TREASURY_ADDRESS)}>
 									<ExternalLink stroke={theme.text2} size={'17px'} style={{ marginLeft: '12px' }} />
 								</StyledExternalLink>
 							</RowFixed>

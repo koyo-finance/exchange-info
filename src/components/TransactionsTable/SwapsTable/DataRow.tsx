@@ -1,18 +1,17 @@
-import { formatAmount, formatDollarAmount } from '@koyofinance/core-sdk';
-import { KoyoSwapFragment } from 'query/generated/graphql-codegen-generated';
+import { ExplorerTarget, formatAmount, formatDollarAmount, getExplorerLink } from '@koyofinance/core-sdk';
 import { DarkGreyCard } from 'components/Card';
+import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 import HoverInlineText from 'components/HoverInlineText';
 import { Label } from 'components/Text';
+import { ChainedKoyoSwapFragment } from 'data/koyo/exchange/useTransactions';
 import useTheme from 'hooks/useTheme';
+import { KoyoSwapFragment } from 'query/generated/graphql-codegen-generated';
 import React from 'react';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import styled from 'styled-components';
 import { ExternalLink } from 'theme';
-import { getEtherscanLink } from 'utils';
 import { formatTime } from 'utils/formatTime';
 import { shortenAddress } from 'utils/shortenAddress';
-import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
-import { ChainedKoyoSwapFragment } from 'data/koyo/exchange/useTransactions';
 
 const Wrapper = styled(DarkGreyCard)`
 	width: 100%;
@@ -72,7 +71,7 @@ const DataRow: React.FC<DataRowProps> = ({ swap, color }) => {
 
 	return (
 		<ResponsiveGrid>
-			<ExternalLink href={getEtherscanLink(1, swap.tx, 'transaction', activeNetwork)}>
+			<ExternalLink href={getExplorerLink((swap as ChainedKoyoSwapFragment)?.chain || activeNetwork.id, ExplorerTarget.TRANSACTION, swap.tx)}>
 				<Label color={color ?? theme.blue1} fontWeight={400}>
 					<div>
 						Swap{' '}
@@ -96,7 +95,10 @@ const DataRow: React.FC<DataRowProps> = ({ swap, color }) => {
 				<HoverInlineText text={`${formatAmount(abs1)}  ${swap.tokenOutSym}`} maxCharacters={16} />
 			</Label>
 			<Label end={1} fontWeight={400}>
-				<ExternalLink href={getEtherscanLink(1, swap.account.address, 'address', activeNetwork)} style={{ color: color ?? theme.blue1 }}>
+				<ExternalLink
+					href={getExplorerLink((swap as ChainedKoyoSwapFragment)?.chain || activeNetwork.id, ExplorerTarget.ADDRESS, swap.account.address)}
+					style={{ color: color ?? theme.blue1 }}
+				>
 					{shortenAddress(swap.account.address)}
 				</ExternalLink>
 			</Label>

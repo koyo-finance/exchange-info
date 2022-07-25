@@ -1,9 +1,9 @@
-import useTheme from '../../hooks/useTheme';
+import { ChainId, ExplorerTarget, getExplorerLink } from '@koyofinance/core-sdk';
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import useTheme from '../../hooks/useTheme';
 import { useActiveNetworkVersion, useSubgraphStatus } from '../../state/application/hooks';
 import { ExternalLink, TYPE } from '../../theme';
-import { getEtherscanLink } from '../../utils';
 
 const StyledPolling = styled.div`
 	display: flex;
@@ -84,7 +84,7 @@ const Polling = () => {
 	);
 
 	return (
-		<ExternalLink href={latestBlock ? getEtherscanLink(1, latestBlock.toString(), 'block', activeNetwork) : ''}>
+		<ExternalLink href={latestBlock ? getExplorerLink(activeNetwork.id as unknown as ChainId, ExplorerTarget.BLOCK, latestBlock.toString()) : ''}>
 			<StyledPolling>
 				{/* eslint-disable-next-line react/jsx-pascal-case */}
 				<TYPE.small mr="4px" color={theme.text3}>
