@@ -6,7 +6,7 @@ export enum SupportedNetwork {
 }
 
 export interface NetworkInfo {
-	id: SupportedNetwork;
+	id: SupportedNetwork | ChainId;
 	chainId: string;
 	route: string;
 	name: string;
