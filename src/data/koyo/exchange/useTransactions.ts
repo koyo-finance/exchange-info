@@ -76,13 +76,13 @@ export function useKoyoAllTransactionsData(): {
 	SUPPORTED_NETWORK_VERSIONS.forEach((network, i) => {
 		const swaps = uniqBy(orderBy([...(chainTransactionsResults[i].data?.swaps || [])], 'timestamp', 'desc'), (swap) => swap.id).map((swap) => ({
 			...swap,
-			chain: network.id as ChainId
+			chain: network.id as unknown as ChainId
 		}));
 
 		const groupedByPair = groupBy(swaps, (swap) => `${swap.tokenInSym} -> ${swap.tokenOutSym}`);
 		const swapPairVolumes = map(groupedByPair, (swaps, key) => {
 			return {
-				chain: network.id as ChainId,
+				chain: network.id as unknown as ChainId,
 				name: key,
 				value: sumBy(swaps, (swap) => parseFloat(swap.valueUSD))
 			};

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { HelpCircle } from 'react-feather';
 import { ImageProps } from 'rebass';
 import styled from 'styled-components';
@@ -13,9 +13,10 @@ export interface LogoProps extends Pick<ImageProps, 'style' | 'alt' | 'className
  * Renders an image by sequentially trying a list of URIs, and then eventually a fallback triangle alert
  */
 const Logo: React.FC<LogoProps> = ({ srcs, alt, ...rest }) => {
-	const [, refresh] = useState<number>(0);
+	const [refreshV, refresh] = useState<number>(0);
 
-	const src: string | undefined = srcs.find((src) => !BAD_SRCS[src]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const src: string | undefined = useMemo(() => srcs.find((src) => !BAD_SRCS[src]), [srcs, refreshV, refresh]);
 
 	if (src) {
 		return (

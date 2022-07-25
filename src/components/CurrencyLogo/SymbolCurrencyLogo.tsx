@@ -8,10 +8,10 @@ export interface SymbolCurrencyLogoProps {
 }
 
 const SymbolCurrencyLogo: React.FC<SymbolCurrencyLogoProps> = ({ symbol, size = '24px', style, ...rest }) => {
-	// Secondary assets are loaded through Balancer
 	const tempSources: { [symbol: string]: string } = useMemo(() => {
 		return {
 			[`${symbol?.toUpperCase()}`]: `https://tassets.koyo.finance/logos/${symbol?.toUpperCase()}/512x512.png`,
+			[`${symbol?.toLowerCase()}`]: `https://tassets.koyo.finance/logos/${symbol?.toLowerCase()}/512x512.png`,
 			[`${symbol}`]: `https://tassets.koyo.finance/logos/${symbol}/512x512.png`
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -19,13 +19,14 @@ const SymbolCurrencyLogo: React.FC<SymbolCurrencyLogoProps> = ({ symbol, size = 
 
 	const srcs: string[] = useMemo(() => {
 		if (symbol) {
-			const override = tempSources[symbol];
-			const wETHOverride = symbol.toLowerCase() === 'weth' ? ['https://tassets.koyo.finance/logos/wETH/512x512.png'] : [];
+			const wETHOverride =
+				symbol.toLowerCase() === 'weth' || symbol.toLowerCase() === 'eth'
+					? ['https://tassets.koyo.finance/logos/wETH/512x512.png', 'https://tassets.koyo.finance/logos/weth/512x512.png']
+					: [];
 
-			return [override].concat(wETHOverride);
+			return [tempSources[symbol], tempSources[symbol.toUpperCase()], tempSources[symbol.toLowerCase()]].concat(wETHOverride);
 		}
 		return [];
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [symbol, tempSources]);
 
 	return <StyledLogo size={size} srcs={srcs} alt={'token logo'} style={style} {...rest} />;

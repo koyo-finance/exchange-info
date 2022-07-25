@@ -2,11 +2,14 @@ import { ChainId } from '@koyofinance/core-sdk';
 import ARBITRUM_LOGO_URL from '../assets/images/arbitrum.svg';
 
 export enum SupportedNetwork {
-	BOBA = ChainId.BOBA
+	BOBA = ChainId.BOBA,
+	AURORA = ChainId.AURORA,
+	POLYGON = ChainId.POLYGON,
+	MOONRIVER = ChainId.MOONRIVER
 }
 
 export interface NetworkInfo {
-	id: SupportedNetwork | ChainId;
+	id: SupportedNetwork;
 	chainId: string;
 	route: string;
 	name: string;
@@ -35,4 +38,49 @@ export const BobaNetworkInfo: NetworkInfo = {
 	blurb: 'L2'
 };
 
-export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [BobaNetworkInfo];
+export const AuroraNetworkInfo: NetworkInfo = {
+	id: SupportedNetwork.AURORA,
+	chainId: '1313161554',
+	route: 'aurora',
+	name: 'Aurora',
+	startTimeStamp: 1657617196,
+	appUri: 'https://koyo.finance/',
+	exchangeClientUri: 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-aurora',
+	imageURL: ARBITRUM_LOGO_URL,
+	bgColor: '#78D64B',
+	primaryColor: '#0490ED',
+	secondaryColor: '#96BEDC',
+	blurb: 'NEAR'
+};
+
+export const PolygonNetworkInfo: NetworkInfo = {
+	id: SupportedNetwork.POLYGON,
+	chainId: '137',
+	route: 'matic',
+	name: 'Polygon',
+	startTimeStamp: 1657912832,
+	appUri: 'https://koyo.finance/',
+	exchangeClientUri: 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-matic',
+	imageURL: ARBITRUM_LOGO_URL,
+	bgColor: '#8247E5',
+	primaryColor: '#0490ED',
+	secondaryColor: '#96BEDC',
+	blurb: 'Side-chain'
+};
+
+export const MoonriverNetworkInfo: NetworkInfo = {
+	id: SupportedNetwork.MOONRIVER,
+	chainId: '1285',
+	route: 'moonriver',
+	name: 'Moonriver',
+	startTimeStamp: 1657728392,
+	appUri: 'https://koyo.finance/',
+	exchangeClientUri: 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-moonriver',
+	imageURL: ARBITRUM_LOGO_URL,
+	bgColor: '#FFBB55',
+	primaryColor: '#0490ED',
+	secondaryColor: '#96BEDC',
+	blurb: 'Para-chain'
+};
+
+export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [BobaNetworkInfo, AuroraNetworkInfo, PolygonNetworkInfo, MoonriverNetworkInfo];
