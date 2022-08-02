@@ -47,7 +47,7 @@ const Treasury: React.FC = () => {
 
 	const theme = useTheme();
 
-	const { Treasury: treasuryData } = useHistoricalProtocolData('koyo-finance');
+	const { treasury: treasuryData } = useHistoricalProtocolData('koyo-finance');
 	const { data: protocolData } = useDefiLlamaData('koyo-finance');
 
 	const { data: treasuryKYOBalance = 0, isLoading: treasuryKYOBalanceLoading } = useTokenBalance(TREASURY_ADDRESS, KYO_ADDRESS);
