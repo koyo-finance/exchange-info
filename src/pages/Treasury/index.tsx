@@ -108,28 +108,28 @@ const Treasury: React.FC = () => {
 				{/* eslint-disable-next-line react/jsx-pascal-case */}
 				<TYPE.largeHeader>Kōyō Finance: Treasury Overview</TYPE.largeHeader>
 				<ContentLayout>
-					{formattedTreasuryData.length > 0 && protocolData?.currentChainTvls ? (
-						<DarkGreyCard>
-							<AutoColumn gap="lg">
-								<GreyCard padding="16px">
-									<AutoColumn gap="4px">
-										{/* eslint-disable-next-line react/jsx-pascal-case */}
-										<TYPE.main>KYO reserves</TYPE.main>
-										<RowBetween key={'kyoReseves'}>
-											<RowFixed>
-												<SymbolCurrencyLogo symbol="KYO" size="32px" />
-												{/* eslint-disable-next-line react/jsx-pascal-case */}
-												<TYPE.label fontSize="14px" ml="8px">
-													{'KYO'}
-												</TYPE.label>
-											</RowFixed>
+					<DarkGreyCard>
+						<AutoColumn gap={formattedTreasuryData.length > 0 && protocolData?.currentChainTvls ? 'lg' : 'sm'}>
+							<GreyCard padding="16px">
+								<AutoColumn gap="4px">
+									{/* eslint-disable-next-line react/jsx-pascal-case */}
+									<TYPE.main>KYO reserves</TYPE.main>
+									<RowBetween key={'kyoReseves'}>
+										<RowFixed>
+											<SymbolCurrencyLogo symbol="KYO" size="32px" />
 											{/* eslint-disable-next-line react/jsx-pascal-case */}
-											<TYPE.label fontSize="14px">
-												{treasuryKYOBalanceLoading ? '?' : formatAmount(fromBigNumber(treasuryKYOBalance))}
+											<TYPE.label fontSize="14px" ml="8px">
+												{'KYO'}
 											</TYPE.label>
-										</RowBetween>
-									</AutoColumn>
-								</GreyCard>
+										</RowFixed>
+										{/* eslint-disable-next-line react/jsx-pascal-case */}
+										<TYPE.label fontSize="14px">
+											{treasuryKYOBalanceLoading ? '?' : formatAmount(fromBigNumber(treasuryKYOBalance))}
+										</TYPE.label>
+									</RowBetween>
+								</AutoColumn>
+							</GreyCard>
+							{formattedTreasuryData.length > 0 && protocolData?.currentChainTvls ? (
 								<AutoColumn gap="lg">
 									<AutoColumn gap="4px">
 										{/* eslint-disable-next-line react/jsx-pascal-case */}
@@ -146,17 +146,17 @@ const Treasury: React.FC = () => {
 										<Percent value={(100 / (protocolData.currentChainTvls['Treasury'] || 1)) * monthlyLow - 100} />
 									</AutoColumn>
 								</AutoColumn>
-							</AutoColumn>
-						</DarkGreyCard>
-					) : (
-						<AutoColumn gap="lg" justify="flex-start">
-							<DarkGreyCard>
-								{/* eslint-disable-next-line react/jsx-pascal-case */}
-								<TYPE.main fontSize="18px">Fetching historical data...</TYPE.main>
-								<LocalLoader fill={false} />
-							</DarkGreyCard>
+							) : (
+								<AutoColumn gap="sm" justify="flex-start">
+									<DarkGreyCard>
+										{/* eslint-disable-next-line react/jsx-pascal-case */}
+										<TYPE.main fontSize="18px">Fetching historical data...</TYPE.main>
+										<LocalLoader fill={false} />
+									</DarkGreyCard>
+								</AutoColumn>
+							)}
 						</AutoColumn>
-					)}
+					</DarkGreyCard>
 
 					<LineChart
 						data={formattedTreasuryData}
