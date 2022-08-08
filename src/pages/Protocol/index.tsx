@@ -1,8 +1,8 @@
 import { ChainDisplayName, ChainId, formatDollarAmount } from '@koyofinance/core-sdk';
 import { DarkGreyCard } from 'components/Card';
 import { LocalLoader } from 'components/Loader';
+import Percent from 'components/Percent';
 import StackedAreaChart from 'components/StackedAreaChart';
-import SwapsTable from 'components/TransactionsTable/SwapsTable';
 import TransactionsTable from 'components/TransactionsTable/TransactionsTable';
 import { BobaNetworkInfo } from 'constants/networks';
 import { useKoyoChainProtocolData } from 'data/koyo/exchange/useAggregatedProtocolData';
@@ -11,9 +11,9 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import getAggregatedProtocolChartData, { AggregateProtocolChartData } from 'utils/getAggregatedProtocolChartData';
 import { AutoColumn } from '../../components/Column';
-import { ResponsiveRow } from '../../components/Row';
+import { ResponsiveRow, RowBetween, RowFixed } from '../../components/Row';
 import { MonoSpace } from '../../components/shared';
-import { TYPE } from '../../theme';
+import { HideMedium, HideSmall, TYPE } from '../../theme';
 import { PageWrapper, ThemedBackgroundGlobal } from '../styled';
 
 const ChartWrapper = styled.div`
@@ -36,15 +36,15 @@ const Protocol: React.FC = () => {
 
 	let aggregatedTVL: AggregateProtocolChartData[] = [];
 	let protocolTVL = 0;
-	// let protocolTVLChange = 0;
+	let protocolTVLChange = 0;
 	if (protocolBobaData.tvlData) {
 		aggregatedTVL = getAggregatedProtocolChartData([{ chain: ChainDisplayName.BOBA, data: protocolBobaData.tvlData }], NaN);
 		if (protocolBobaData.tvl) {
 			protocolTVL = protocolBobaData.tvl;
 		}
-		// if (protocolBobaData.tvlChange) {
-		// 	protocolTVLChange = protocolBobaData.tvlChange;
-		// }
+		if (protocolBobaData.tvlChange) {
+			protocolTVLChange = protocolBobaData.tvlChange;
+		}
 	}
 
 	useEffect(() => {
@@ -90,6 +90,28 @@ const Protocol: React.FC = () => {
 						/>
 					</ChartWrapper>
 				</ResponsiveRow>
+
+				{protocolTVL > 0 ? (
+					<HideSmall>
+						<DarkGreyCard>
+							<RowBetween>
+								<RowFixed align="center" justify="center">
+									<HideMedium>
+										<RowFixed mr="20px">
+											{/* eslint-disable-next-line react/jsx-pascal-case */}
+											<TYPE.main mr="4px">TVL: </TYPE.main>
+											{/* eslint-disable-next-line react/jsx-pascal-case */}
+											<TYPE.label mr="4px">{formatDollarAmount(protocolTVL)}</TYPE.label>
+											{/* eslint-disable-next-line react/jsx-pascal-case */}
+											<TYPE.main></TYPE.main>
+											<Percent value={protocolTVLChange} wrap={true} />
+										</RowFixed>
+									</HideMedium>
+								</RowFixed>
+							</RowBetween>
+						</DarkGreyCard>
+					</HideSmall>
+				) : null}
 
 				{/* eslint-disable-next-line react/jsx-pascal-case */}
 				<TYPE.main fontSize="24px">Transactions</TYPE.main>
