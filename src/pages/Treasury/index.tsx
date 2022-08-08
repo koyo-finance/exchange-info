@@ -3,8 +3,11 @@ import { DarkGreyCard, GreyCard } from 'components/Card';
 import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 import { LocalLoader } from 'components/Loader';
 import Percent from 'components/Percent';
+import UserPoolTable from 'components/pools/UserPoolTable';
 import { RowBetween, RowFixed } from 'components/Row';
 import TreasuryTokenPortfolioTable from 'components/tokens/TreasuryTokenPortfolioTable';
+import { useKoyoPools } from 'data/koyo/exchange/usePools';
+import useUserPools, { PoolDataUser } from 'data/koyo/exchange/useUserPools';
 import { useDefiLlamaData } from 'hooks/useDefiLlamaData';
 import { useHistoricalProtocolData } from 'hooks/useHistoricalProtocolData';
 import useTheme from 'hooks/useTheme';
@@ -42,14 +45,15 @@ const Treasury: React.FC = () => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398';
-	const KYO_ADDRESS = '0x618CC6549ddf12de637d46CDDadaFC0C2951131C';
+	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398'.toLowerCase();
+	const KYO_ADDRESS = '0x618CC6549ddf12de637d46CDDadaFC0C2951131C'.toLowerCase();
 
 	const theme = useTheme();
 
 	const { treasury: treasuryData } = useHistoricalProtocolData('koyo-finance');
 	const { data: protocolData } = useDefiLlamaData('koyo-finance');
-
+	const poolData = useKoyoPools();
+	const userPools = useUserPools(TREASURY_ADDRESS);
 	const { data: treasuryKYOBalance = 0, isLoading: treasuryKYOBalanceLoading } = useTokenBalance(TREASURY_ADDRESS, KYO_ADDRESS);
 
 	const [treasuryTotalHover, setTreasuryTotal] = useState<number | undefined>();
@@ -82,6 +86,29 @@ const Treasury: React.FC = () => {
 	}, [treasuryData]);
 
 	const debankLink = `https://debank.com/profile/${TREASURY_ADDRESS}`;
+
+	const poolDatasUser: PoolDataUser[] = [];
+	if (poolData.length > 0) {
+		userPools.forEach((pool) => {
+			const poolDataUser = {} as PoolDataUser;
+			const userPool = poolData.find((x) => x.id === pool.poolId);
+			if (userPool) {
+				poolDataUser.address = userPool?.address;
+				poolDataUser.feeTier = userPool.feeTier;
+				poolDataUser.id = userPool.id;
+				poolDataUser.name = userPool.name;
+				poolDataUser.swapFee = userPool.swapFee;
+				poolDataUser.symbol = userPool.symbol;
+				poolDataUser.tokens = userPool.tokens;
+				poolDataUser.userRelativeTVL = pool.relativeShare;
+				poolDataUser.userTVL = userPool?.tvlUSD * pool.relativeShare;
+				poolDataUser.dailyFees = userPool.feesUSD * pool.relativeShare * 0.5;
+				poolDataUser.tvlUSD = userPool.tvlUSD;
+				poolDataUser.volumeUSD = userPool.volumeUSD;
+			}
+			poolDatasUser.push(poolDataUser);
+		});
+	}
 
 	useEffect(() => {
 		if (treasuryTotalHover === undefined && formattedTreasuryData.length !== 0) {
@@ -200,6 +227,10 @@ const Treasury: React.FC = () => {
 				{/* eslint-disable-next-line react/jsx-pascal-case */}
 				<TYPE.main> Tokens in treasury wallet </TYPE.main>
 				<TreasuryTokenPortfolioTable tokenDatas={formattedTreasuryHoldingsData} />
+
+				{/* eslint-disable-next-line react/jsx-pascal-case */}
+				<TYPE.white> Kōyō Protocol Investments </TYPE.white>
+				<UserPoolTable poolDatas={poolDatasUser} />
 			</AutoColumn>
 		</PageWrapper>
 	);

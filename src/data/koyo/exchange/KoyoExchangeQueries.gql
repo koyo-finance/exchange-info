@@ -141,6 +141,17 @@ query GetAllTransactionData($startTimestamp: Int!) {
 	}
 }
 
+query GetUserWalletPoolData($accountAddress: String!, $block: Int!) {
+	poolShares(block: { number: $block }, first: 1000, where: { account: $accountAddress, balance_gt: 0 }) {
+		balance
+		poolId {
+			id
+			totalLiquidity
+			totalShares
+		}
+	}
+}
+
 fragment KoyoSnapshot on KoyoSnapshot {
 	id
 	timestamp

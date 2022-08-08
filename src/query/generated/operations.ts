@@ -370,6 +370,18 @@ export const GetAllTransactionData = gql`
 	${KoyoSwap}
 	${KoyoJoinExit}
 `;
+export const GetUserWalletPoolData = gql`
+	query GetUserWalletPoolData($accountAddress: String!, $block: Int!) {
+		poolShares(block: { number: $block }, first: 1000, where: { account: $accountAddress, balance_gt: 0 }) {
+			balance
+			poolId {
+				id
+				totalLiquidity
+				totalShares
+			}
+		}
+	}
+`;
 export const KoyoKyoGauges = gql`
 	query KoyoKyoGauges(
 		$skip: Int

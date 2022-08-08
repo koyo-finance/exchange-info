@@ -6,6 +6,11 @@ import { KoyoTokenFragment, LatestPriceFragment, useGetTokenDataQuery, useGetTok
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import { ChartDataPoint } from 'types/charts';
 
+export interface TokenSet {
+	tokenId: string;
+	amount: number;
+}
+
 export interface TokenValues {
 	tvl: number;
 	volume: number;

@@ -1,7 +1,5 @@
 import { unixToDate } from '@koyofinance/core-sdk';
 import { useExchangeSubgraphURL } from 'data/useExchangeSubgraphURL';
-import { options } from 'numeral';
-import { useEffect } from 'react';
 import { GenericChartEntry } from 'types';
 import { useDeltaTimestamps } from '../../../hooks/useDeltaTimestamps';
 import { KoyoPoolFragment, useGetPoolChartDataQuery, useGetPoolDataQuery } from '../../../query/generated/graphql-codegen-generated';

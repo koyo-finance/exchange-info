@@ -4849,6 +4849,20 @@ export type GetAllTransactionDataQuery = {
 	}>;
 };
 
+export type GetUserWalletPoolDataQueryVariables = Exact<{
+	accountAddress: Scalars['String'];
+	block: Scalars['Int'];
+}>;
+
+export type GetUserWalletPoolDataQuery = {
+	__typename: 'Query';
+	poolShares: Array<{
+		__typename: 'PoolShare';
+		balance: string;
+		poolId: { __typename: 'Pool'; id: string; totalLiquidity: string; totalShares: string };
+	}>;
+};
+
 export type KoyoSnapshotFragment = {
 	__typename: 'KoyoSnapshot';
 	id: string;
@@ -5629,6 +5643,37 @@ export const useGetAllTransactionDataQuery = <TData = GetAllTransactionDataQuery
 			dataSource.endpoint,
 			dataSource.fetchParams || {},
 			GetAllTransactionDataDocument,
+			variables
+		),
+		options
+	);
+export const GetUserWalletPoolDataDocument = `
+    query GetUserWalletPoolData($accountAddress: String!, $block: Int!) {
+  poolShares(
+    block: {number: $block}
+    first: 1000
+    where: {account: $accountAddress, balance_gt: 0}
+  ) {
+    balance
+    poolId {
+      id
+      totalLiquidity
+      totalShares
+    }
+  }
+}
+    `;
+export const useGetUserWalletPoolDataQuery = <TData = GetUserWalletPoolDataQuery, TError = unknown>(
+	dataSource: { endpoint: string; fetchParams?: RequestInit },
+	variables: GetUserWalletPoolDataQueryVariables,
+	options?: UseQueryOptions<GetUserWalletPoolDataQuery, TError, TData>
+) =>
+	useQuery<GetUserWalletPoolDataQuery, TError, TData>(
+		['GetUserWalletPoolData', variables],
+		fetcher<GetUserWalletPoolDataQuery, GetUserWalletPoolDataQueryVariables>(
+			dataSource.endpoint,
+			dataSource.fetchParams || {},
+			GetUserWalletPoolDataDocument,
 			variables
 		),
 		options
