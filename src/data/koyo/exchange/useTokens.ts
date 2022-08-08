@@ -3,7 +3,6 @@ import { useBlocksFromTimestamps } from 'data/blocks/useBlocksFromTimestamp';
 import { useExchangeSubgraphURL } from 'data/useExchangeSubgraphURL';
 import { useDeltaTimestamps } from 'hooks/useDeltaTimestamps';
 import { KoyoTokenFragment, LatestPriceFragment, useGetTokenDataQuery, useGetTokenPageDataQuery } from 'query/generated/graphql-codegen-generated';
-import { useEffect } from 'react';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import { ChartDataPoint } from 'types/charts';
 
