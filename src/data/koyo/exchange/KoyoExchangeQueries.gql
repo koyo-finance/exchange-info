@@ -127,11 +127,17 @@ query GetTransactionData($addresses: [Bytes!]!, $poolIds: [String!]!, $startTime
 	) {
 		...KoyoSwap
 	}
+	joinExits(first: 150, orderBy: timestamp, orderDirection: desc, where: { pool_in: $poolIds, timestamp_gte: $startTimestamp }) {
+		...KoyoJoinExit
+	}
 }
 
 query GetAllTransactionData($startTimestamp: Int!) {
 	swaps: swaps(first: 1000, orderBy: timestamp, orderDirection: desc, where: { timestamp_gte: $startTimestamp }) {
 		...KoyoSwap
+	}
+	joinExits(first: 150, orderBy: timestamp, orderDirection: desc, where: { timestamp_gte: $startTimestamp }) {
+		...KoyoJoinExit
 	}
 }
 
@@ -258,4 +264,24 @@ fragment KoyoSwap on Swap {
 	timestamp
 	tx
 	valueUSD
+}
+
+fragment KoyoJoinExit on JoinExit {
+	amounts
+	id
+	sender
+	timestamp
+	tx
+	type
+	valueUSD
+	account {
+		address
+	}
+	pool {
+		id
+		tokensList
+		tokens {
+			symbol
+		}
+	}
 }

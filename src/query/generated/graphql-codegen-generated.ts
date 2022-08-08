@@ -1328,6 +1328,7 @@ export interface JoinExit {
 	timestamp: Scalars['Int'];
 	tx: Scalars['Bytes'];
 	type: InvestType;
+	valueUSD: Scalars['BigDecimal'];
 }
 
 export interface JoinExit_Filter {
@@ -1413,9 +1414,17 @@ export interface JoinExit_Filter {
 	type_in?: InputMaybe<Array<InvestType>>;
 	type_not?: InputMaybe<InvestType>;
 	type_not_in?: InputMaybe<Array<InvestType>>;
+	valueUSD?: InputMaybe<Scalars['BigDecimal']>;
+	valueUSD_gt?: InputMaybe<Scalars['BigDecimal']>;
+	valueUSD_gte?: InputMaybe<Scalars['BigDecimal']>;
+	valueUSD_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
+	valueUSD_lt?: InputMaybe<Scalars['BigDecimal']>;
+	valueUSD_lte?: InputMaybe<Scalars['BigDecimal']>;
+	valueUSD_not?: InputMaybe<Scalars['BigDecimal']>;
+	valueUSD_not_in?: InputMaybe<Array<Scalars['BigDecimal']>>;
 }
 
-export type JoinExit_OrderBy = 'account' | 'amounts' | 'id' | 'pool' | 'sender' | 'timestamp' | 'tx' | 'type';
+export type JoinExit_OrderBy = 'account' | 'amounts' | 'id' | 'pool' | 'sender' | 'timestamp' | 'tx' | 'type' | 'valueUSD';
 
 export interface Koyo {
 	__typename: 'Koyo';
@@ -4789,6 +4798,18 @@ export type GetTransactionDataQuery = {
 		poolId: { __typename: 'Pool'; id: string; name?: string | null; address: string; swapFee: string };
 		account: { __typename: 'Account'; address: string };
 	}>;
+	joinExits: Array<{
+		__typename: 'JoinExit';
+		amounts: Array<string>;
+		id: string;
+		sender: string;
+		timestamp: number;
+		tx: string;
+		type: InvestType;
+		valueUSD: string;
+		account: { __typename: 'Account'; address: string };
+		pool: { __typename: 'Pool'; id: string; tokensList: Array<string>; tokens?: Array<{ __typename: 'PoolToken'; symbol: string }> | null };
+	}>;
 };
 
 export type GetAllTransactionDataQueryVariables = Exact<{
@@ -4812,6 +4833,18 @@ export type GetAllTransactionDataQuery = {
 		valueUSD: string;
 		poolId: { __typename: 'Pool'; id: string; name?: string | null; address: string; swapFee: string };
 		account: { __typename: 'Account'; address: string };
+	}>;
+	joinExits: Array<{
+		__typename: 'JoinExit';
+		amounts: Array<string>;
+		id: string;
+		sender: string;
+		timestamp: number;
+		tx: string;
+		type: InvestType;
+		valueUSD: string;
+		account: { __typename: 'Account'; address: string };
+		pool: { __typename: 'Pool'; id: string; tokensList: Array<string>; tokens?: Array<{ __typename: 'PoolToken'; symbol: string }> | null };
 	}>;
 };
 
@@ -4939,6 +4972,19 @@ export type KoyoSwapFragment = {
 	valueUSD: string;
 	poolId: { __typename: 'Pool'; id: string; name?: string | null; address: string; swapFee: string };
 	account: { __typename: 'Account'; address: string };
+};
+
+export type KoyoJoinExitFragment = {
+	__typename: 'JoinExit';
+	amounts: Array<string>;
+	id: string;
+	sender: string;
+	timestamp: number;
+	tx: string;
+	type: InvestType;
+	valueUSD: string;
+	account: { __typename: 'Account'; address: string };
+	pool: { __typename: 'Pool'; id: string; tokensList: Array<string>; tokens?: Array<{ __typename: 'PoolToken'; symbol: string }> | null };
 };
 
 export type KoyoKyoGaugesQueryVariables = Exact<{
@@ -5114,6 +5160,27 @@ export const KoyoSwapFragmentDoc = `
   timestamp
   tx
   valueUSD
+}
+    `;
+export const KoyoJoinExitFragmentDoc = `
+    fragment KoyoJoinExit on JoinExit {
+  amounts
+  id
+  sender
+  timestamp
+  tx
+  type
+  valueUSD
+  account {
+    address
+  }
+  pool {
+    id
+    tokensList
+    tokens {
+      symbol
+    }
+  }
 }
     `;
 export const KoyoKyoGaugeFragmentDoc = `
@@ -5503,8 +5570,17 @@ export const GetTransactionDataDocument = `
   ) {
     ...KoyoSwap
   }
+  joinExits(
+    first: 150
+    orderBy: timestamp
+    orderDirection: desc
+    where: {pool_in: $poolIds, timestamp_gte: $startTimestamp}
+  ) {
+    ...KoyoJoinExit
+  }
 }
-    ${KoyoSwapFragmentDoc}`;
+    ${KoyoSwapFragmentDoc}
+${KoyoJoinExitFragmentDoc}`;
 export const useGetTransactionDataQuery = <TData = GetTransactionDataQuery, TError = unknown>(
 	dataSource: { endpoint: string; fetchParams?: RequestInit },
 	variables: GetTransactionDataQueryVariables,
@@ -5530,8 +5606,17 @@ export const GetAllTransactionDataDocument = `
   ) {
     ...KoyoSwap
   }
+  joinExits(
+    first: 150
+    orderBy: timestamp
+    orderDirection: desc
+    where: {timestamp_gte: $startTimestamp}
+  ) {
+    ...KoyoJoinExit
+  }
 }
-    ${KoyoSwapFragmentDoc}`;
+    ${KoyoSwapFragmentDoc}
+${KoyoJoinExitFragmentDoc}`;
 export const useGetAllTransactionDataQuery = <TData = GetAllTransactionDataQuery, TError = unknown>(
 	dataSource: { endpoint: string; fetchParams?: RequestInit },
 	variables: GetAllTransactionDataQueryVariables,

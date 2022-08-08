@@ -3,6 +3,7 @@ import { DarkGreyCard } from 'components/Card';
 import { LocalLoader } from 'components/Loader';
 import StackedAreaChart from 'components/StackedAreaChart';
 import SwapsTable from 'components/TransactionsTable/SwapsTable';
+import TransactionsTable from 'components/TransactionsTable/TransactionsTable';
 import { BobaNetworkInfo } from 'constants/networks';
 import { useKoyoChainProtocolData } from 'data/koyo/exchange/useAggregatedProtocolData';
 import { useKoyoAllTransactionsData } from 'data/koyo/exchange/useTransactions';
@@ -28,7 +29,7 @@ const Protocol: React.FC = () => {
 
 	const protocolBobaData = useKoyoChainProtocolData(BobaNetworkInfo.startTimeStamp, ChainId.BOBA);
 
-	const { swaps } = useKoyoAllTransactionsData();
+	const { swaps, joinsExits } = useKoyoAllTransactionsData();
 
 	const [liquidityHover, setLiquidityHover] = useState<number | undefined>();
 	const [leftLabel] = useState<string | undefined>();
@@ -92,7 +93,13 @@ const Protocol: React.FC = () => {
 
 				{/* eslint-disable-next-line react/jsx-pascal-case */}
 				<TYPE.main fontSize="24px">Transactions</TYPE.main>
-				<DarkGreyCard>{swaps.length > 0 ? <SwapsTable swaps={swaps} /> : <LocalLoader fill={false} />}</DarkGreyCard>
+				<DarkGreyCard>
+					{swaps.length > 0 || joinsExits.length > 0 ? (
+						<TransactionsTable swaps={swaps} joinsExits={joinsExits} />
+					) : (
+						<LocalLoader fill={false} />
+					)}
+				</DarkGreyCard>
 			</AutoColumn>
 		</PageWrapper>
 	);

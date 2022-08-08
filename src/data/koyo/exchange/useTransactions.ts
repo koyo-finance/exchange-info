@@ -7,6 +7,7 @@ import {
 	GetAllTransactionDataDocument,
 	GetAllTransactionDataQuery,
 	GetAllTransactionDataQueryVariables,
+	KoyoJoinExitFragment,
 	KoyoSwapFragment,
 	useGetAllTransactionDataQuery,
 	useGetTransactionDataQuery
@@ -14,11 +15,18 @@ import {
 import { useQueries } from 'react-query';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 
+export enum TransactionType {
+	Swap = 'Swap',
+	Join = 'Join',
+	Exit = 'Exit'
+}
+
 export function useKoyoTransactionData(
 	addresses: string[],
 	poolIds: string[]
 ): {
 	swaps: KoyoSwapFragment[];
+	joinsExits: KoyoJoinExitFragment[];
 	swapPairVolumes: { name: string; value: number }[];
 } {
 	const [activeNetwork] = useActiveNetworkVersion();
@@ -44,6 +52,7 @@ export function useKoyoTransactionData(
 
 	return {
 		swaps,
+		joinsExits: data?.joinExits || [],
 		swapPairVolumes
 	};
 }
@@ -52,8 +61,13 @@ export interface ChainedKoyoSwapFragment extends KoyoSwapFragment {
 	chain: ChainId;
 }
 
+export interface ChainedKoyoJoinExitFragment extends KoyoJoinExitFragment {
+	chain: ChainId;
+}
+
 export function useKoyoAllTransactionsData(): {
 	swaps: ChainedKoyoSwapFragment[];
+	joinsExits: ChainedKoyoJoinExitFragment[];
 	swapPairVolumes: { chain: ChainId; name: string; value: number }[];
 } {
 	const chainTransactionsResults = useQueries(
@@ -71,6 +85,7 @@ export function useKoyoAllTransactionsData(): {
 	);
 
 	let allSwaps: ChainedKoyoSwapFragment[] = [];
+	let joinsExits: ChainedKoyoJoinExitFragment[] = [];
 	let allSwapPairVolumes: { chain: ChainId; name: string; value: number }[] = [];
 
 	SUPPORTED_NETWORK_VERSIONS.forEach((network, i) => {
@@ -89,19 +104,26 @@ export function useKoyoAllTransactionsData(): {
 		});
 
 		allSwaps = allSwaps.concat(swaps);
+		joinsExits = joinsExits.concat(
+			[...(chainTransactionsResults[i].data?.joinExits || [])] //
+				.map((joinExit) => ({ ...joinExit, chain: network.id as unknown as ChainId }))
+		);
 		allSwapPairVolumes = allSwapPairVolumes.concat(swapPairVolumes);
 	});
 
 	allSwaps = orderBy(allSwaps, 'timestamp', 'desc');
+	joinsExits = orderBy(joinsExits, 'timestamp', 'desc');
 
 	return {
 		swaps: allSwaps,
+		joinsExits,
 		swapPairVolumes: allSwapPairVolumes
 	};
 }
 
 export function useKoyoAllActiveChainTransactionsData(): {
 	swaps: KoyoSwapFragment[];
+	joinsExits: KoyoJoinExitFragment[];
 	swapPairVolumes: { name: string; value: number }[];
 } {
 	const [activeNetwork] = useActiveNetworkVersion();
@@ -119,6 +141,7 @@ export function useKoyoAllActiveChainTransactionsData(): {
 
 	return {
 		swaps,
+		joinsExits: data?.joinExits || [],
 		swapPairVolumes
 	};
 }
