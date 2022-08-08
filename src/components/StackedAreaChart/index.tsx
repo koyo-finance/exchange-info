@@ -8,6 +8,7 @@ import React, { ReactNode } from 'react';
 import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import styled from 'styled-components';
 import { VolumeWindow } from 'types';
+import { AggregateProtocolChartData } from 'utils/getAggregatedProtocolChartData';
 import getChartColor from '../../utils/getChartColor';
 
 dayjs.extend(utc);
@@ -28,7 +29,7 @@ const Wrapper = styled(Card)`
 `;
 
 export interface LineChartProps extends React.HTMLAttributes<HTMLDivElement> {
-	data: any[];
+	data: AggregateProtocolChartData[];
 	color?: string;
 	tokenSet: string[];
 	height?: number;

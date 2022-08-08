@@ -8,7 +8,9 @@ import { GenericChartEntry } from 'types';
 interface ProtocolData {
 	tvl?: number;
 	tvlChange?: number;
+	swaps24?: number;
 	tvlData: GenericChartEntry[];
+	swapData: GenericChartEntry[];
 }
 
 export function useKoyoChainProtocolData(startTimestamp: number, chainOverride?: ChainId): ProtocolData {
@@ -27,7 +29,7 @@ export function useKoyoChainProtocolData(startTimestamp: number, chainOverride?:
 	);
 
 	if (!data) {
-		return { tvlData: [] };
+		return { tvlData: [], swapData: [] };
 	}
 
 	const snapshots = data.koyoSnapshots;
@@ -43,12 +45,26 @@ export function useKoyoChainProtocolData(startTimestamp: number, chainOverride?:
 		};
 	});
 
+	const swapData = snapshots.map((snapshot, idx) => {
+		const prevValue = idx === 0 ? 0 : parseFloat(snapshots[idx - 1].totalSwapCount);
+		const value = parseFloat(snapshot.totalSwapCount);
+
+		return {
+			value: value - prevValue > 0 ? value - prevValue : 0,
+			time: unixToDate(snapshot.timestamp)
+		};
+	});
+
 	const tvl = parseFloat(koyo.totalLiquidity);
 	const tvl24 = parseFloat(koyo24.totalLiquidity);
+	const swaps = parseFloat(koyo.totalSwapCount);
+	const swaps24 = parseFloat(koyo24.totalSwapCount);
 
 	return {
 		tvl,
 		tvlChange: (tvl - tvl24) / tvl24,
-		tvlData
+		swaps24: swaps - swaps24,
+		tvlData,
+		swapData
 	};
 }

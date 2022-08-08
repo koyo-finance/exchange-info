@@ -1,4 +1,5 @@
-import { ChainDisplayName, ChainId, formatDollarAmount } from '@koyofinance/core-sdk';
+import { ChainDisplayName, ChainId, formatAmount, formatDollarAmount } from '@koyofinance/core-sdk';
+import BarChartStacked from 'components/BarChartStacked';
 import { DarkGreyCard } from 'components/Card';
 import { LocalLoader } from 'components/Loader';
 import Percent from 'components/Percent';
@@ -7,6 +8,7 @@ import TransactionsTable from 'components/TransactionsTable/TransactionsTable';
 import { BobaNetworkInfo } from 'constants/networks';
 import { useKoyoChainProtocolData } from 'data/koyo/exchange/useAggregatedProtocolData';
 import { useKoyoAllTransactionsData } from 'data/koyo/exchange/useTransactions';
+import { useTransformedVolumeData } from 'hooks/useTransformedVolumeData';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import getAggregatedProtocolChartData, { AggregateProtocolChartData } from 'utils/getAggregatedProtocolChartData';
@@ -32,11 +34,14 @@ const Protocol: React.FC = () => {
 	const { swaps, joinsExits } = useKoyoAllTransactionsData();
 
 	const [liquidityHover, setLiquidityHover] = useState<number | undefined>();
+	const [swapsHover, setSwapsHover] = useState<number | undefined>();
 	const [leftLabel] = useState<string | undefined>();
+	const [swapsLabel] = useState<string | undefined>();
 
 	let aggregatedTVL: AggregateProtocolChartData[] = [];
 	let protocolTVL = 0;
 	let protocolTVLChange = 0;
+
 	if (protocolBobaData.tvlData) {
 		aggregatedTVL = getAggregatedProtocolChartData([{ chain: ChainDisplayName.BOBA, data: protocolBobaData.tvlData }], NaN);
 		if (protocolBobaData.tvl) {
@@ -47,15 +52,36 @@ const Protocol: React.FC = () => {
 		}
 	}
 
+	let protocolSwaps = 0;
+	let aggregatedWeeklySwaps: AggregateProtocolChartData[] = [];
+	const weeklyBobaSwapData = useTransformedVolumeData(protocolBobaData?.swapData, 'week');
+
+	if (protocolBobaData.swapData) {
+		if (protocolBobaData.swaps24) {
+			protocolSwaps = protocolBobaData.swaps24;
+		}
+	}
+
+	if (weeklyBobaSwapData) {
+		aggregatedWeeklySwaps = getAggregatedProtocolChartData([{ chain: ChainDisplayName.BOBA, data: weeklyBobaSwapData }], 0);
+	}
+
 	useEffect(() => {
 		setLiquidityHover(protocolTVL);
-	}, [protocolTVL]);
+		setSwapsHover(protocolSwaps);
+	}, [protocolSwaps, protocolTVL]);
 
 	useEffect(() => {
 		if (liquidityHover === undefined && protocolTVL > 0) {
 			setLiquidityHover(protocolTVL);
 		}
 	}, [liquidityHover, protocolBobaData, protocolTVL]);
+
+	useEffect(() => {
+		if (!swapsHover && protocolBobaData?.swaps24) {
+			setSwapsHover(protocolSwaps);
+		}
+	}, [swapsHover, protocolBobaData, protocolSwaps]);
 
 	return (
 		<PageWrapper>
@@ -84,6 +110,34 @@ const Protocol: React.FC = () => {
 									{/* eslint-disable-next-line react/jsx-pascal-case */}
 									<TYPE.main fontSize="12px" height="14px">
 										{leftLabel ? <MonoSpace>{leftLabel} (UTC)</MonoSpace> : null}
+									</TYPE.main>
+								</AutoColumn>
+							}
+						/>
+					</ChartWrapper>
+				</ResponsiveRow>
+
+				<ResponsiveRow>
+					<ChartWrapper>
+						<BarChartStacked
+							data={aggregatedWeeklySwaps}
+							tokenSet={[ChainDisplayName.BOBA]}
+							height={220}
+							minHeight={332}
+							color="#d7fe44"
+							value={swapsHover}
+							label={swapsLabel}
+							topLeft={
+								<AutoColumn gap="4px">
+									{/* eslint-disable-next-line react/jsx-pascal-case */}
+									<TYPE.mediumHeader fontSize="16px">Weekly Swaps</TYPE.mediumHeader>
+									{/* eslint-disable-next-line react/jsx-pascal-case */}
+									<TYPE.largeHeader fontSize="32px">
+										<MonoSpace> {formatAmount(swapsHover, 2)}</MonoSpace>
+									</TYPE.largeHeader>
+									{/* eslint-disable-next-line react/jsx-pascal-case */}
+									<TYPE.main fontSize="12px" height="14px">
+										{swapsLabel ? <MonoSpace>{swapsLabel} (UTC)</MonoSpace> : null}
 									</TYPE.main>
 								</AutoColumn>
 							}

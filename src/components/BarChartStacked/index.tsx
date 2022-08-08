@@ -7,6 +7,7 @@ import React, { ReactNode } from 'react';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import styled from 'styled-components';
 import { ChartDataPoint } from 'types/charts';
+import { AggregateProtocolChartData } from 'utils/getAggregatedProtocolChartData';
 import getChartColor from '../../utils/getChartColor';
 dayjs.extend(utc);
 
@@ -42,7 +43,7 @@ const CustomBar: React.FC<CustomBarProps> = ({ x, y, width, height, fill }) => {
 };
 
 export interface LineChartProps extends React.HTMLAttributes<HTMLDivElement> {
-	data: ChartDataPoint[];
+	data: AggregateProtocolChartData[];
 	color?: string | undefined;
 	tokenSet: string[];
 	isDollarAmount?: boolean;
