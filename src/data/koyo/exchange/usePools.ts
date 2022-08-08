@@ -85,7 +85,8 @@ export function useKoyoPools(): PoolData[] {
 		{
 			block24: { number: parseInt(block24?.number || 0, 10) },
 			block48: { number: parseInt(block48?.number || 0, 10) },
-			blockWeek: { number: parseInt(blockWeek?.number || 0, 10) }
+			blockWeek: { number: parseInt(blockWeek?.number || 0, 10) },
+			totalLiquidity: '0.01'
 		},
 		{
 			enabled: Boolean(block24 && block48 && blockWeek)

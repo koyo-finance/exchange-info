@@ -232,17 +232,23 @@ export const GetProtocolData = gql`
 	${KoyoSnapshot}
 `;
 export const GetPoolData = gql`
-	query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: Block_height!) {
-		pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }) {
+	query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: Block_height!, $totalLiquidity: BigDecimal!) {
+		pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: $totalLiquidity }) {
 			...KoyoPool
 		}
-		pools24: pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }, block: $block24) {
+		pools24: pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: $totalLiquidity }, block: $block24) {
 			...KoyoPool
 		}
-		pools48: pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }, block: $block48) {
+		pools48: pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: $totalLiquidity }, block: $block48) {
 			...KoyoPool
 		}
-		poolsWeek: pools(first: 1000, orderBy: totalLiquidity, orderDirection: desc, where: { totalLiquidity_gt: "0.01" }, block: $blockWeek) {
+		poolsWeek: pools(
+			first: 1000
+			orderBy: totalLiquidity
+			orderDirection: desc
+			where: { totalLiquidity_gt: $totalLiquidity }
+			block: $blockWeek
+		) {
 			...KoyoPool
 		}
 		prices: latestPrices(first: 1000) {

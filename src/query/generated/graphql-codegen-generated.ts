@@ -4462,6 +4462,7 @@ export type GetPoolDataQueryVariables = Exact<{
 	block24: Block_Height;
 	block48: Block_Height;
 	blockWeek: Block_Height;
+	totalLiquidity: Scalars['BigDecimal'];
 }>;
 
 export type GetPoolDataQuery = {
@@ -5317,12 +5318,12 @@ export const useGetProtocolDataQuery = <TData = GetProtocolDataQuery, TError = u
 		options
 	);
 export const GetPoolDataDocument = `
-    query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: Block_height!) {
+    query GetPoolData($block24: Block_height!, $block48: Block_height!, $blockWeek: Block_height!, $totalLiquidity: BigDecimal!) {
   pools(
     first: 1000
     orderBy: totalLiquidity
     orderDirection: desc
-    where: {totalLiquidity_gt: "0.01"}
+    where: {totalLiquidity_gt: $totalLiquidity}
   ) {
     ...KoyoPool
   }
@@ -5330,7 +5331,7 @@ export const GetPoolDataDocument = `
     first: 1000
     orderBy: totalLiquidity
     orderDirection: desc
-    where: {totalLiquidity_gt: "0.01"}
+    where: {totalLiquidity_gt: $totalLiquidity}
     block: $block24
   ) {
     ...KoyoPool
@@ -5339,7 +5340,7 @@ export const GetPoolDataDocument = `
     first: 1000
     orderBy: totalLiquidity
     orderDirection: desc
-    where: {totalLiquidity_gt: "0.01"}
+    where: {totalLiquidity_gt: $totalLiquidity}
     block: $block48
   ) {
     ...KoyoPool
@@ -5348,7 +5349,7 @@ export const GetPoolDataDocument = `
     first: 1000
     orderBy: totalLiquidity
     orderDirection: desc
-    where: {totalLiquidity_gt: "0.01"}
+    where: {totalLiquidity_gt: $totalLiquidity}
     block: $blockWeek
   ) {
     ...KoyoPool
