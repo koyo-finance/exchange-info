@@ -14,6 +14,7 @@ import GaugesOverview from './Gauge/GaugesOverview';
 import PoolPage from './Pool/PoolPage';
 import PoolsOverview from './Pool/PoolsOverview';
 import Protocol from './Protocol';
+import ProtocolFees from './ProtocolFees';
 import { RedirectInvalidToken } from './Token/redirects';
 import TokensOverview from './Token/TokensOverview';
 import Treasury from './Treasury';
@@ -128,6 +129,7 @@ export default function App() {
 								<Route exact strict path="/:networkID?/pools" component={PoolsOverview} />
 								<Route exact strict path="/:networkID?/tokens/:address" component={RedirectInvalidToken} />
 								<Route exact strict path="/:networkID?/tokens" component={TokensOverview} />
+								<Route exact strict path="/:networkID?/fees" component={ProtocolFees} />
 								<Route exact path="/:networkID?" component={Protocol} />
 							</Switch>
 							<Marginer />

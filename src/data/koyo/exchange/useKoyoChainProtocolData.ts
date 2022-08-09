@@ -5,10 +5,19 @@ import { useDeltaTimestamps } from 'hooks/useDeltaTimestamps';
 import { useGetProtocolDataQuery } from 'query/generated/graphql-codegen-generated';
 import { GenericChartEntry } from 'types';
 
-interface ProtocolData {
+export enum VolumeWindow {
+	daily,
+	weekly,
+	monthly
+}
+
+export interface ProtocolData {
+	fees24?: number;
+	feesChange?: number;
 	tvl?: number;
 	tvlChange?: number;
 	swaps24?: number;
+	feeData: GenericChartEntry[];
 	tvlData: GenericChartEntry[];
 	swapData: GenericChartEntry[];
 }
@@ -29,12 +38,23 @@ export function useKoyoChainProtocolData(startTimestamp: number, chainOverride?:
 	);
 
 	if (!data) {
-		return { tvlData: [], swapData: [] };
+		return { feeData: [], tvlData: [], swapData: [] };
 	}
 
 	const snapshots = data.koyoSnapshots;
 	const koyo = data.koyos[0];
 	const koyo24 = data.koyos24[0];
+	const koyo48 = data.koyos48[0];
+
+	const feeData = snapshots.map((snapshot, idx) => {
+		const prevValue = idx === 0 ? 0 : parseFloat(snapshots[idx - 1].totalSwapFee);
+		const value = parseFloat(snapshot.totalSwapFee);
+
+		return {
+			value: value - prevValue > 0 ? value - prevValue : 0,
+			time: unixToDate(snapshot.timestamp)
+		};
+	});
 
 	const tvlData = snapshots.map((snapshot) => {
 		const value = parseFloat(snapshot.totalLiquidity);
@@ -55,15 +75,21 @@ export function useKoyoChainProtocolData(startTimestamp: number, chainOverride?:
 		};
 	});
 
+	const fees = parseFloat(koyo.totalSwapFee);
+	const fees24 = parseFloat(koyo24.totalSwapFee);
+	const fees48 = parseFloat(koyo48.totalSwapFee);
 	const tvl = parseFloat(koyo.totalLiquidity);
 	const tvl24 = parseFloat(koyo24.totalLiquidity);
 	const swaps = parseFloat(koyo.totalSwapCount);
 	const swaps24 = parseFloat(koyo24.totalSwapCount);
 
 	return {
+		fees24: fees - fees24,
+		feesChange: (fees - fees24 - (fees24 - fees48)) / (fees24 - fees48),
 		tvl,
 		tvlChange: (tvl - tvl24) / tvl24,
 		swaps24: swaps - swaps24,
+		feeData,
 		tvlData,
 		swapData
 	};

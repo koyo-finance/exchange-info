@@ -151,6 +151,9 @@ const Menu: React.FC = () => {
 							<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}tokens`}>
 								Tokens
 							</StyledNavLink>
+							<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}fees`}>
+								Fees
+							</StyledNavLink>
 							<StyledNavLink id={`stake-nav-link`} to={`${networkPrefix(activeNewtork)}treasury`}>
 								Treasury
 							</StyledNavLink>

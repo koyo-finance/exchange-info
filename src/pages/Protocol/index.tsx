@@ -6,7 +6,7 @@ import Percent from 'components/Percent';
 import StackedAreaChart from 'components/StackedAreaChart';
 import TransactionsTable from 'components/TransactionsTable/TransactionsTable';
 import { BobaNetworkInfo } from 'constants/networks';
-import { useKoyoChainProtocolData } from 'data/koyo/exchange/useAggregatedProtocolData';
+import { useKoyoChainProtocolData } from 'data/koyo/exchange/useKoyoChainProtocolData';
 import { useKoyoAllTransactionsData } from 'data/koyo/exchange/useTransactions';
 import { useTransformedVolumeData } from 'hooks/useTransformedVolumeData';
 import React, { useEffect, useState } from 'react';

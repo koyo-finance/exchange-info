@@ -43,7 +43,7 @@ const GaugesOverview: React.FC = () => {
 							{/* eslint-disable-next-line react/jsx-pascal-case */}
 							<TYPE.main fontSize="18px">Fetching weight distribution data...</TYPE.main>
 							<LocalLoader fill={false} />
-						</DarkGreyCard>{' '}
+						</DarkGreyCard>
 					</AutoColumn>
 				)}
 			</AutoColumn>
