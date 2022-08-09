@@ -198,7 +198,7 @@ const Treasury: React.FC = () => {
 						topLeft={
 							<AutoColumn gap="4px">
 								{/* eslint-disable-next-line react/jsx-pascal-case */}
-								<TYPE.mediumHeader fontSize="16px">Token Holding Reserve</TYPE.mediumHeader>
+								<TYPE.mediumHeader fontSize="16px">Historical Token Net Worth in Treasury</TYPE.mediumHeader>
 								{/* eslint-disable-next-line react/jsx-pascal-case */}
 								<TYPE.largeHeader fontSize="32px">
 									<MonoSpace>{formatDollarAmount(treasuryTotalHover, 2, true)} </MonoSpace>

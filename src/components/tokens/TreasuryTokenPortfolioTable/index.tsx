@@ -84,6 +84,7 @@ const TreasuryTokenPortfolioTable: React.FC<TreasuryTokenPortfolioTableProps> = 
 						}
 						return -1;
 					})
+					.filter((td) => td.amount)
 					.slice(maxItems * (page - 1), page * maxItems)
 			: [];
 	}, [tokenDatas, maxItems, page, sortDirection, sortField]);
