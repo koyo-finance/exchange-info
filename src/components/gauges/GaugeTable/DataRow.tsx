@@ -1,5 +1,6 @@
 import { formatAmount } from '@koyofinance/core-sdk';
 import { DarkGreyCard, GreyBadge } from 'components/Card';
+import Percent from 'components/Percent';
 import { RowFixed } from 'components/Row';
 import { Label } from 'components/Text';
 import { GaugeInfo } from 'data/koyo/kyo/useGauges';
@@ -55,10 +56,11 @@ const LinkWrapper = styled(Link)`
 
 export interface DataRowProps {
 	gaugeInfo: GaugeInfo;
+	totalWeight: number;
 	index: number;
 }
 
-const DataRow: React.FC<DataRowProps> = ({ gaugeInfo, index }) => {
+const DataRow: React.FC<DataRowProps> = ({ gaugeInfo, totalWeight, index }) => {
 	const [activeNetwork] = useActiveNetworkVersion();
 
 	return (
@@ -71,10 +73,10 @@ const DataRow: React.FC<DataRowProps> = ({ gaugeInfo, index }) => {
 						<TYPE.label mr="5px">{gaugeInfo.symbol}</TYPE.label>
 					</RowFixed>
 				</Label>
-
 				<Label end={0} fontWeight={400}>
 					{gaugeInfo.weight.weight.toLocaleString('fullwide', { maximumFractionDigits: 1 })}
 				</Label>
+				<Percent value={gaugeInfo.weight.weight > 0 ? (100 * gaugeInfo.weight.weight) / totalWeight : undefined} simple />
 				<Label end={0} fontWeight={400}>
 					{gaugeInfo.killed ? '❌' : '✔️'}
 				</Label>

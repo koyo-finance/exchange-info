@@ -8,7 +8,7 @@ const Wrapper = styled(TYPE.main)<{ fontWeight: number; fontSize: string; negati
 	color: ${({ theme, negative }) => (negative ? theme.red1 : theme.green1)};
 `;
 
-export interface LogoProps {
+export interface PercentProps {
 	value?: number;
 	decimals?: number;
 	fontSize?: string;
@@ -17,7 +17,7 @@ export interface LogoProps {
 	simple?: boolean;
 }
 
-const Percent: React.FC<LogoProps> = ({ value, decimals = 2, fontSize = '16px', fontWeight = 500, wrap = false, simple = false, ...rest }) => {
+const Percent: React.FC<PercentProps> = ({ value, decimals = 2, fontSize = '16px', fontWeight = 500, wrap = false, simple = false, ...rest }) => {
 	if (value === undefined || value === null) {
 		return (
 			// eslint-disable-next-line react/jsx-pascal-case

@@ -71,6 +71,8 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 	const [sortField, setSortField] = useState(SORT_FIELD.weight);
 	const [sortDirection, setSortDirection] = useState<boolean>(true);
 
+	const totalWeight = gauges.map((g) => g.lastWeight).reduce((pgw, cgw) => pgw + cgw, 0);
+
 	// pagination
 	const [page, setPage] = useState(1);
 	const [maxPage, setMaxPage] = useState(1);
@@ -129,6 +131,7 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.weight)}>
 							Weight {arrow(SORT_FIELD.weight)}
 						</ClickableText>
+						<Label color={theme.text2}>Share</Label>
 						<ClickableText color={theme.text2} onClick={() => handleSort(SORT_FIELD.killed)}>
 							Active {arrow(SORT_FIELD.killed)}
 						</ClickableText>
@@ -138,7 +141,7 @@ const GaugeTable: React.FC<GaugeTableProps> = ({ gauges, maxItems = MAX_ITEMS })
 						if (gaugeData) {
 							return (
 								<React.Fragment key={i}>
-									<DataRow index={(page - 1) * MAX_ITEMS + i} gaugeInfo={gaugeData} />
+									<DataRow index={(page - 1) * MAX_ITEMS + i} gaugeInfo={gaugeData} totalWeight={totalWeight} />
 									<Break />
 								</React.Fragment>
 							);
