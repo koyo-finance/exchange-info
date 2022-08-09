@@ -3,6 +3,7 @@ import { DarkGreyCard, GreyCard } from 'components/Card';
 import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 import { LocalLoader } from 'components/Loader';
 import Percent from 'components/Percent';
+import PieChart from 'components/PieChart/PieChart';
 import UserPoolTable from 'components/pools/UserPoolTable';
 import { RowBetween, RowFixed } from 'components/Row';
 import TreasuryTokenPortfolioTable from 'components/tokens/TreasuryTokenPortfolioTable';
@@ -14,6 +15,7 @@ import useTheme from 'hooks/useTheme';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ExternalLink } from 'react-feather';
 import styled from 'styled-components';
+import getChartColor from 'utils/getChartColor';
 import DebankLogo from '../../assets/svg/debank.svg';
 import { AutoColumn } from '../../components/Column';
 import LineChart from '../../components/LineChart/alt';
@@ -40,6 +42,16 @@ const ContentLayout = styled.div`
 	}
 `;
 
+const ContentLayoutRight = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 400px;
+	grid-gap: 1em;
+	@media screen and (max-width: 700px) {
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr 1fr;
+	}
+`;
+
 const Treasury: React.FC = () => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -47,6 +59,7 @@ const Treasury: React.FC = () => {
 
 	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398'.toLowerCase();
 	const KYO_ADDRESS = '0x618CC6549ddf12de637d46CDDadaFC0C2951131C'.toLowerCase();
+	const debankLink = `https://debank.com/profile/${TREASURY_ADDRESS}`;
 
 	const theme = useTheme();
 
@@ -80,12 +93,23 @@ const Treasury: React.FC = () => {
 			const lastDataAmounts = Object.entries(lastData.amounts);
 			const lastDataValues = lastData.values;
 
-			return lastDataAmounts.map(([symbol, amount]) => ({ symbol, amount, value: lastDataValues[symbol] }));
+			return lastDataAmounts //
+				.map(([symbol, amount]) => ({ symbol, amount, value: lastDataValues[symbol] }))
+				.filter((td) => td.amount);
 		}
 		return undefined;
 	}, [treasuryData]);
 
-	const debankLink = `https://debank.com/profile/${TREASURY_ADDRESS}`;
+	const formattedTreasuryHoldingsPieChartData = useMemo(() => {
+		if (formattedTreasuryHoldingsData) {
+			return formattedTreasuryHoldingsData.map((fthd) => ({
+				name: fthd.symbol,
+				value: fthd.amount,
+				fill: getChartColor(fthd.symbol, 1)
+			}));
+		}
+		return undefined;
+	}, [formattedTreasuryHoldingsData]);
 
 	const poolDatasUser: PoolDataUser[] = [];
 	if (poolData.length > 0) {
@@ -224,9 +248,26 @@ const Treasury: React.FC = () => {
 					/>
 				</ContentLayout>
 
-				{/* eslint-disable-next-line react/jsx-pascal-case */}
-				<TYPE.main> Tokens in treasury wallet </TYPE.main>
-				<TreasuryTokenPortfolioTable tokenDatas={formattedTreasuryHoldingsData} />
+				<ContentLayoutRight>
+					<TreasuryTokenPortfolioTable tokenDatas={formattedTreasuryHoldingsData} />
+					<DarkGreyCard>
+						<AutoColumn gap="4px">
+							{/* eslint-disable-next-line react/jsx-pascal-case */}
+							<TYPE.main fontWeight={400}>Token distribution</TYPE.main>
+						</AutoColumn>
+						{formattedTreasuryHoldingsPieChartData && formattedTreasuryHoldingsPieChartData.length > 0 ? (
+							<PieChart data={formattedTreasuryHoldingsPieChartData} height={200} minHeight={400} />
+						) : (
+							<AutoColumn gap="lg" justify="flex-start">
+								<DarkGreyCard>
+									{/* eslint-disable-next-line react/jsx-pascal-case */}
+									<TYPE.main fontSize="18px">Fetching token distribution...</TYPE.main>
+									<LocalLoader fill={false} />
+								</DarkGreyCard>{' '}
+							</AutoColumn>
+						)}
+					</DarkGreyCard>
+				</ContentLayoutRight>
 
 				{/* eslint-disable-next-line react/jsx-pascal-case */}
 				<TYPE.white> Kōyō Protocol Investments </TYPE.white>

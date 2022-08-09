@@ -30,7 +30,9 @@ const GaugesOverview: React.FC = () => {
 				<TYPE.main>Weight distribution</TYPE.main>
 				{gauges.length > 0 ? (
 					<PieChart
-						data={gauges.map((gauge, i) => ({ name: gauge.symbol, value: gauge.lastWeight, fill: getChartColor(gauge.name, i) }))}
+						data={gauges //
+							.map((gauge, i) => ({ name: gauge.symbol, value: gauge.lastWeight, fill: getChartColor(gauge.name, i) }))
+							.filter((ce) => ce.value)}
 						height={200}
 						minHeight={200}
 						dollarDenominatedData={false}

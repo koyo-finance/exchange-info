@@ -84,7 +84,6 @@ const TreasuryTokenPortfolioTable: React.FC<TreasuryTokenPortfolioTableProps> = 
 						}
 						return -1;
 					})
-					.filter((td) => td.amount)
 					.slice(maxItems * (page - 1), page * maxItems)
 			: [];
 	}, [tokenDatas, maxItems, page, sortDirection, sortField]);
@@ -110,6 +109,8 @@ const TreasuryTokenPortfolioTable: React.FC<TreasuryTokenPortfolioTableProps> = 
 
 	return (
 		<Wrapper>
+			{/* eslint-disable-next-line react/jsx-pascal-case */}
+			<TYPE.main paddingBottom="1rem"> Tokens in treasury wallet </TYPE.main>
 			{sortedTokens.length > 0 ? (
 				<AutoColumn gap="8px">
 					<ResponsiveGrid>
@@ -124,7 +125,7 @@ const TreasuryTokenPortfolioTable: React.FC<TreasuryTokenPortfolioTableProps> = 
 							# of Tokens {arrow(SORT_FIELD.amount)}
 						</ClickableText>
 						<Label color={theme.text2} end={1}>
-							Price per token
+							Price/Token
 						</Label>
 					</ResponsiveGrid>
 					<Break />

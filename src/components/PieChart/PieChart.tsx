@@ -32,6 +32,7 @@ export interface PieChartProps extends React.HTMLAttributes<HTMLDivElement> {
 	color?: string;
 	height?: number;
 	minHeight?: number;
+	cxcy?: string[];
 	setValue?: Dispatch<SetStateAction<number | undefined>>; // used for value on hover
 	setLabel?: Dispatch<SetStateAction<string | undefined>>; // used for label of value
 	value?: number;
@@ -46,6 +47,7 @@ export const PieChart: React.FC<PieChartProps> = ({
 	data,
 	dollarDenominatedData = true,
 	color = '#56B2A4',
+	cxcy = ['50%', '50%'],
 	value,
 	label,
 	setValue,
@@ -70,12 +72,33 @@ export const PieChart: React.FC<PieChartProps> = ({
 				<RechartsPieChart width={400} height={400}>
 					<Pie
 						dataKey="value"
-						isAnimationActive={false}
+						stroke="#959eb2"
+						isAnimationActive={true}
 						data={data}
-						cx="50%"
-						cy="50%"
-						outerRadius={80}
-						// fill="#8884d8"
+						cx={cxcy[0]}
+						cy={cxcy[1]}
+						innerRadius={35}
+						outerRadius={75}
+						paddingAngle={15}
+						label={({ cx, cy, midAngle, innerRadius, outerRadius, index }) => {
+							const RADIAN = Math.PI / 180;
+							const radius = 25 + innerRadius + (outerRadius - innerRadius);
+							const x = cx + radius * Math.cos(-midAngle * RADIAN);
+							const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+							return (
+								<text
+									x={x}
+									y={y}
+									fill={data[index].fill}
+									fontSize="80%"
+									textAnchor={x > cx ? 'start' : 'end'}
+									dominantBaseline="central"
+								>
+									{data[index].name}
+								</text>
+							);
+						}}
 					></Pie>
 					<Tooltip
 						cursor={{ stroke: theme.bg2 }}
