@@ -16,7 +16,7 @@ import { useKoyoPoolData, useKoyoPoolPageData } from 'data/koyo/exchange/usePool
 import { useKoyoTransactionData } from 'data/koyo/exchange/useTransactions';
 import useTheme from 'hooks/useTheme';
 import { PageWrapper, ThemedBackground } from 'pages/styled';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ExternalLink } from 'react-feather';
 import { RouteComponentProps } from 'react-router-dom';
 import { useActiveNetworkVersion } from 'state/application/hooks';
@@ -77,11 +77,11 @@ enum ChartView {
 	FEES
 }
 
-export default function PoolPage({
+const PoolPage: React.FC<RouteComponentProps<{ poolId: string }>> = ({
 	match: {
 		params: { poolId }
 	}
-}: RouteComponentProps<{ poolId: string }>) {
+}) => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -284,4 +284,6 @@ export default function PoolPage({
 			)}
 		</PageWrapper>
 	);
-}
+};
+
+export default PoolPage;
