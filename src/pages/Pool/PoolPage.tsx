@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-pascal-case */
-import { formatAmount, formatDollarAmount } from '@koyofinance/core-sdk';
+import { ChainId, ExplorerTarget, formatAmount, formatDollarAmount, getExplorerLink } from '@koyofinance/core-sdk';
 import BarChart from 'components/BarChart/alt';
 import { DarkGreyCard, GreyBadge, GreyCard } from 'components/Card';
 import { AutoColumn } from 'components/Column';
@@ -14,12 +14,14 @@ import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index';
 import SwapsTable from 'components/TransactionsTable/SwapsTable';
 import { useKoyoPoolData, useKoyoPoolPageData } from 'data/koyo/exchange/usePools';
 import { useKoyoTransactionData } from 'data/koyo/exchange/useTransactions';
+import useTheme from 'hooks/useTheme';
 import { PageWrapper, ThemedBackground } from 'pages/styled';
 import React, { useEffect, useState } from 'react';
+import { ExternalLink } from 'react-feather';
 import { RouteComponentProps } from 'react-router-dom';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import styled from 'styled-components';
-import { StyledInternalLink, TYPE } from 'theme';
+import { ExternalLink as StyledExternalLink, StyledInternalLink, TYPE } from 'theme';
 import { getShortPoolName } from 'utils/getShortPoolName';
 import { networkPrefix } from 'utils/networkPrefix';
 import { swapFeePercent } from 'utils/swapFeePercent';
@@ -80,13 +82,14 @@ export default function PoolPage({
 		params: { poolId }
 	}
 }: RouteComponentProps<{ poolId: string }>) {
-	const [activeNetwork] = useActiveNetworkVersion();
-
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
+	const [activeNetwork] = useActiveNetworkVersion();
+
 	// theming
+	const theme = useTheme();
 	const backgroundColor = 'rgb(36, 156, 108)';
 
 	const poolData = useKoyoPoolData(poolId);
@@ -117,6 +120,13 @@ export default function PoolPage({
 							<TYPE.main>{` > `}</TYPE.main>
 							<TYPE.label>{` ${getShortPoolName(poolData)} ${swapFeePercent(poolData.swapFee)} `}</TYPE.label>
 						</AutoRow>
+						<RowFixed gap="10px" align="center">
+							<StyledExternalLink
+								href={getExplorerLink(activeNetwork.id as unknown as ChainId, ExplorerTarget.ADDRESS, poolData.address)}
+							>
+								<ExternalLink stroke={theme.text2} size={'17px'} style={{ marginLeft: '12px' }} />
+							</StyledExternalLink>
+						</RowFixed>
 					</RowBetween>
 					<ResponsiveRow align="flex-end">
 						<AutoColumn gap="lg">
