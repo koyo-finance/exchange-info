@@ -1,4 +1,4 @@
-import { ChainId, CHAIN_BLOCKS_SUBGRAPH } from '@koyofinance/core-sdk';
+import { ChainId, CHAIN_BLOCKS_SUBGRAPH, SupportedBlocksSubgraphChainsList } from '@koyofinance/core-sdk';
 import {
 	fetcher,
 	GetTimestampedBlockDocument,
@@ -30,7 +30,10 @@ export function useBlocksFromTimestamps(
 		timestamps.map((timestamp) => ({
 			queryKey: ['GetTimestampedBlock', timestamp],
 			queryFn: fetcher<GetTimestampedBlockQuery, GetTimestampedBlockQueryVariables>(
-				CHAIN_BLOCKS_SUBGRAPH[chainOverried || (activeNetwork.id as number as ChainId)] || '',
+				CHAIN_BLOCKS_SUBGRAPH[
+					(chainOverried as SupportedBlocksSubgraphChainsList) || //
+						(activeNetwork.id as number as SupportedBlocksSubgraphChainsList)
+				] || '',
 				{},
 				GetTimestampedBlockDocument,
 				{

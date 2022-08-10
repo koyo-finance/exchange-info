@@ -21,13 +21,8 @@ export type TokenAddressMap = Readonly<{
  */
 const EMPTY_LIST: TokenAddressMap = {
 	[ChainId.ETHEREUM]: {},
-	[ChainId.MOONBASE]: {},
-	[ChainId.RINKEBY]: {},
-	[ChainId.MOONBASE]: {},
 	[ChainId.BOBA]: {},
-	[ChainId.BOBABEAM]: {},
-	[ChainId.BOBA_RINKEBY]: {},
-	[ChainId.BOBABASE]: {}
+	[ChainId.BOBABEAM]: {}
 };
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null = typeof WeakMap === 'undefined' ? null : new WeakMap<TokenList, TokenAddressMap>();
@@ -75,13 +70,8 @@ export function useAllLists(): {
 function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
 	return {
 		[ChainId.ETHEREUM]: { ...map1[ChainId.ETHEREUM], ...map2[ChainId.ETHEREUM] },
-		[ChainId.MOONBASE]: { ...map1[ChainId.MOONBASE], ...map2[ChainId.MOONBASE] },
-		[ChainId.RINKEBY]: { ...map1[ChainId.RINKEBY], ...map2[ChainId.RINKEBY] },
-		[ChainId.MOONBASE]: { ...map1[ChainId.MOONBASE], ...map2[ChainId.MOONBASE] },
 		[ChainId.BOBA]: { ...map1[ChainId.BOBA], ...map2[ChainId.BOBA] },
-		[ChainId.BOBABEAM]: { ...map1[ChainId.BOBABEAM], ...map2[ChainId.BOBABEAM] },
-		[ChainId.BOBA_RINKEBY]: { ...map1[ChainId.BOBA_RINKEBY], ...map2[ChainId.BOBA_RINKEBY] },
-		[ChainId.BOBABASE]: { ...map1[ChainId.BOBABASE], ...map2[ChainId.BOBABASE] }
+		[ChainId.BOBABEAM]: { ...map1[ChainId.BOBABEAM], ...map2[ChainId.BOBABEAM] }
 	};
 }
 
