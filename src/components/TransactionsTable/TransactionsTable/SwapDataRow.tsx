@@ -1,4 +1,4 @@
-import { ExplorerTarget, formatAmount, formatDollarAmount, getExplorerLink } from '@koyofinance/core-sdk';
+import { ExplorerTarget, formatAmount, formatDollarAmount, getExplorerLink, shortenHex } from '@koyofinance/core-sdk';
 import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 import HoverInlineText from 'components/HoverInlineText';
 import { Label } from 'components/Text';
@@ -10,7 +10,6 @@ import { useActiveNetworkVersion } from 'state/application/hooks';
 import styled from 'styled-components';
 import { ExternalLink } from 'theme';
 import { formatTime } from 'utils/formatTime';
-import { shortenAddress } from 'utils/shortenAddress';
 
 const ResponsiveGrid = styled.div`
 	display: grid;
@@ -94,7 +93,7 @@ const SwapDataRow: React.FC<SwapDataRowProps> = ({ swap, color }) => {
 					href={getExplorerLink((swap as ChainedKoyoSwapFragment)?.chain || activeNetwork.id, ExplorerTarget.ADDRESS, swap.account.address)}
 					style={{ color: color ?? theme.blue1 }}
 				>
-					{shortenAddress(swap.account.address)}
+					{shortenHex(swap.account.address)}
 				</ExternalLink>
 			</Label>
 			<Label end={1} fontWeight={400}>

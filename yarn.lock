@@ -1923,7 +1923,7 @@
     "@ethersproject/rlp" "^5.6.1"
     "@ethersproject/signing-key" "^5.6.2"
 
-"@ethersproject/units@5.6.1":
+"@ethersproject/units@5.6.1", "@ethersproject/units@^5.6.1":
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/@ethersproject/units/-/units-5.6.1.tgz#ecc590d16d37c8f9ef4e89e2005bda7ddc6a4e6f"
   integrity sha512-rEfSEvMQ7obcx3KWD5EWWx77gqv54K6BKiZzKxkQJqtpriVsICrktIQmKl8ReNToPeIYPnFHpXvKpi068YFZXw==
@@ -2838,15 +2838,17 @@
     numbro "^2.3.6"
     tslib "^2.4.0"
 
-"@koyofinance/core-sdk@^0.5.0-next.6d0bd55.0":
-  version "0.5.0-next.6d0bd55.0"
-  resolved "https://registry.yarnpkg.com/@koyofinance/core-sdk/-/core-sdk-0.5.0-next.6d0bd55.0.tgz#688ebf1b5fc7b00c17189388e2f9b46c3106125e"
-  integrity sha512-zlDs+QFwd9ZPPf2WtQ7BzaIOjtNnN6pbKsjgyNGm99yPmLFYxa8jN99ZKY7AU/2kHzn9Yx4M1ah6lcMQcnVXyg==
+"@koyofinance/core-sdk@^0.6.0-next.c47998f.0":
+  version "0.6.0-next.c47998f.0"
+  resolved "https://registry.yarnpkg.com/@koyofinance/core-sdk/-/core-sdk-0.6.0-next.c47998f.0.tgz#0694d596c74b650dc0f0fc52412ddc13f5e595e3"
+  integrity sha512-A33b9QGTx0ragmd4kJdGxx9cuu140V106in0dVf23tlVG2sGij+c1Nhu4pDppzTnYwNFUKGm8K+6EsefxzOCOw==
   dependencies:
+    "@ethersproject/address" "^5.6.1"
+    "@ethersproject/bignumber" "^5.6.2"
+    "@ethersproject/units" "^5.6.1"
     "@uniswap/token-lists" "^1.0.0-beta.28"
-    dayjs "^1.11.2"
-    ethers "^5.6.6"
-    numbro "^2.3.6"
+    dayjs "1.11.2"
+    numbro "2.3.6"
     tslib "^2.4.0"
 
 "@koyofinance/exchange-sdk@^0.2.0-next.e26b3fa.0":
@@ -6731,7 +6733,7 @@ date-fns@^1.27.2:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
 
-dayjs@^1.10.4, dayjs@^1.11.2:
+dayjs@1.11.2, dayjs@^1.10.4, dayjs@^1.11.2:
   version "1.11.2"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.2.tgz#fa0f5223ef0d6724b3d8327134890cfe3d72fbe5"
   integrity sha512-F4LXf1OeU9hrSYRPTTj/6FbO4HTjPKXvEIC1P2kcnFurViINCVk3ZV0xAS3XVx9MkMsXbbqlK6hjseaYbgKEHw==
@@ -11058,7 +11060,7 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-numbro@^2.3.2, numbro@^2.3.6:
+numbro@2.3.6, numbro@^2.3.2, numbro@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/numbro/-/numbro-2.3.6.tgz#4bd622ebe59ccbc49dad365c5b9eed200781fa21"
   integrity sha512-pxpoTT3hVxQGaOA2RTzXR/muonQNd1K1HPJbWo7QOmxPwiPmoFCFfsG9XXgW3uqjyzezJ0P9IvCPDXUtJexjwg==

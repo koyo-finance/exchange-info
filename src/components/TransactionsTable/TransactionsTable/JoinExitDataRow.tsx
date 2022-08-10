@@ -1,17 +1,15 @@
-import { ExplorerTarget, formatAmount, formatDollarAmount, getExplorerLink } from '@koyofinance/core-sdk';
-import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
+import { ExplorerTarget, formatAmount, formatDollarAmount, getExplorerLink, shortenHex } from '@koyofinance/core-sdk';
 import HoverInlineText from 'components/HoverInlineText';
 import PoolCurrencyLogo from 'components/PoolCurrencyLogo';
 import { Label } from 'components/Text';
-import { ChainedKoyoJoinExitFragment, ChainedKoyoSwapFragment } from 'data/koyo/exchange/useTransactions';
+import { ChainedKoyoJoinExitFragment } from 'data/koyo/exchange/useTransactions';
 import useTheme from 'hooks/useTheme';
-import { KoyoJoinExitFragment, KoyoSwapFragment } from 'query/generated/graphql-codegen-generated';
+import { KoyoJoinExitFragment } from 'query/generated/graphql-codegen-generated';
 import React from 'react';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import styled from 'styled-components';
 import { ExternalLink } from 'theme';
 import { formatTime } from 'utils/formatTime';
-import { shortenAddress } from 'utils/shortenAddress';
 
 const ResponsiveGrid = styled.div`
 	display: grid;
@@ -103,7 +101,7 @@ const JoinExitDataRow: React.FC<JoinExitDataRowProps> = ({ joinExit, color }) =>
 					)}
 					style={{ color: color ?? theme.blue1 }}
 				>
-					{shortenAddress(joinExit.account.address)}
+					{shortenHex(joinExit.account.address)}
 				</ExternalLink>
 			</Label>
 			<Label end={1} fontWeight={400}>
