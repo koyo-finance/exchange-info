@@ -15,6 +15,7 @@ import useTheme from 'hooks/useTheme';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ExternalLink } from 'react-feather';
 import styled from 'styled-components';
+import { getAssetColor } from 'utils/getAssetColor';
 import getChartColor from 'utils/getChartColor';
 import DebankLogo from '../../assets/svg/debank.svg';
 import ZapperLogo from '../../assets/svg/zapper.svg';
@@ -114,8 +115,8 @@ const Treasury: React.FC = () => {
 		if (formattedTreasuryHoldingsData) {
 			return formattedTreasuryHoldingsData.map((fthd) => ({
 				name: fthd.symbol,
-				value: fthd.amount,
-				fill: getChartColor(fthd.symbol, 1)
+				value: fthd.value,
+				fill: getAssetColor(fthd.symbol)
 			}));
 		}
 		return undefined;

@@ -41,6 +41,8 @@ export interface PieChartProps extends React.HTMLAttributes<HTMLDivElement> {
 	topRight?: ReactNode;
 	bottomLeft?: ReactNode;
 	bottomRight?: ReactNode;
+
+	colourFunction?: (label: string, index: number) => string;
 }
 
 export const PieChart: React.FC<PieChartProps> = ({
@@ -57,6 +59,7 @@ export const PieChart: React.FC<PieChartProps> = ({
 	bottomLeft,
 	bottomRight,
 	minHeight = DEFAULT_HEIGHT,
+	colourFunction = getChartColor,
 	...rest
 }) => {
 	const theme = useTheme();
@@ -113,7 +116,7 @@ export const PieChart: React.FC<PieChartProps> = ({
 						}}
 					/>
 					{data.map((entry, index) => (
-						<Cell key={`cell-${index}`} fill={getChartColor(entry.name, index)} />
+						<Cell key={`cell-${index}`} fill={colourFunction(entry.name, index)} />
 					))}
 				</RechartsPieChart>
 			</ResponsiveContainer>
