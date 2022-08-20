@@ -17,6 +17,7 @@ import { ExternalLink } from 'react-feather';
 import styled from 'styled-components';
 import getChartColor from 'utils/getChartColor';
 import DebankLogo from '../../assets/svg/debank.svg';
+import ZapperLogo from '../../assets/svg/zapper.svg';
 import { AutoColumn } from '../../components/Column';
 import LineChart from '../../components/LineChart/alt';
 import { MonoSpace } from '../../components/shared';
@@ -26,6 +27,13 @@ import { ExternalLink as StyledExternalLink } from '../../theme/components';
 import { PageWrapper, ThemedBackgroundGlobal } from '../styled';
 
 const StyledDebankLogo = styled.img`
+	height: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
+const StyledZapperLogo = styled.img`
 	height: 16px;
 	display: flex;
 	justify-content: center;
@@ -60,6 +68,8 @@ const Treasury: React.FC = () => {
 	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398'.toLowerCase();
 	const KYO_ADDRESS = '0x618CC6549ddf12de637d46CDDadaFC0C2951131C'.toLowerCase();
 	const debankLink = `https://debank.com/profile/${TREASURY_ADDRESS}`;
+	const zapperLink =
+		'https://zapper.fi/bundle/0x027f41f041ed3d484296b9ef7b965d23abf04200?label=K%C5%8Dy%C5%8D%20Labs%20-%20Treasuries&id=0xf4bd3686c545132e0b623fe0078f392d70653531';
 
 	const theme = useTheme();
 
@@ -238,6 +248,11 @@ const Treasury: React.FC = () => {
 								{debankLink && (
 									<StyledExternalLink href={debankLink} style={{ marginLeft: '12px' }}>
 										<StyledDebankLogo src={DebankLogo} />
+									</StyledExternalLink>
+								)}
+								{zapperLink && (
+									<StyledExternalLink href={zapperLink} style={{ marginLeft: '12px' }}>
+										<StyledZapperLogo src={ZapperLogo} />
 									</StyledExternalLink>
 								)}
 								<StyledExternalLink href={getExplorerLink(ChainId.BOBA, ExplorerTarget.ADDRESS, TREASURY_ADDRESS)}>
