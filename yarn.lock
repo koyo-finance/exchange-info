@@ -2838,10 +2838,10 @@
     numbro "^2.3.6"
     tslib "^2.4.0"
 
-"@koyofinance/core-sdk@^0.6.0-next.c47998f.0":
-  version "0.6.0-next.c47998f.0"
-  resolved "https://registry.yarnpkg.com/@koyofinance/core-sdk/-/core-sdk-0.6.0-next.c47998f.0.tgz#0694d596c74b650dc0f0fc52412ddc13f5e595e3"
-  integrity sha512-A33b9QGTx0ragmd4kJdGxx9cuu140V106in0dVf23tlVG2sGij+c1Nhu4pDppzTnYwNFUKGm8K+6EsefxzOCOw==
+"@koyofinance/core-sdk@^0.9.0-next.ff26267.0":
+  version "0.9.0-next.ff26267.0"
+  resolved "https://registry.yarnpkg.com/@koyofinance/core-sdk/-/core-sdk-0.9.0-next.ff26267.0.tgz#0dd356b6985c66aa52f803afaed910c6331e77b7"
+  integrity sha512-ravqe/TPkALysbPPC5nyjsLz5smZ1JeX2zKuYH1ZtCWyJnJ2d1b76GrFpcePtVyuGaYdmkOijz9FOWy4vzUk+Q==
   dependencies:
     "@ethersproject/address" "^5.6.1"
     "@ethersproject/bignumber" "^5.6.2"

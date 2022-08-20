@@ -1,4 +1,4 @@
-import { ExplorerTarget, formatAmount, formatDollarAmount, getExplorerLink, shortenHex } from '@koyofinance/core-sdk';
+import { ExplorerTarget, formatAmount, formatDollarAmount, formatTime, getExplorerLink, shortenHex } from '@koyofinance/core-sdk';
 import HoverInlineText from 'components/HoverInlineText';
 import PoolCurrencyLogo from 'components/PoolCurrencyLogo';
 import { Label } from 'components/Text';
@@ -9,7 +9,6 @@ import React from 'react';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import styled from 'styled-components';
 import { ExternalLink } from 'theme';
-import { formatTime } from 'utils/formatTime';
 
 const ResponsiveGrid = styled.div`
 	display: grid;

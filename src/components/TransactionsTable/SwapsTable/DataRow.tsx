@@ -1,4 +1,4 @@
-import { ExplorerTarget, formatAmount, formatDollarAmount, getExplorerLink, shortenHex } from '@koyofinance/core-sdk';
+import { ExplorerTarget, formatAmount, formatDollarAmount, formatTime, getExplorerLink, shortenHex } from '@koyofinance/core-sdk';
 import { DarkGreyCard } from 'components/Card';
 import SymbolCurrencyLogo from 'components/CurrencyLogo/SymbolCurrencyLogo';
 import HoverInlineText from 'components/HoverInlineText';
@@ -10,7 +10,6 @@ import React from 'react';
 import { useActiveNetworkVersion } from 'state/application/hooks';
 import styled from 'styled-components';
 import { ExternalLink } from 'theme';
-import { formatTime } from 'utils/formatTime';
 
 const Wrapper = styled(DarkGreyCard)`
 	width: 100%;
