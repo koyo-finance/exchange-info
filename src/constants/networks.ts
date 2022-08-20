@@ -3,7 +3,6 @@ import ARBITRUM_LOGO_URL from '../assets/images/arbitrum.svg';
 
 export enum SupportedNetwork {
 	BOBA = ChainId.BOBA,
-	AURORA = ChainId.AURORA,
 	POLYGON = ChainId.POLYGON,
 	MOONRIVER = ChainId.MOONRIVER
 }
@@ -14,8 +13,9 @@ export interface NetworkInfo {
 	route: string;
 	name: string;
 	startTimeStamp: number;
-	exchangeClientUri: string;
 	appUri: string;
+	exchangeClientUri: string;
+	veClientUri?: string;
 	imageURL: string;
 	bgColor: string;
 	primaryColor: string;
@@ -31,26 +31,12 @@ export const BobaNetworkInfo: NetworkInfo = {
 	startTimeStamp: 1619874000,
 	appUri: 'https://koyo.finance/',
 	exchangeClientUri: 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-boba',
+	veClientUri: 'https://api.thegraph.com/subgraphs/name/koyo-finance/ve-boba',
 	imageURL: ARBITRUM_LOGO_URL,
 	bgColor: '#0A294B',
 	primaryColor: '#0490ED',
 	secondaryColor: '#96BEDC',
 	blurb: 'L2'
-};
-
-export const AuroraNetworkInfo: NetworkInfo = {
-	id: SupportedNetwork.AURORA,
-	chainId: '1313161554',
-	route: 'aurora',
-	name: 'Aurora',
-	startTimeStamp: 1657617196,
-	appUri: 'https://koyo.finance/',
-	exchangeClientUri: 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-aurora',
-	imageURL: ARBITRUM_LOGO_URL,
-	bgColor: '#78D64B',
-	primaryColor: '#0490ED',
-	secondaryColor: '#96BEDC',
-	blurb: 'NEAR'
 };
 
 export const PolygonNetworkInfo: NetworkInfo = {
@@ -83,4 +69,4 @@ export const MoonriverNetworkInfo: NetworkInfo = {
 	blurb: 'Para-chain'
 };
 
-export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [BobaNetworkInfo, AuroraNetworkInfo, PolygonNetworkInfo, MoonriverNetworkInfo];
+export const SUPPORTED_NETWORK_VERSIONS: NetworkInfo[] = [BobaNetworkInfo, PolygonNetworkInfo, MoonriverNetworkInfo];

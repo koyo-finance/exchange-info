@@ -1,9 +1,7 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
-import { bobaBlockClient } from '../../query/client';
-import { NetworkInfo, SupportedNetwork } from '../../constants/networks';
-import { useActiveWeb3 } from '../../hooks/useActiveWeb3';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { NetworkInfo } from '../../constants/networks';
+import { useActiveWeb3 } from '../../hooks/useActiveWeb3';
 import { AppDispatch, AppState } from '../index';
 import { addPopup, ApplicationModal, PopupContent, removePopup, setOpenModal, updateActiveNetworkVersion, updateSubgraphStatus } from './actions';
 
@@ -103,25 +101,4 @@ export function useActiveNetworkVersion(): [NetworkInfo, (activeNetworkVersion: 
 		[dispatch]
 	);
 	return [activeNetwork, update];
-}
-
-// get the apollo client related to the active network for fetching blocks
-export function useBlockClient(): ApolloClient<NormalizedCacheObject> {
-	const [activeNetwork] = useActiveNetworkVersion();
-	switch (activeNetwork.id) {
-		case SupportedNetwork.BOBA:
-			return bobaBlockClient;
-		default:
-			return bobaBlockClient;
-	}
-}
-
-// Get all required subgraph clients
-export function useClients(): {
-	blockClient: ApolloClient<NormalizedCacheObject>;
-} {
-	const blockClient = useBlockClient();
-	return {
-		blockClient
-	};
 }

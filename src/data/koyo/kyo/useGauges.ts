@@ -25,12 +25,12 @@ export function useGauges(): GaugeInfo[] {
 	const [blockTc] = blocks ?? [];
 
 	const { data: gauges } = useKoyoKyoGaugesQuery(
-		{ endpoint: BOBA_EXCHANGE_SUBGRAPH_URL },
+		{ endpoint: activeNetwork.veClientUri || '' },
 		{ block: { number: parseInt(blockTc?.number || 0, 10) } },
-		{ enabled: Boolean(blockTc) }
+		{ enabled: Boolean(blockTc && activeNetwork.veClientUri) }
 	);
 
-	if (!gauges) {
+	if (!gauges || !activeNetwork.veClientUri) {
 		return [];
 	}
 

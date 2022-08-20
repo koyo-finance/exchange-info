@@ -2,9 +2,7 @@ schema:
   - 'https://api.thegraph.com/index-node/graphql'
   - 'https://api.thegraph.com/subgraphs/name/koyo-finance/boba-blocks'
   - 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-boba'
-  - 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-aurora'
-  - 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-moonriver'
-  - 'https://api.thegraph.com/subgraphs/name/koyo-finance/exchange-subgraph-matic'
+  - 'https://api.thegraph.com/subgraphs/name/koyo-finance/ve-boba'
 documents:
   - 'src/**/*.gql'
 hooks:
