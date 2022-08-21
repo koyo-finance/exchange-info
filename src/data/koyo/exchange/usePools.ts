@@ -1,5 +1,6 @@
 import { unixToDate } from '@koyofinance/core-sdk';
 import { useExchangeSubgraphURL } from 'data/useExchangeSubgraphURL';
+import { zip } from 'lodash';
 import { GenericChartEntry } from 'types';
 import { useDeltaTimestamps } from '../../../hooks/useDeltaTimestamps';
 import { KoyoPoolFragment, useGetPoolChartDataQuery, useGetPoolDataQuery } from '../../../query/generated/graphql-codegen-generated';
@@ -154,13 +155,14 @@ export function useKoyoPoolsForToken(address: string) {
 export function useKoyoPoolPageData(poolId: string): {
 	tvlData: GenericChartEntry[];
 	volumeData: GenericChartEntry[];
+	utilisationData: GenericChartEntry[];
 	feesData: GenericChartEntry[];
 } {
 	const [activeNetwork] = useActiveNetworkVersion();
 	const subgraphUrl = useExchangeSubgraphURL();
 	const { data } = useGetPoolChartDataQuery({ endpoint: subgraphUrl }, { poolId, startTimestamp: activeNetwork.startTimeStamp });
 	if (!data) {
-		return { tvlData: [], volumeData: [], feesData: [] };
+		return { tvlData: [], volumeData: [], utilisationData: [], feesData: [] };
 	}
 
 	const { poolSnapshots } = data;
@@ -180,6 +182,13 @@ export function useKoyoPoolPageData(poolId: string): {
 		};
 	});
 
+	const utilisationData = zip(tvlData, volumeData).map(([tvl, volume]) => {
+		return {
+			value: volume && tvl ? (volume.value * 100) / tvl.value : 0,
+			time: volume?.time || ''
+		};
+	});
+
 	const feesData = poolSnapshots.map((snapshot, idx) => {
 		const prevValue = idx === 0 ? 0 : parseFloat(poolSnapshots[idx - 1].swapFees);
 		const value = parseFloat(snapshot.swapFees);
@@ -193,6 +202,7 @@ export function useKoyoPoolPageData(poolId: string): {
 	return {
 		tvlData,
 		volumeData,
+		utilisationData,
 		feesData
 	};
 }

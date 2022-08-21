@@ -8,6 +8,7 @@ import LineChart from 'components/LineChart/alt';
 import { LocalLoader } from 'components/Loader';
 import Percent from 'components/Percent';
 import PoolCurrencyLogo from 'components/PoolCurrencyLogo';
+import QuestionHelper from 'components/QuestionHelper';
 import Row, { AutoRow, RowBetween, RowFixed } from 'components/Row';
 import { MonoSpace } from 'components/shared';
 import { ToggleElementFree, ToggleWrapper } from 'components/Toggle/index';
@@ -74,6 +75,7 @@ const ToggleRow = styled(RowBetween)`
 enum ChartView {
 	TVL,
 	VOL,
+	UTILISATION,
 	FEES
 }
 
@@ -93,7 +95,7 @@ const PoolPage: React.FC<RouteComponentProps<{ poolId: string }>> = ({
 	const backgroundColor = 'rgb(36, 156, 108)';
 
 	const poolData = useKoyoPoolData(poolId);
-	const { tvlData, volumeData, feesData } = useKoyoPoolPageData(poolId);
+	const { tvlData, volumeData, utilisationData, feesData } = useKoyoPoolPageData(poolId);
 
 	const { swaps, joinsExits } = useKoyoTransactionData(
 		(poolData?.tokens || []).map((token) => token.address),
@@ -196,11 +198,15 @@ const PoolPage: React.FC<RouteComponentProps<{ poolId: string }>> = ({
 									<TYPE.label fontSize="24px" height="30px">
 										<MonoSpace>
 											{latestValue
-												? formatDollarAmount(latestValue, 2)
+												? view === ChartView.UTILISATION
+													? `${Math.abs(latestValue).toFixed(3)}%`
+													: formatDollarAmount(latestValue, 2)
 												: view === ChartView.VOL
 												? formatDollarAmount(volumeData[volumeData.length - 1]?.value)
 												: view === ChartView.TVL
 												? formatDollarAmount(tvlData[tvlData.length - 1]?.value)
+												: view === ChartView.UTILISATION
+												? `${Math.abs(utilisationData[utilisationData.length - 1]?.value).toFixed(3)}%`
 												: formatDollarAmount(feesData[feesData.length - 1]?.value)}{' '}
 										</MonoSpace>
 									</TYPE.label>
@@ -208,7 +214,7 @@ const PoolPage: React.FC<RouteComponentProps<{ poolId: string }>> = ({
 										{valueLabel ? <MonoSpace>{valueLabel} (UTC)</MonoSpace> : ''}
 									</TYPE.main>
 								</AutoColumn>
-								<ToggleWrapper width="240px">
+								<ToggleWrapper width="300px">
 									<ToggleElementFree
 										isActive={view === ChartView.VOL}
 										fontSize="12px"
@@ -224,6 +230,13 @@ const PoolPage: React.FC<RouteComponentProps<{ poolId: string }>> = ({
 										TVL
 									</ToggleElementFree>
 									<ToggleElementFree
+										isActive={view === ChartView.UTILISATION}
+										fontSize="12px"
+										onClick={() => (view === ChartView.UTILISATION ? setView(ChartView.TVL) : setView(ChartView.UTILISATION))}
+									>
+										Utilisation <QuestionHelper text={'24h Volume/Liquidity ratio'} />
+									</ToggleElementFree>
+									<ToggleElementFree
 										isActive={view === ChartView.FEES}
 										fontSize="12px"
 										onClick={() => (view === ChartView.FEES ? setView(ChartView.TVL) : setView(ChartView.FEES))}
@@ -235,6 +248,16 @@ const PoolPage: React.FC<RouteComponentProps<{ poolId: string }>> = ({
 							{view === ChartView.TVL ? (
 								<LineChart
 									data={tvlData}
+									setLabel={setValueLabel}
+									color={backgroundColor}
+									minHeight={340}
+									setValue={setLatestValue}
+									value={latestValue}
+									label={valueLabel}
+								/>
+							) : view === ChartView.UTILISATION ? (
+								<LineChart
+									data={utilisationData}
 									setLabel={setValueLabel}
 									color={backgroundColor}
 									minHeight={340}
