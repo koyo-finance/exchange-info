@@ -16,6 +16,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ExternalLink } from 'react-feather';
 import styled from 'styled-components';
 import { getAssetColor } from 'utils/getAssetColor';
+import { getChainColor } from 'utils/getChainColor';
 import getChartColor from 'utils/getChartColor';
 import DebankLogo from '../../assets/svg/debank.svg';
 import ZapperLogo from '../../assets/svg/zapper.svg';
@@ -223,7 +224,7 @@ const Treasury: React.FC = () => {
 						data={formattedTreasuryData}
 						height={220}
 						minHeight={332}
-						color="#d7fe44"
+						color={getChainColor(ChainId.BOBA)}
 						tickerFormat="DD.MM"
 						value={treasuryTotalHover}
 						label={leftLabel}
