@@ -66,11 +66,10 @@ const Treasury: React.FC = () => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	const TREASURY_ADDRESS = '0x559dBda9Eb1E02c0235E245D9B175eb8DcC08398'.toLowerCase();
+	const TREASURY_ADDRESS = '0x47BbF992a25B7fe1D532F8128D514524462731eF'.toLowerCase();
 	const KYO_ADDRESS = '0x618CC6549ddf12de637d46CDDadaFC0C2951131C'.toLowerCase();
 	const debankLink = `https://debank.com/profile/${TREASURY_ADDRESS}`;
-	const zapperLink =
-		'https://zapper.fi/bundle/0x027f41f041ed3d484296b9ef7b965d23abf04200?label=K%C5%8Dy%C5%8D%20Labs%20-%20Treasuries&id=0xf4bd3686c545132e0b623fe0078f392d70653531';
+	const zapperLink = `https://zapper.fi/account/${TREASURY_ADDRESS}?`;
 
 	const theme = useTheme();
 
